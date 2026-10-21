@@ -2,6 +2,9 @@
 
 水果王國大冒險：純靜態 HTML / CSS / JavaScript，支援 GitHub Pages。
 
+原始專案：[tonygg0603-sys/KidGames](https://github.com/tonygg0603-sys/KidGames)。
+此 Fork 加入原創 RPG 美術、六種武器動畫與命中同步效果，保留原遊戲數值與存檔格式。
+
 ## 本機執行
 
 用任一靜態 HTTP server 在 repository 根目錄啟動，開啟 index.html。
