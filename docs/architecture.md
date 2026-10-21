@@ -15,14 +15,22 @@ try/catch and reset cleared the entire origin's storage.
 
 ## Current responsibilities
 
-- index.html: existing screens, original SVG scenery/heroes/dragon, semantic answers.
+- index.html: existing screens, illustrated characters/monsters, SVG armor overlays
+  and vector scenery fallback beneath the painted scene image.
 - css/game.css: extracted original styles.
 - css/animations.css: RPG presentation, responsive layout, effects and reduced motion.
+- css/illustrations.css: painted-world layout, larger silhouettes, character portraits,
+  scene labels, theme overlays and subtle character breathing.
 - js/weapons.js: stable catalog and animation configuration, original SVG weapons.
 - js/effects.js: WeaponAnimationSystem and reusable BattleEffects. WAAPI transforms,
   timed projectiles, slash trails, six hit presets, floating damage, shake, death.
 - js/game.js: existing questions, economy, armor, shop, audio, saves and progression.
   Correct answers await animation; its impact callback applies damage exactly once.
+- js/art.js: WorldArt scene catalog and level/theme presentation. Selects five
+  local painted backgrounds and theme-specific monster art; preloads each next
+  scene once. No storage or balance responsibilities.
+- assets/art/: 11 optimized WebP images (about 2.4 MB); real alpha on characters
+  and monsters. Art direction and per-file metadata are documented separately.
 
 Stage stacking is background-layer / character-layer / effect-layer. HP panels live
 with combatant anchors, above backgrounds. Temporary VFX remove themselves after

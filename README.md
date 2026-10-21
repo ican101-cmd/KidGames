@@ -18,3 +18,11 @@
 瀏覽器存檔，結果輸出到 tests/results.json，截圖不納入版本控制。
 
 架構、存檔相容性與限制請參考 [docs/architecture.md](docs/architecture.md)。
+
+## 第二輪插畫美術
+
+新增原創手繪男女勇者、暮星巨龍、水果史萊姆、花朵精靈與深海小魚。
+五關場景依序為王國草原、古木森林、碧海遺跡、夕照峽谷、星月龍堡；
+原商店背景主題與倍率仍保留。11 張 WebP 圖片均位於 assets/art/。
+
+素材規格與繪圖提示見 [docs/art-direction.md](docs/art-direction.md)。

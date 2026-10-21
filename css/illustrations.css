@@ -1,0 +1,65 @@
+/* Hand-painted adventure art. All images are local WebP assets with real alpha. */
+.scene-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+#mode-select>.scene-art{height:57%;object-position:64% 50%;z-index:-2}
+#mode-select>.landscape{height:57%}
+#mode-select:after{inset:37% 0 0;background:linear-gradient(transparent,#fff7e6 34%)}
+.menu-hero{position:absolute;left:9%;top:17%;width:125px;height:220px;z-index:-1;filter:drop-shadow(0 5px 3px #35251838)}
+.menu-hero img{width:100%;height:100%;object-fit:contain}
+.hero-art-girl{display:none}.rpg-hero.girl .hero-art-boy{display:none}.rpg-hero.girl .hero-art-girl{display:block}
+#character-select{background:linear-gradient(#fff9ebde,#fff9ebf5),url('../assets/art/stage-1-meadow.webp') center/cover}
+.avatar-container{gap:16px;margin:8px 0 15px}
+.avatar-card{width:138px;padding:10px 7px;border-width:2px;border-radius:18px;background:linear-gradient(#fffdf4,#eee3cc);box-shadow:0 5px 0 #b9a07840}
+.avatar-card.selected{border-color:#c89542;background:linear-gradient(#fff8dd,#f1dba6);box-shadow:0 5px 0 #bb924c55}
+.selection-portrait{width:108px;height:172px;object-fit:contain;margin:0 0 10px;filter:drop-shadow(0 4px 2px #694e2920)}
+#battle-stage{height:330px;min-height:285px;border-bottom:3px solid var(--scene-accent,#d8be76)}
+.background-layer>.scene-art{object-position:center 55%}
+.background-layer:after{content:"";position:absolute;inset:0;background:linear-gradient(#172c4914,transparent 48%,#30202112);pointer-events:none}
+.bg-pink .background-layer:after{background:linear-gradient(#f5a3bf33,#f7c2d51c)}
+.bg-blue .background-layer:after{background:linear-gradient(#2d7cba2e,#4aa9cf1c)}
+.scene-caption{position:absolute;z-index:2;left:15px;top:12px;display:flex;flex-direction:column;gap:3px;border-left:3px solid var(--scene-accent,#d8be76);padding:6px 12px;background:linear-gradient(90deg,#203a47e8,#203a4700);color:#fff7de;pointer-events:none}
+.scene-caption span{font-size:10px;letter-spacing:1px;color:#f7e6bd}
+.scene-caption strong{font-size:20px;letter-spacing:3px;text-shadow:0 2px 2px #12202a}
+.character-layer{padding:0 32px 19px;align-items:flex-end}
+.combatant-box{width:140px}
+.player-visual{width:130px;height:192px;filter:drop-shadow(0 4px 2px #24263030)}
+.hero-base-svg{overflow:visible}
+.hero-base-svg{animation:heroBreathe 3s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes heroBreathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+.slime-container.is-dragon{animation:dragonIdle 3s ease-in-out infinite}
+@keyframes dragonIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+#battle-hero-weapon-icon{left:18%!important;right:auto!important;top:12%!important;width:40px;height:78px;transform-origin:52% 87%}
+.slime-container{width:130px;height:155px;margin-bottom:2px}
+.slime-svg{filter:drop-shadow(0 4px 3px #172d3035)}
+.slime-container.is-dragon{width:155px;height:180px}
+.enemy-art{width:100%;height:100%;object-fit:contain}
+.dragon-art{filter:drop-shadow(0 4px 3px #25203944)}
+.bar-bg{width:124px;margin-top:7px}
+.bar-text{font-size:11px;color:#293d42;background:#fff9e8ed;box-shadow:0 1px 3px #30412a30}
+.player-visual:after,.slime-container:after{height:8px;bottom:0;opacity:.8}
+#hero-inspect-screen .hero-modal-box>div:first-of-type{width:124px!important;height:172px!important;border-radius:24px!important;background:linear-gradient(#f8f0db,#e8ddbc)!important;border-color:#d1b67c!important}
+#hero-inspect-screen .rpg-hero{width:114px!important;height:166px!important}
+#boss-battle-stage{background:linear-gradient(#15132999,#151329cc),url('../assets/art/stage-5-castle.webp') center/cover}
+.boss-char-container{gap:12px}.boss-enemy-svg{width:165px;height:170px;filter:none}
+.victory-dragon-art{width:100%;height:100%;object-fit:contain}
+#boss-hero-icon>.hero-base-svg{width:100%;height:100%}
+#boss-victory-card{border:2px solid #d8bf82;box-shadow:0 7px 30px #0004}
+@media(max-width:430px){
+ #battle-stage{height:310px;min-height:270px}
+ .character-layer{padding:0 17px 17px}.combatant-box{width:119px}
+ .player-visual{width:110px;height:165px}
+ #battle-hero-weapon-icon{width:35px;height:65px}
+ .slime-container{width:112px;height:135px}.slime-container.is-dragon{width:130px;height:155px}
+ .bar-bg{width:110px}.bar-text{font-size:10px}
+ .scene-caption{left:12px;top:9px;padding:5px 9px}.scene-caption strong{font-size:18px}
+ .menu-hero{left:5%;top:13%;height:200px;width:115px}
+ .battle-hint{margin-top:13px;font-size:12px}#question-box{margin-top:11px;padding:10px 8px}
+ #fruits-area{padding-top:20px}
+}
+@media(max-height:700px){
+ #battle-stage{height:265px;min-height:250px}.player-visual{height:145px;width:100px}
+ .slime-container{height:120px;width:105px}.slime-container.is-dragon{height:140px;width:120px}
+ .menu-hero{height:130px;top:8%;width:95px}
+ .selection-portrait{height:130px;width:85px}.scene-caption strong{font-size:16px}
+ .scene-caption span{font-size:9px}#battle-hero-weapon-icon{height:60px;width:33px}
+ #fruits-area{padding-top:14px;min-height:105px}.battle-hint{margin-top:7px}
+}
