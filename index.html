@@ -6,6 +6,7 @@
   <title>水果王國大冒險 - 勇者裝備與水果史萊姆冒險</title>
   <link rel="stylesheet" href="css/game.css">
   <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/illustrations.css">
 </head>
 <body>
 <div id="game-container">
@@ -26,24 +27,10 @@
   <div id="character-select" class="overlay-screen" style="display: none;">
     <h2 style="color: #2e7d32; margin-top: 0;">⚔️ 選擇你的勇者</h2>
     <div class="avatar-container">
-      <div class="avatar-card selected" id="card-boy" onclick="window.selectChar('boy')">
-        <svg class="pixel-avatar" viewBox="0 0 8 8">
-          <rect x="2" y="1" width="4" height="1" fill="#8d5524"/>
-          <rect x="2" y="2" width="4" height="3" fill="#ffdbac"/>
-          <rect x="3" y="3" width="1" height="1" fill="#000"/>
-          <rect x="5" y="3" width="1" height="1" fill="#000"/>
-          <rect x="2" y="5" width="4" height="3" fill="#00bcd4"/>
-        </svg>
+      <div class="avatar-card selected" id="card-boy" onclick="window.selectChar('boy')"><img class="selection-portrait" src="assets/art/hero-boy.webp" alt="男孩勇者：藍色冒險服與紫色披風" width="100" height="150">
         <span>男孩勇者</span>
       </div>
-      <div class="avatar-card" id="card-girl" onclick="window.selectChar('girl')">
-        <svg class="pixel-avatar" viewBox="0 0 8 8">
-          <rect x="2" y="1" width="4" height="2" fill="#e65100"/>
-          <rect x="2" y="2" width="4" height="3" fill="#ffdbac"/>
-          <rect x="3" y="3" width="1" height="1" fill="#000"/>
-          <rect x="5" y="3" width="1" height="1" fill="#000"/>
-          <rect x="2" y="5" width="4" height="3" fill="#e91e63"/>
-        </svg>
+      <div class="avatar-card" id="card-girl" onclick="window.selectChar('girl')"><img class="selection-portrait" src="assets/art/hero-girl.webp" alt="女孩勇者：藍色冒險服與紫色披風" width="100" height="150">
         <span>女孩勇者</span>
       </div>
     </div>
@@ -51,7 +38,7 @@
   </div>
 
   <!-- 2. 難度選擇畫面與主選單 -->
-  <div id="mode-select" class="overlay-screen" style="display: none;"><svg class="landscape" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#89d8f1"/><stop offset="1" stop-color="#e7f7da"/></linearGradient></defs><path fill="url(#sky)" d="M0 0H600V300H0Z"/><circle cx="475" cy="55" r="30" fill="#fff2b1"/><g fill="#fff" opacity=".8"><path d="M40 65Q40 48 60 49Q73 22 95 49Q121 44 126 65Z"/><path d="M315 40Q318 24 335 28Q350 6 367 26Q395 23 398 40Z"/></g><path d="M0 205L100 88 194 182 295 75 430 189 510 104 600 185V300H0Z" fill="#8bbbc1"/><path d="M255 120L295 75 345 125 310 114 293 126 278 112Z" fill="#edf8ed"/><path d="M0 220Q100 150 240 205T600 190V300H0Z" fill="#85bf87"/><g fill="#f8ecd0" stroke="#9cb2a0" stroke-width="2"><path d="M370 180V130H393V162H414V118H438V180Z"/><path d="M365 132L381 110 398 132ZM409 119L426 96 443 119Z" fill="#6ba2b5"/><path d="M397 180V164Q405 151 413 164V180Z" fill="#759994"/></g><path d="M0 252Q140 188 300 247T600 228V300H0Z" fill="#b5d987"/><path d="M310 300Q340 250 403 180Q375 244 378 300" fill="#f8e8aa"/><g fill="#fff8d3"><circle cx="80" cy="260" r="3"/><circle cx="100" cy="250" r="3"/><circle cx="510" cy="260" r="3"/></g></svg><div class="menu-kicker">FRUIT KINGDOM · 冒險之章</div>
+  <div id="mode-select" class="overlay-screen" style="display: none;"><svg class="landscape" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#89d8f1"/><stop offset="1" stop-color="#e7f7da"/></linearGradient></defs><path fill="url(#sky)" d="M0 0H600V300H0Z"/><circle cx="475" cy="55" r="30" fill="#fff2b1"/><g fill="#fff" opacity=".8"><path d="M40 65Q40 48 60 49Q73 22 95 49Q121 44 126 65Z"/><path d="M315 40Q318 24 335 28Q350 6 367 26Q395 23 398 40Z"/></g><path d="M0 205L100 88 194 182 295 75 430 189 510 104 600 185V300H0Z" fill="#8bbbc1"/><path d="M255 120L295 75 345 125 310 114 293 126 278 112Z" fill="#edf8ed"/><path d="M0 220Q100 150 240 205T600 190V300H0Z" fill="#85bf87"/><g fill="#f8ecd0" stroke="#9cb2a0" stroke-width="2"><path d="M370 180V130H393V162H414V118H438V180Z"/><path d="M365 132L381 110 398 132ZM409 119L426 96 443 119Z" fill="#6ba2b5"/><path d="M397 180V164Q405 151 413 164V180Z" fill="#759994"/></g><path d="M0 252Q140 188 300 247T600 228V300H0Z" fill="#b5d987"/><path d="M310 300Q340 250 403 180Q375 244 378 300" fill="#f8e8aa"/><g fill="#fff8d3"><circle cx="80" cy="260" r="3"/><circle cx="100" cy="250" r="3"/><circle cx="510" cy="260" r="3"/></g></svg><img class="scene-art" src="assets/art/stage-1-meadow.webp" alt="" width="1280" height="853" decoding="async"><div class="menu-hero rpg-hero" aria-hidden="true"><img class="hero-art-boy" src="assets/art/hero-boy.webp" alt=""><img class="hero-art-girl" src="assets/art/hero-girl.webp" alt=""></div><div class="menu-kicker">FRUIT KINGDOM · 冒險之章</div>
     <h1 style="color: #00796b; margin-top: 0; margin-bottom: 8px;">水果王國<br>大冒險</h1>
     <div style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; justify-content: center;">
       <button class="btn btn-orange" style="font-size:12px; padding:6px 12px;" onclick="window.openShop()">🏪 裝備商店</button>
@@ -136,9 +123,7 @@
       <h2 style="color: #00796b; margin: 0;">🛡️ 勇者裝備與狀態</h2>
       
       <div style="width: 100px; height: 100px; background: #e0f2f1; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 3px solid #009688;">
-        <svg class="rpg-hero" viewBox="0 0 100 100" style="width: 80px; height: 80px;">
-          <path d="M34 52L19 84 46 80 65 88 68 53" fill="#d27556"/><path d="M27 38Q23 8 50 11Q77 9 73 42" fill="#654433" class="hero-hair"/><circle cx="50" cy="35" r="18" fill="#ffdbac"/><path d="M31 28Q42 7 69 22L69 33 58 24 47 30 38 25Z" fill="#654433"/><path d="M35 53L50 48 65 53V85H35Z" fill="#38a6a9" class="hero-tunic"/><path d="M38 53L50 63 62 53M35 77H65" fill="none" stroke="#ffe5a2" stroke-width="5"/><rect x="39" y="86" width="10" height="14" rx="2" fill="#675046"/><rect x="51" y="86" width="10" height="14" rx="2" fill="#675046"/><circle cx="44" cy="35" r="2.5" fill="#26354b"/><circle cx="56" cy="35" r="2.5" fill="#26354b"/><path d="M46 43Q50 46 54 43" fill="none" stroke="#b86558" stroke-width="2"/><circle cx="30" cy="65" r="6" fill="#ffdbac"/><circle cx="70" cy="65" r="6" fill="#ffdbac"/>
-<g id="inspect-hero-armor-layer"></g>
+        <svg class="rpg-hero" viewBox="0 0 100 150" style="width: 80px; height: 80px;"><image class="hero-art-boy" href="assets/art/hero-boy.webp" x="0" y="0" width="100" height="150" preserveAspectRatio="xMidYMid meet"/><image class="hero-art-girl" href="assets/art/hero-girl.webp" x="0" y="0" width="100" height="150" preserveAspectRatio="xMidYMid meet"/><g id="inspect-hero-armor-layer"></g>
         </svg>
       </div>
 
@@ -167,9 +152,7 @@
         <span id="boss-hero-icon">👦</span>
         <span id="boss-weapon-icon" style="display:inline-flex; width:40px; height:40px;">🗡️</span>
       </div>
-      <div id="boss-enemy-char" class="boss-enemy-svg">
-        <!-- 暮星巨龍 SVG -->
-        <svg viewBox="0 0 100 100" style="width:100%; height:100%; filter: drop-shadow(0 0 12px #d500f9);"><path d="M43 50Q16 3 6 25L15 60 36 55M57 50Q84 3 94 25L85 60 64 55" fill="#7881b8" stroke="#454777" stroke-width="3"/><path d="M52 68Q76 99 82 73Q74 88 60 60" fill="#6f75ac"/><ellipse cx="50" cy="62" rx="20" ry="24" fill="#8885c2"/><ellipse cx="50" cy="65" rx="10" ry="16" fill="#ddd0e7"/><path d="M32 29L30 9 43 22M57 22L70 9 68 29" fill="#ffe5a2"/><path d="M27 31Q50 10 73 31L70 48Q50 64 30 48Z" fill="#9b91cb" stroke="#55527d" stroke-width="2"/><path d="M50 18L56 27 50 35 44 27Z" fill="#8ef0e5"/><ellipse cx="38" cy="36" rx="4" ry="6" fill="#fff3c0"/><ellipse cx="62" cy="36" rx="4" ry="6" fill="#fff3c0"/><path d="M38 44Q50 51 62 44" stroke="#55527d" fill="none" stroke-width="2"/></svg>
+      <div id="boss-enemy-char" class="boss-enemy-svg"><img class="victory-dragon-art" src="assets/art/dragon.webp" alt="暮星巨龍" width="480" height="439">
       </div>
     </div>
     <div id="boss-victory-card" style="display: none; background: #fff; color: #333; padding: 18px; border-radius: 15px; text-align: center; max-width: 85%;">
@@ -191,16 +174,15 @@
   </div>
 
   <div id="battle-stage" class="bg-grass">
-    <div class="background-layer"><svg class="landscape" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#89d8f1"/><stop offset="1" stop-color="#e7f7da"/></linearGradient></defs><path fill="url(#sky)" d="M0 0H600V300H0Z"/><circle cx="475" cy="55" r="30" fill="#fff2b1"/><g fill="#fff" opacity=".8"><path d="M40 65Q40 48 60 49Q73 22 95 49Q121 44 126 65Z"/><path d="M315 40Q318 24 335 28Q350 6 367 26Q395 23 398 40Z"/></g><path d="M0 205L100 88 194 182 295 75 430 189 510 104 600 185V300H0Z" fill="#8bbbc1"/><path d="M255 120L295 75 345 125 310 114 293 126 278 112Z" fill="#edf8ed"/><path d="M0 220Q100 150 240 205T600 190V300H0Z" fill="#85bf87"/><g fill="#f8ecd0" stroke="#9cb2a0" stroke-width="2"><path d="M370 180V130H393V162H414V118H438V180Z"/><path d="M365 132L381 110 398 132ZM409 119L426 96 443 119Z" fill="#6ba2b5"/><path d="M397 180V164Q405 151 413 164V180Z" fill="#759994"/></g><path d="M0 252Q140 188 300 247T600 228V300H0Z" fill="#b5d987"/><path d="M310 300Q340 250 403 180Q375 244 378 300" fill="#f8e8aa"/><g fill="#fff8d3"><circle cx="80" cy="260" r="3"/><circle cx="100" cy="250" r="3"/><circle cx="510" cy="260" r="3"/></g></svg></div>
+    <div class="background-layer"><svg class="landscape" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#89d8f1"/><stop offset="1" stop-color="#e7f7da"/></linearGradient></defs><path fill="url(#sky)" d="M0 0H600V300H0Z"/><circle cx="475" cy="55" r="30" fill="#fff2b1"/><g fill="#fff" opacity=".8"><path d="M40 65Q40 48 60 49Q73 22 95 49Q121 44 126 65Z"/><path d="M315 40Q318 24 335 28Q350 6 367 26Q395 23 398 40Z"/></g><path d="M0 205L100 88 194 182 295 75 430 189 510 104 600 185V300H0Z" fill="#8bbbc1"/><path d="M255 120L295 75 345 125 310 114 293 126 278 112Z" fill="#edf8ed"/><path d="M0 220Q100 150 240 205T600 190V300H0Z" fill="#85bf87"/><g fill="#f8ecd0" stroke="#9cb2a0" stroke-width="2"><path d="M370 180V130H393V162H414V118H438V180Z"/><path d="M365 132L381 110 398 132ZM409 119L426 96 443 119Z" fill="#6ba2b5"/><path d="M397 180V164Q405 151 413 164V180Z" fill="#759994"/></g><path d="M0 252Q140 188 300 247T600 228V300H0Z" fill="#b5d987"/><path d="M310 300Q340 250 403 180Q375 244 378 300" fill="#f8e8aa"/><g fill="#fff8d3"><circle cx="80" cy="260" r="3"/><circle cx="100" cy="250" r="3"/><circle cx="510" cy="260" r="3"/></g></svg><img id="battle-scene-image" class="scene-art" src="assets/art/stage-1-meadow.webp" alt="第 1 關：王國草原" width="1280" height="853" decoding="async"></div>
     <!-- 動態背景特效 -->
     <div id="stage-fx-container" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:hidden; z-index:1;"></div>
 
+    <div class="scene-caption"><span id="scene-chapter">第 1 章 · 晨光中的啟程</span><strong id="scene-name">王國草原</strong></div>
     <div id="character-layer" class="character-layer">
     <div class="combatant-box">
       <div id="player-visual-box" class="player-visual">
-        <svg class="hero-base-svg rpg-hero" viewBox="0 0 100 100">
-          <path d="M34 52L19 84 46 80 65 88 68 53" fill="#d27556"/><path d="M27 38Q23 8 50 11Q77 9 73 42" fill="#654433" class="hero-hair"/><circle cx="50" cy="35" r="18" fill="#ffdbac"/><path d="M31 28Q42 7 69 22L69 33 58 24 47 30 38 25Z" fill="#654433"/><path d="M35 53L50 48 65 53V85H35Z" fill="#38a6a9" class="hero-tunic"/><path d="M38 53L50 63 62 53M35 77H65" fill="none" stroke="#ffe5a2" stroke-width="5"/><rect x="39" y="86" width="10" height="14" rx="2" fill="#675046"/><rect x="51" y="86" width="10" height="14" rx="2" fill="#675046"/><circle cx="44" cy="35" r="2.5" fill="#26354b"/><circle cx="56" cy="35" r="2.5" fill="#26354b"/><path d="M46 43Q50 46 54 43" fill="none" stroke="#b86558" stroke-width="2"/><circle cx="30" cy="65" r="6" fill="#ffdbac"/><circle cx="70" cy="65" r="6" fill="#ffdbac"/>
-<g id="hero-armor-layer"></g>
+        <svg class="hero-base-svg rpg-hero" viewBox="0 0 100 150"><image class="hero-art-boy" href="assets/art/hero-boy.webp" x="0" y="0" width="100" height="150" preserveAspectRatio="xMidYMid meet"/><image class="hero-art-girl" href="assets/art/hero-girl.webp" x="0" y="0" width="100" height="150" preserveAspectRatio="xMidYMid meet"/><g id="hero-armor-layer"></g>
         </svg>
         <div id="battle-hero-weapon-icon" style="position: absolute; right: -12px; top: 38px; display: flex; align-items: center; justify-content: center; z-index:4;">🗡️</div>
       </div>
@@ -211,16 +193,9 @@
     <div class="combatant-box">
       <div id="slime-container" class="slime-container">
         <!-- 普通/花朵/魚類 怪物 SVG -->
-        <svg id="slime-svg-elem" class="slime-svg" viewBox="0 0 100 100">
-          <path id="slime-body-path" d="M 50 12 C 62 12, 88 42, 88 68 C 88 88, 72 92, 50 92 C 28 92, 12 88, 12 68 C 12 42, 38 12, 50 12 Z" fill="#4caf50" />
-          <ellipse cx="34" cy="31" rx="8" ry="13" transform="rotate(30 34 31)" fill="white" opacity=".45"/><ellipse cx="30" cy="69" rx="7" ry="4" fill="#ffb9c0" opacity=".65"/><ellipse cx="70" cy="69" rx="7" ry="4" fill="#ffb9c0" opacity=".65"/><circle cx="38" cy="52" r="7" fill="#ffffff" />
-          <circle cx="39" cy="52" r="3.5" fill="#000000" />
-          <circle cx="62" cy="52" r="7" fill="#ffffff" />
-          <circle cx="61" cy="52" r="3.5" fill="#000000" />
-          <path d="M 44 68 Q 50 74 56 68" stroke="#000000" stroke-width="2.5" fill="none" stroke-linecap="round" />
-        </svg>
+        <svg id="slime-svg-elem" class="slime-svg" viewBox="0 0 100 100"><image id="monster-art" href="assets/art/slime.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid meet"/></svg>
         <!-- 魔王：暮星巨龍 -->
-        <svg id="boss-svg-elem" class="slime-svg ender-dragon-float" viewBox="0 0 100 100" style="display: none; filter: drop-shadow(0 0 8px #aa00ff);"><path d="M43 50Q16 3 6 25L15 60 36 55M57 50Q84 3 94 25L85 60 64 55" fill="#7881b8" stroke="#454777" stroke-width="3"/><path d="M52 68Q76 99 82 73Q74 88 60 60" fill="#6f75ac"/><ellipse cx="50" cy="62" rx="20" ry="24" fill="#8885c2"/><ellipse cx="50" cy="65" rx="10" ry="16" fill="#ddd0e7"/><path d="M32 29L30 9 43 22M57 22L70 9 68 29" fill="#ffe5a2"/><path d="M27 31Q50 10 73 31L70 48Q50 64 30 48Z" fill="#9b91cb" stroke="#55527d" stroke-width="2"/><path d="M50 18L56 27 50 35 44 27Z" fill="#8ef0e5"/><ellipse cx="38" cy="36" rx="4" ry="6" fill="#fff3c0"/><ellipse cx="62" cy="36" rx="4" ry="6" fill="#fff3c0"/><path d="M38 44Q50 51 62 44" stroke="#55527d" fill="none" stroke-width="2"/></svg>
+        <img id="boss-svg-elem" class="enemy-art dragon-art ender-dragon-float" src="assets/art/dragon.webp" alt="暮星巨龍" width="480" height="439" style="display:none">
       </div>
       <div class="bar-bg"><div id="slime-hp-ghost" class="hp-ghost"></div><div id="slime-hp-fill" class="bar-fill-slime"></div></div>
       <div class="bar-text"><span id="enemy-title-text">史萊姆</span> HP: <span id="slime-hp-text">100/100</span></div>
@@ -235,6 +210,7 @@
 
 <script src="js/weapons.js"></script>
 <script src="js/effects.js"></script>
+<script src="js/art.js"></script>
 <script src="js/game.js"></script>
 </body>
 </html>

@@ -139,6 +139,7 @@
       if (bossBtn) bossBtn.style.display = 'block';
     }
 
+    WorldArt.apply(level, mode, player.bg);
     playerMaxHp = calculateMaxHp();
     renderArmorVisuals('hero-armor-layer');
     document.querySelectorAll('.rpg-hero').forEach(el => el.classList.toggle('girl', player.gender === 'girl'));
@@ -160,19 +161,18 @@
     if (!layer) return;
     let html = '';
 
+    const tone = slot => armorTiers[player[slot]]?.color || 'transparent';
     if (player.helmet !== 'none') {
-      html += `<path d="M 32 30 Q 50 12 68 30 L 68 36 L 32 36 Z" fill="${armorTiers[player.helmet].color}" stroke="#333" stroke-width="1.5"/>`;
+      html += `<path d="M49 24Q61 16 74 24L73 29Q61 23 50 30Z" fill="${tone('helmet')}" fill-opacity=".82" stroke="#554a45" stroke-width=".8"/><path d="M63 22L66 26 63 30 60 26Z" fill="#fff4b3"/>`;
     }
     if (player.chest !== 'none') {
-      html += `<rect x="34" y="52" width="32" height="34" rx="4" fill="${armorTiers[player.chest].color}" stroke="#333" stroke-width="1.5"/>`;
+      html += `<path d="M49 57L57 62 66 57 69 66 65 77 57 81 49 77 45 67Z" fill="${tone('chest')}" fill-opacity=".65" stroke="#554a45" stroke-width=".8"/><path d="M57 63V77M49 68L57 73 66 67" stroke="#fff7d8" fill="none" stroke-width="1"/>`;
     }
     if (player.gloves !== 'none') {
-      html += `<circle cx="30" cy="65" r="5" fill="${armorTiers[player.gloves].color}" stroke="#333"/>`;
-      html += `<circle cx="70" cy="65" r="5" fill="${armorTiers[player.gloves].color}" stroke="#333"/>`;
+      html += `<path d="M29 61L35 64 32 73 26 70Z M71 68L77 67 80 77 74 79Z" fill="${tone('gloves')}" stroke="#554a45" stroke-width="1"/>`;
     }
     if (player.boots !== 'none') {
-      html += `<rect x="39" y="86" width="10" height="14" rx="2" fill="${armorTiers[player.boots].color}" stroke="#333"/>`;
-      html += `<rect x="51" y="86" width="10" height="14" rx="2" fill="${armorTiers[player.boots].color}" stroke="#333"/>`;
+      html += `<path d="M31 119L42 121 40 138 28 139Z M65 113L76 115 78 129 66 130Z" fill="${tone('boots')}" stroke="#554a45" stroke-width="1"/><path d="M31 123L41 125M67 118L76 120" stroke="#fff7d8" stroke-width="1.5"/>`;
     }
 
     layer.innerHTML = html;
@@ -278,6 +278,7 @@
         }
       }
     }
+    WorldArt.apply(level, mode, player.bg);
     slimeHp = slimeMaxHp;
 
     document.getElementById('current-level').innerText = level;
@@ -821,7 +822,7 @@
       bossHeroIcon.replaceChildren(document.querySelector('.hero-base-svg').cloneNode(true));
       bossHeroIcon.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
       bossHeroIcon.style.width = '85px';
-      bossHeroIcon.style.height = '100px';
+      bossHeroIcon.style.height = '145px';
     }
 
     const bossWeaponBox = document.getElementById('boss-weapon-icon');

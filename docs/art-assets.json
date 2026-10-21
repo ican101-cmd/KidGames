@@ -1,0 +1,101 @@
+[
+  {
+    "id": "hero-boy",
+    "file": "assets/art/hero-boy.webp",
+    "bytes": 84262,
+    "size": [
+      427,
+      640
+    ]
+  },
+  {
+    "id": "hero-girl",
+    "file": "assets/art/hero-girl.webp",
+    "bytes": 88490,
+    "size": [
+      427,
+      640
+    ]
+  },
+  {
+    "id": "dragon",
+    "file": "assets/art/dragon.webp",
+    "bytes": 111026,
+    "size": [
+      480,
+      439
+    ]
+  },
+  {
+    "id": "slime",
+    "file": "assets/art/slime.webp",
+    "bytes": 63628,
+    "size": [
+      480,
+      439
+    ]
+  },
+  {
+    "id": "flower-spirit",
+    "file": "assets/art/flower-spirit.webp",
+    "bytes": 66136,
+    "size": [
+      480,
+      425
+    ]
+  },
+  {
+    "id": "reef-fish",
+    "file": "assets/art/reef-fish.webp",
+    "bytes": 62688,
+    "size": [
+      480,
+      320
+    ]
+  },
+  {
+    "id": "stage-1-meadow",
+    "file": "assets/art/stage-1-meadow.webp",
+    "bytes": 367136,
+    "size": [
+      1280,
+      853
+    ]
+  },
+  {
+    "id": "stage-2-forest",
+    "file": "assets/art/stage-2-forest.webp",
+    "bytes": 514728,
+    "size": [
+      1280,
+      853
+    ]
+  },
+  {
+    "id": "stage-3-coast",
+    "file": "assets/art/stage-3-coast.webp",
+    "bytes": 349636,
+    "size": [
+      1280,
+      853
+    ]
+  },
+  {
+    "id": "stage-4-canyon",
+    "file": "assets/art/stage-4-canyon.webp",
+    "bytes": 348272,
+    "size": [
+      1280,
+      853
+    ]
+  },
+  {
+    "id": "stage-5-castle",
+    "file": "assets/art/stage-5-castle.webp",
+    "bytes": 335500,
+    "size": [
+      1280,
+      853
+    ]
+  }
+]

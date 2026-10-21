@@ -1,7 +1,13 @@
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'C:/Users/USER/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 const fs=require('fs'),http=require('http'),path=require('path'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..');
-const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+decodeURI(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}fs.readFile(file,(e,data)=>{if(e){res.writeHead(404).end();return;}res.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(data);});});
+const server=http.createServer((req,res)=>{
+ const urlPath=req.url.split('?')[0].replace(/^\/KidGames(?=\/)/,'');
+ const file=path.resolve(root,'.'+decodeURI(urlPath==='/'?'/index.html':urlPath));
+ if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}
+ fs.readFile(file,(e,data)=>{if(e){res.writeHead(404).end();return;}
+ res.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':file.endsWith('.webp')?'image/webp':'text/html');res.end(data);});
+});
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const browser=await chromium.launch({headless:true,channel:process.env.TEST_BROWSER || 'msedge'});
@@ -9,7 +15,7 @@ const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+deco
  const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('dialog',d=>d.accept());
  const results=[];const record=name=>{results.push(name);console.log('PASS '+name);};
  try{
- await page.goto(`http://127.0.0.1:${server.address().port}/`);
+ await page.goto(`http://127.0.0.1:${server.address().port}/KidGames/`);
  await page.evaluate(()=>{skipIntro();selectChar('girl');confirmCharacter();});
  assert(await page.locator('.rpg-hero').first().evaluate(el=>el.classList.contains('girl')));record('new game and girl selection');
  for(const width of [375,390,430,768,1280]){
@@ -58,6 +64,28 @@ const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+deco
  await page.waitForTimeout(1900);assert.equal(await page.evaluate(()=>playerHp),80);record('boy selection and timeout counterattack');
  await page.waitForTimeout(900);
  await page.emulateMedia({reducedMotion:'reduce'});await page.evaluate(()=>{player.weapon='golden_bow';window.testAttack=checkAnswer(currentAnswer);});await page.evaluate(()=>window.testAttack);record('reduced motion combat');
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ const artAssets=JSON.parse(fs.readFileSync(path.join(root,'docs/art-assets.json')));
+ for(const asset of artAssets){const response=await page.request.get(`http://127.0.0.1:${server.address().port}/KidGames/${asset.file}`);assert.equal(response.status(),200);assert.equal(response.headers()['content-type'],'image/webp');}
+ record('all 11 illustrated assets load under GitHub Pages /KidGames/ path');
+ await page.setViewportSize({width:390,height:844});
+ for(const theme of ['green','pink','blue'])for(let sceneLevel=1;sceneLevel<=5;sceneLevel++){
+  await page.evaluate(({theme,sceneLevel})=>{player.bg=theme;player.gender='boy';player.weapon='wood_sword';for(const slot of ['helmet','chest','gloves','boots'])player[slot]='none';mode='easy';level=sceneLevel;startLevel();updateUI();clearInterval(timerInterval);},{theme,sceneLevel});
+  await page.locator('#battle-scene-image').evaluate(img=>img.decode());
+  assert.equal(await page.locator('#battle-stage').getAttribute('data-scene'),['meadow','forest','coast','canyon','castle'][sceneLevel-1]);
+  assert.equal(await page.evaluate(()=>slimeMaxHp),{green:100,pink:140,blue:160}[theme]);
+  assert.equal(await page.locator('#monster-art').getAttribute('href'),`assets/art/${{green:'slime',pink:'flower-spirit',blue:'reef-fish'}[theme]}.webp`);
+  await page.screenshot({path:`tests/illustrated-${theme}-${sceneLevel}.png`});record(`${theme} scene ${sceneLevel}: illustrated background, monster and unchanged HP multiplier`);
+ }
+ assert(await page.evaluate(()=>document.getElementById('slime-container').getAnimations().some(a=>a instanceof CSSAnimation&&a.playState==='running')));record('monster idle continues across level resets');
+ for(const width of [375,390,430,768,1280]){
+  await page.setViewportSize({width,height:width===375?667:844});
+  await page.evaluate(()=>{mode='boss';level=5;player.bg='green';startLevel();clearInterval(timerInterval);});
+  await page.locator('#battle-scene-image').evaluate(img=>img.decode());
+  const geometry=await page.evaluate(()=>{const h=document.getElementById('player-visual-box').getBoundingClientRect(),e=document.getElementById('slime-container').getBoundingClientRect(),s=document.getElementById('battle-stage').getBoundingClientRect();return{overlap:h.right>=e.left,outside:h.left<s.left||e.right>s.right||h.top<s.top||e.top<s.top,overflow:document.documentElement.scrollWidth>innerWidth};});
+  assert(!geometry.overlap&&!geometry.outside&&!geometry.overflow);
+  await page.screenshot({path:`tests/illustrated-boss-${width}.png`});record(`illustrated boss layout ${width}px`);
+ }
  assert.deepEqual(errors,[]);record('no browser runtime errors');
  fs.writeFileSync(path.join(root,'tests/results.json'),JSON.stringify({passed:results,errors},null,2));
  }finally{await browser.close();server.close();}
