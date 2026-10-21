@@ -1,0 +1,33 @@
+{
+  "passed": [
+    "new game and girl selection",
+    "menu layout 375px",
+    "menu layout 390px",
+    "menu layout 430px",
+    "menu layout 768px",
+    "menu layout 1280px",
+    "shop buy/equip all weapons, armor, backgrounds",
+    "legacy fruit_* save reload",
+    "export and import legacy JSON",
+    "reward code",
+    "wood_sword: impact timing, damage and cleanup",
+    "iron_sword: impact timing, damage and cleanup",
+    "magic_wand: impact timing, damage and cleanup",
+    "silver_spear: impact timing, damage and cleanup",
+    "golden_bow: impact timing, damage and cleanup",
+    "diamond_sword: impact timing, damage and cleanup",
+    "battle layout 375px",
+    "battle layout 390px",
+    "battle layout 430px",
+    "battle layout 768px",
+    "battle layout 1280px",
+    "wrong answer counterattack timing",
+    "monster death, rewards and boss unlock",
+    "boss hit, damage and victory",
+    "game over and retry",
+    "boy selection and timeout counterattack",
+    "reduced motion combat",
+    "no browser runtime errors"
+  ],
+  "errors": []
+}
