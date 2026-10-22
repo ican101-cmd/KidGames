@@ -150,6 +150,10 @@
     if (weaponIconBox) {
       if (weaponObj.isSvg) {
         weaponIconBox.innerHTML = weaponObj.icon;
+        const v=weaponObj.visual;
+        weaponIconBox.style.setProperty('--weapon-width',v.width+'px');
+        weaponIconBox.style.setProperty('--weapon-height',v.height+'px');
+        weaponIconBox.style.setProperty('--weapon-grip',v.grip/100);
       } else {
         weaponIconBox.innerText = weaponObj.icon;
       }
@@ -157,61 +161,8 @@
   }
 
   function renderArmorVisuals(targetLayerId) {
-    const layer = document.getElementById(targetLayerId);
-    if (!layer) return;
-    let html = '';
-
-    const tone = slot => armorTiers[player[slot]]?.color || 'transparent';
-    if (player.helmet !== 'none') {
-      html += `<path d="M49 24Q61 16 74 24L73 29Q61 23 50 30Z" fill="${tone('helmet')}" fill-opacity=".82" stroke="#554a45" stroke-width=".8"/><path d="M63 22L66 26 63 30 60 26Z" fill="#fff4b3"/>`;
-    }
-    if (player.chest !== 'none') {
-      html += `<path d="M49 57L57 62 66 57 69 66 65 77 57 81 49 77 45 67Z" fill="${tone('chest')}" fill-opacity=".65" stroke="#554a45" stroke-width=".8"/><path d="M57 63V77M49 68L57 73 66 67" stroke="#fff7d8" fill="none" stroke-width="1"/>`;
-    }
-    if (player.gloves !== 'none') {
-      html += `<path d="M29 61L35 64 32 73 26 70Z M71 68L77 67 80 77 74 79Z" fill="${tone('gloves')}" stroke="#554a45" stroke-width="1"/>`;
-    }
-    if (player.boots !== 'none') {
-      html += `<path d="M31 119L42 121 40 138 28 139Z M65 113L76 115 78 129 66 130Z" fill="${tone('boots')}" stroke="#554a45" stroke-width="1"/><path d="M31 123L41 125M67 118L76 120" stroke="#fff7d8" stroke-width="1.5"/>`;
-    }
-
-    layer.innerHTML = html;
-  }
-
-  function playWeaponSound(weaponKey) {
-    safePlayAudio(() => {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      const now = audioCtx.currentTime;
-
-      if (weaponKey === 'iron_sword') {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(600, now);
-        osc.frequency.exponentialRampToValueAtTime(150, now + 0.12);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-      } else if (weaponKey === 'magic_wand') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(523, now);
-        osc.frequency.setValueAtTime(783, now + 0.08);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-      } else if (weaponKey === 'diamond_sword' || weaponKey === 'silver_spear' || weaponKey === 'golden_bow') {
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(400, now);
-        osc.frequency.exponentialRampToValueAtTime(900, now + 0.15);
-        gain.gain.setValueAtTime(0.25, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-      } else {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(300, now);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-      }
-      osc.start(now);
-      osc.stop(now + 0.25);
-    });
+    const layer=document.getElementById(targetLayerId);
+    if(layer)layer.innerHTML=ArmorArt.render(player);
   }
 
   // 略過劇情，進入角色選擇
@@ -370,9 +321,10 @@
     if (timerInterval) clearInterval(timerInterval);
 
     document.querySelectorAll('.fruit-btn').forEach(b => b.classList.add('disabled'));
-    await WeaponAnimationSystem.enemyAttack(() => { playerHp -= 20; updateBars(); });
+    await WeaponAnimationSystem.enemyAttack(() => { playerHp -= 20; updateBars(); safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit')); });
 
     if (playerHp <= 0) {
+      safePlayAudio(()=>WeaponAudio.hero(audioCtx,'death'));
       setTimeout(() => {
         const gameOverScreen = document.getElementById('game-over-screen');
         if (gameOverScreen) gameOverScreen.style.display = 'flex';
@@ -523,7 +475,7 @@
         card.className = 'shop-card';
         card.innerHTML = `
           <div class="shop-card-left">
-            <div class="shop-icon-preview" style="background:${arm.color};">🛡️</div>
+            <div class="shop-icon-preview armor-shop-preview">${tierKey==='none'?'—':`<img src="assets/art/armor/${currentShopTab}-${tierKey}.webp" alt="${arm.name}" width="48" height="48">`}</div>
             <div>
               <div style="font-weight:bold; font-size:14px;">${arm.name} 裝備</div>
               <div style="font-size:12px; color:#666;">❤️ 血量加成: +${arm.hp} HP</div>
@@ -723,7 +675,7 @@
 
       document.querySelectorAll('.fruit-btn').forEach(b => b.classList.add('disabled'));
 
-      playWeaponSound(player.weapon);
+      safePlayAudio();
       const wObj = weapons[player.weapon] || weapons.wood_sword;
       await WeaponAnimationSystem.attack(wObj, () => { slimeHp -= wObj.dmg; updateBars(); });
 

@@ -1,0 +1,130 @@
+[
+  {
+    "slot": "helmet",
+    "tier": "iron",
+    "file": "assets/art/armor/helmet-iron.webp",
+    "width": 211,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "helmet",
+    "tier": "silver",
+    "file": "assets/art/armor/helmet-silver.webp",
+    "width": 214,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "helmet",
+    "tier": "gold",
+    "file": "assets/art/armor/helmet-gold.webp",
+    "width": 220,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "helmet",
+    "tier": "diamond",
+    "file": "assets/art/armor/helmet-diamond.webp",
+    "width": 208,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "chest",
+    "tier": "iron",
+    "file": "assets/art/armor/chest-iron.webp",
+    "width": 219,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "chest",
+    "tier": "silver",
+    "file": "assets/art/armor/chest-silver.webp",
+    "width": 221,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "chest",
+    "tier": "gold",
+    "file": "assets/art/armor/chest-gold.webp",
+    "width": 221,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "chest",
+    "tier": "diamond",
+    "file": "assets/art/armor/chest-diamond.webp",
+    "width": 218,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "gloves",
+    "tier": "iron",
+    "file": "assets/art/armor/gloves-iron.webp",
+    "width": 210,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "gloves",
+    "tier": "silver",
+    "file": "assets/art/armor/gloves-silver.webp",
+    "width": 209,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "gloves",
+    "tier": "gold",
+    "file": "assets/art/armor/gloves-gold.webp",
+    "width": 206,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "gloves",
+    "tier": "diamond",
+    "file": "assets/art/armor/gloves-diamond.webp",
+    "width": 207,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "boots",
+    "tier": "iron",
+    "file": "assets/art/armor/boots-iron.webp",
+    "width": 176,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "boots",
+    "tier": "silver",
+    "file": "assets/art/armor/boots-silver.webp",
+    "width": 176,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "boots",
+    "tier": "gold",
+    "file": "assets/art/armor/boots-gold.webp",
+    "width": 175,
+    "height": 240,
+    "alpha": true
+  },
+  {
+    "slot": "boots",
+    "tier": "diamond",
+    "file": "assets/art/armor/boots-diamond.webp",
+    "width": 174,
+    "height": 240,
+    "alpha": true
+  }
+]

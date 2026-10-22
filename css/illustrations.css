@@ -63,3 +63,19 @@
  .scene-caption span{font-size:9px}#battle-hero-weapon-icon{height:60px;width:33px}
  #fruits-area{padding-top:14px;min-height:105px}.battle-hint{margin-top:7px}
 }
+/* Equipment follows the illustrated hero's grip; the bow uses its central handle. */
+#battle-hero-weapon-icon{width:var(--weapon-width,46px)!important;height:var(--weapon-height,91px)!important;left:calc(33% - var(--weapon-width,46px) / 2)!important;top:calc(47% - var(--weapon-height,91px) * var(--weapon-grip,.85))!important;transform-origin:50% calc(var(--weapon-grip,.85) * 100%);filter:drop-shadow(1px 2px 1px #382c3a55)}
+.weapon-svg-icon{width:38px;height:55px;overflow:visible}
+.shop-card .weapon-svg-icon{width:44px;height:64px}
+#battle-hero-weapon-icon .weapon-svg-icon{width:100%;height:100%}
+#battle-hero-weapon-icon[data-attacking="cast"]{filter:drop-shadow(0 0 6px #cb98f7)}
+#battle-hero-weapon-icon[data-attacking="ultimate"]{filter:drop-shadow(0 0 6px #82e6ef)}
+#battle-hero-weapon-icon[data-attacking="bow"]{filter:drop-shadow(0 0 4px #ffe094)}
+.weapon-charge{width:34px;height:34px;border:2px solid currentColor;border-radius:50%;box-shadow:0 0 9px currentColor,inset 0 0 8px currentColor}
+.projectile.arrow{height:3px;width:64px;background:linear-gradient(90deg,transparent 0%,#fff4c1 65%,#c49437);box-shadow:-16px 0 7px #ffe7a0}
+.projectile.arrow:before{content:"";position:absolute;left:23px;top:-4px;width:12px;height:10px;background:#e0bb65;clip-path:polygon(0 0,100% 40%,100% 60%,0 100%,30% 50%)}
+@media(max-width:430px){#battle-hero-weapon-icon{width:calc(var(--weapon-width) * .84)!important;height:calc(var(--weapon-height) * .84)!important;left:calc(33% - var(--weapon-width) * .42)!important;top:calc(47% - var(--weapon-height) * .84 * var(--weapon-grip))!important}}
+@media(max-height:700px){#battle-hero-weapon-icon{width:calc(var(--weapon-width) * .76)!important;height:calc(var(--weapon-height) * .76)!important;left:calc(33% - var(--weapon-width) * .38)!important;top:calc(47% - var(--weapon-height) * .76 * var(--weapon-grip))!important}}
+.armor-art{pointer-events:none}
+.armor-shop-preview{background:linear-gradient(#fff9e9,#e8ddc3);border:1px solid #d7bd88}
+.armor-shop-preview img{width:46px;height:50px;object-fit:contain}
