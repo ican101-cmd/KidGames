@@ -22,22 +22,27 @@ const BattleEffects = (() => {
  async function death(target){await wait(90);burst(target,'ultimateHit','#fff4b0');await animate(target,[{opacity:1,filter:'brightness(2)',transform:'scale(1)'},{opacity:1,transform:'scale(1.2,.5)',offset:.4},{opacity:0,transform:'scale(.3,.1) translateY(20px)'}],{duration:560,fill:'forwards'});}
  function reset(){['player-visual-box','slime-container'].forEach(id=>document.getElementById(id).getAnimations().forEach(a=>{if(typeof CSSAnimation==='undefined'||!(a instanceof CSSAnimation))a.cancel();}));document.getElementById('effect-layer').replaceChildren();}
  function trail(target,kind,color,flip=false){const el=node(`attack-trail ${kind}`,point(target),color);ephemeral(el,[{transform:`translate(-50%,-50%) rotate(${flip?-50:35}deg) scale(.3)`,opacity:1},{transform:`translate(-50%,-50%) rotate(${flip?30:-35}deg) scale(1.3)`,opacity:0}],260);}
- async function projectile(hero,enemy,c){const from=point(hero),to=point(enemy);from.x+=30;const el=node(`projectile ${c.projectile}`,from,c.color);await ephemeral(el,[{transform:'translate(-50%,-50%)',opacity:1},{transform:`translate(${to.x-from.x}px,${to.y-from.y}px)`,opacity:1}],c.impactDelay-230);}
+ async function projectile(hero,enemy,c){const from=point(document.getElementById("battle-hero-weapon-icon")),to=point(enemy);from.y-=18;const el=node(`projectile ${c.projectile}`,from,c.color);await ephemeral(el,[{transform:'translate(-50%,-50%)',opacity:1},{transform:`translate(${to.x-from.x}px,${to.y-from.y}px)`,opacity:1}],c.impactDelay-230);}
  return{wait,animate,point,burst,damage,shake,hit,death,reset,trail,projectile,reduced};
 })();
 const WeaponAnimationSystem={
  async attack(weapon,applyDamage){
   const c=weapon.animation,fx=BattleEffects,hero=document.getElementById('player-visual-box'),enemy=document.getElementById('slime-container'),hand=document.getElementById('battle-hero-weapon-icon');
+  let impactSound=()=>{};safePlayAudio(()=>{impactSound=WeaponAudio.start(audioCtx,c);});
   const distance=fx.reduced()?0:Math.max(0,fx.point(enemy).x-fx.point(hero).x-65)*c.reach;
   const poses={slash:[0,-5,distance,distance,0],heavy:[0,-8,distance,distance,0],thrust:[0,-10,distance,0,0],cast:[0,0,0,0,0],bow:[0,0,0,0,0],ultimate:[0,-8,distance,distance,0]};
   const movement=fx.animate(hero,poses[c.type].map((x,i)=>({transform:`translateX(${x}px) scale(${i===1?.97:1})`,offset:[0,.2,c.impactDelay/c.duration,.82,1][i]})),{duration:c.duration,easing:'ease-in-out'});
-  const rotations={cast:[-20,-45,-45,0],bow:[0,-12,8,0],thrust:[-35,-60,90,0],ultimate:[0,-65,85,-75,95,0],slash:[0,-65,80,0],heavy:[0,-85,95,0]};
-  const swing=fx.animate(hand,rotations[c.type].map(r=>({transform:`rotate(${r}deg) scale(${c.type==='bow'?1.15:1})`})),{duration:c.duration});
-  if(c.projectile){fx.burst(hero,'magicHit',c.color);await fx.wait(230);await fx.projectile(hero,enemy,c);}
-  else{if(c.type==='ultimate'){fx.burst(hero,'magicHit',c.color);await fx.wait(350);fx.trail(enemy,c.effect,c.color);await fx.wait(170);fx.trail(enemy,c.effect,c.color,true);await fx.wait(c.impactDelay-520);}else await fx.wait(c.impactDelay);fx.trail(enemy,c.effect,c.color);}
-  applyDamage();fx.hit(enemy,c.hitEffect!=='smallHit');fx.shake(c.shake);fx.burst(enemy,c.hitEffect,c.color);fx.damage(enemy,weapon.dmg,{strong:weapon.dmg>=65});await Promise.all([movement,swing]);
+  hand.dataset.attacking=c.type;
+  const posesByType={slash:[[0,-12,0],[.28,-65,-4],[.53,68,8],[.76,80,4],[1,-12,0]],heavy:[[0,-18,0],[.30,-100,-7],[.50,92,10],[.72,100,6],[1,-18,0]],thrust:[[0,55,0],[.28,80,-9],[.52,90,22],[.72,90,10],[1,55,0]],cast:[[0,-12,0],[.25,-28,-8],[.50,12,-10],[.70,22,-7],[1,-12,0]],bow:[[0,0,0],[.28,-8,-4],[.42,-8,-6],[.72,5,0],[1,0,0]],ultimate:[[0,-18,0],[.24,-65,-4],[.34,75,10],[.48,-75,0],[.68,105,14],[.83,100,7],[1,-18,0]]};
+  const swing=fx.animate(hand,posesByType[c.type].map(([offset,r,x])=>({offset,transform:'translateX('+(fx.reduced()?0:x)+'px) rotate('+(fx.reduced()?r*.15:r)+'deg)'})),{duration:c.duration,easing:'ease-in-out'});
+  const string=hand.querySelector('.bow-string');
+  const draw=string?fx.animate(string,[{transform:'translateX(0)'},{transform:'translateX(-8px)',offset:.28},{transform:'translateX(-8px)',offset:230/c.duration},{transform:'translateX(2px)',offset:.42},{transform:'translateX(0)'}],{duration:c.duration}):Promise.resolve();
+  if(c.projectile){fx.burst(hand,'magicHit',c.color);await fx.wait(230);await fx.projectile(hero,enemy,c);}
+  else{if(c.type==='ultimate'){fx.burst(hand,'magicHit',c.color);await fx.wait(350);fx.trail(enemy,c.effect,c.color);await fx.wait(170);fx.trail(enemy,c.effect,c.color,true);await fx.wait(c.impactDelay-520);}else await fx.wait(c.impactDelay);fx.trail(enemy,c.effect,c.color);}
+  applyDamage();impactSound();fx.hit(enemy,c.hitEffect!=='smallHit');fx.shake(c.shake);fx.burst(enemy,c.hitEffect,c.color);fx.damage(enemy,weapon.dmg,{strong:weapon.dmg>=65});await Promise.all([movement,swing,draw]);delete hand.dataset.attacking;
  },
  async enemyAttack(applyDamage){const fx=BattleEffects,enemy=document.getElementById('slime-container'),hero=document.getElementById('player-visual-box'),d=fx.reduced()?0:Math.max(0,fx.point(enemy).x-fx.point(hero).x-50);
   const motion=fx.animate(enemy,[{transform:'translateX(0)'},{transform:'translateX(8px) scale(1.15,.8)',offset:.25},{transform:`translateX(-${d}px)`,offset:.5},{transform:'translateX(0)'}],{duration:650});await fx.wait(325);applyDamage();fx.animate(hero,[{filter:'brightness(2)',transform:'translateX(-7px)'},{filter:'brightness(1)',transform:'translateX(0)'}],{duration:300});fx.burst(hero,'smallHit','#ffb38c');fx.damage(hero,20);fx.shake('small');await motion;
  }
 };
+

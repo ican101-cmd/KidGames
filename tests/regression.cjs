@@ -16,7 +16,7 @@ const server=http.createServer((req,res)=>{
  const results=[];const record=name=>{results.push(name);console.log('PASS '+name);};
  try{
  await page.goto(`http://127.0.0.1:${server.address().port}/KidGames/`);
- await page.evaluate(()=>{skipIntro();selectChar('girl');confirmCharacter();});
+ await page.evaluate(()=>{window.heroAudioEvents=[];const original=WeaponAudio.hero;WeaponAudio.hero=(ctx,event)=>{heroAudioEvents.push({event,hp:playerHp});return original(ctx,event);};skipIntro();selectChar('girl');confirmCharacter();});
  assert(await page.locator('.rpg-hero').first().evaluate(el=>el.classList.contains('girl')));record('new game and girl selection');
  for(const width of [375,390,430,768,1280]){
   await page.setViewportSize({width,height:width===768?1024:844});
@@ -52,13 +52,13 @@ const server=http.createServer((req,res)=>{
   await page.setViewportSize({width,height:844});
   const layout=await page.evaluate(()=>{const h=document.getElementById('player-visual-box').getBoundingClientRect(),e=document.getElementById('slime-container').getBoundingClientRect();return{overlap:h.right>=e.left,overflow:document.documentElement.scrollWidth>innerWidth};});assert(!layout.overlap&&!layout.overflow);await page.screenshot({path:`tests/battle-${width}.png`});record(`battle layout ${width}px`);
  }
- await page.evaluate(()=>{startGame('medium');window.testAttack=checkAnswer(currentAnswer+100);});
- await page.waitForTimeout(500);assert.equal(await page.evaluate(()=>playerHp),100);await page.evaluate(()=>window.testAttack);await page.waitForTimeout(800);assert.equal(await page.evaluate(()=>playerHp),80);record('wrong answer counterattack timing');
+ await page.evaluate(()=>{window.heroAudioEvents=[];const original=WeaponAudio.hero;WeaponAudio.hero=(ctx,event)=>{heroAudioEvents.push({event,hp:playerHp});return original(ctx,event);};startGame('medium');window.testAttack=checkAnswer(currentAnswer+100);});
+ await page.waitForTimeout(500);assert.equal(await page.evaluate(()=>playerHp),100);await page.evaluate(()=>window.testAttack);await page.waitForTimeout(800);assert.equal(await page.evaluate(()=>playerHp),80);record('wrong answer counterattack timing');assert.deepEqual(await page.evaluate(()=>heroAudioEvents),[{event:'hit',hp:80}]);record('hero hit sound coincides with HP decrease');
  await page.evaluate(()=>{startGame('medium');player.weapon='diamond_sword';window.testAttack=checkAnswer(currentAnswer);});await page.evaluate(()=>window.testAttack);await page.waitForTimeout(600);assert(await page.locator('#level-cleared-screen').isVisible());assert(await page.evaluate(()=>player.bossUnlocked));record('monster death, rewards and boss unlock');
  await page.evaluate(()=>{document.getElementById('level-cleared-screen').style.display='none';startGame('boss');level=5;startLevel();});assert(await page.locator('#boss-svg-elem').isVisible());
  await page.evaluate(()=>{window.testAttack=checkAnswer(currentAnswer);});await page.evaluate(()=>window.testAttack);assert.equal(await page.evaluate(()=>slimeHp),100);
  await page.waitForTimeout(700);await page.evaluate(()=>{window.testAttack=checkAnswer(currentAnswer);});await page.evaluate(()=>window.testAttack);await page.waitForTimeout(2900);assert(await page.locator('#boss-victory-card').isVisible());record('boss hit, damage and victory');
- await page.evaluate(()=>{closeBossStage();startGame('easy');playerHp=20;window.testAttack=handleMonsterAttack();});await page.evaluate(()=>window.testAttack);await page.waitForTimeout(550);assert(await page.locator('#game-over-screen').isVisible());await page.evaluate(()=>retryCurrentLevel());assert.equal(await page.evaluate(()=>playerHp),100);record('game over and retry');
+ await page.evaluate(()=>{closeBossStage();startGame('easy');playerHp=20;window.testAttack=handleMonsterAttack();});await page.evaluate(()=>window.testAttack);await page.waitForTimeout(550);assert(await page.locator('#game-over-screen').isVisible());await page.evaluate(()=>retryCurrentLevel());assert.equal(await page.evaluate(()=>playerHp),100);record('game over and retry');assert.deepEqual(await page.evaluate(()=>heroAudioEvents.slice(-2)),[{event:'hit',hp:0},{event:'death',hp:0}]);record('lethal hit plays one impact followed by one defeat sound');
  await page.evaluate(()=>{selectChar('boy');confirmCharacter();startGame('easy');timeLeft=1;});
  assert.equal(await page.locator('.rpg-hero').first().evaluate(el=>el.classList.contains('girl')),false);
  await page.waitForTimeout(1900);assert.equal(await page.evaluate(()=>playerHp),80);record('boy selection and timeout counterattack');
@@ -77,6 +77,13 @@ const server=http.createServer((req,res)=>{
   assert.equal(await page.locator('#monster-art').getAttribute('href'),`assets/art/${{green:'slime',pink:'flower-spirit',blue:'reef-fish'}[theme]}.webp`);
   await page.screenshot({path:`tests/illustrated-${theme}-${sceneLevel}.png`});record(`${theme} scene ${sceneLevel}: illustrated background, monster and unchanged HP multiplier`);
  }
+ for(const width of [375,390,430,768,1280])for(const id of await page.evaluate(()=>Object.keys(weapons))){
+ await page.setViewportSize({width,height:width===375?667:844});
+ await page.evaluate(id=>{player.weapon=id;mode='easy';level=1;startLevel();updateUI();clearInterval(timerInterval);},id);
+ const ok=await page.locator('#battle-hero-weapon-icon').evaluate(el=>{const r=el.getBoundingClientRect(),s=document.getElementById('battle-stage').getBoundingClientRect();return r.left>=s.left&&r.right<=s.right&&r.top>=s.top&&r.bottom<=s.bottom&&!!el.querySelector('svg path');});assert(ok,id+' fits '+width);
+ if(width===390)await page.screenshot({path:'tests/weapon-'+id+'.png'});
+ }
+ record('six detailed weapons fit five viewport sizes');
  assert(await page.evaluate(()=>document.getElementById('slime-container').getAnimations().some(a=>a instanceof CSSAnimation&&a.playState==='running')));record('monster idle continues across level resets');
  for(const width of [375,390,430,768,1280]){
   await page.setViewportSize({width,height:width===375?667:844});
