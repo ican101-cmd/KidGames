@@ -8,21 +8,17 @@
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/illustrations.css">
   <link rel="stylesheet" href="css/adventure.css"><link rel="stylesheet" href="css/expedition.css">
+<link rel="stylesheet" href="css/leaderboard.css">
+<link rel="stylesheet" href="css/intro.css">
 </head>
 <body>
 <div id="game-container">
   <!-- 0. 劇情 Intro 畫面 -->
-  <div id="intro-screen" class="overlay-screen" onclick="window.skipIntro()">
-    <div class="intro-text-container">
-      <div class="intro-line">某一天，出現了一條邪惡巨龍!!</div>
-      <div class="intro-line">水果王國就這樣被佔領了~</div>
-      <div class="intro-line">身為勇者的你踏上旅途~</div>
-      <div class="intro-line">打敗巨龍 拯救王國!!!!!</div>
-    </div>
-    <div style="position: absolute; bottom: 30px; font-size: 14px; color: #94a3b8; animation: pulse 2s infinite;">
-      ( 點擊任意處跳過劇情 ➔ )
-    </div>
-  </div>
+  <section id="intro-screen" class="overlay-screen" aria-label="水果王國故事序章">
+    <header class="prologue-header"><div><small>FRUIT KINGDOM · PROLOGUE</small><strong>水果王國大冒險</strong></div><button class="story-skip" onclick="skipIntro()">跳過序章 ↗</button></header>
+    <div id="prologue-scenes" aria-live="polite"><article class="prologue-scene" data-story-scene="0" ><img class="story-landscape" src="assets/art/stage-1-meadow.webp" alt="" width="1280" height="853"><div class="story-illustration" aria-hidden="true"><div class="story-sunbeam"></div><span class="story-location">王國草原 · 冒險開始的地方</span></div><div class="story-caption"><span class="story-chapter">01 · 晨光</span><h1>果香與鐘聲的王國</h1><p>在群山與碧海之間，有一座飄著果香的王國。清晨的鐘聲響起，果園甦醒，每個人都期待著平安的一天。</p></div></article><article class="prologue-scene" data-story-scene="1" hidden><img class="story-landscape" src="assets/art/stage-5-castle.webp" alt="" width="1280" height="853"><div class="story-illustration" aria-hidden="true"><img class="story-dragon" src="assets/art/dragon.webp" alt="" width="480" height="439"><span class="story-location">星月龍堡 · 巨龍的巢穴</span></div><div class="story-caption"><span class="story-chapter">02 · 變故</span><h1>龍堡上空的神祕身影</h1><p>直到暮星巨龍盤踞星月龍堡，通往城堡的道路出現了怪物。熟悉的風景變得陌生，王國正等待有人重新點亮希望。</p></div></article><article class="prologue-scene" data-story-scene="2" hidden><img class="story-landscape" src="assets/art/stage-2-forest.webp" alt="" width="1280" height="853"><div class="story-illustration" aria-hidden="true"><img class="story-hero story-boy" src="assets/art/hero-boy.webp" alt="" width="427" height="640"><img class="story-hero story-girl" src="assets/art/hero-girl.webp" alt="" width="427" height="640"><span class="story-location">古木森林 · 勇者的第一步</span></div><div class="story-caption"><span class="story-chapter">03 · 啟程</span><h1>讓答案，化作勇氣</h1><p>你帶上武器，踏上穿越森林與遺跡的旅途。每答對一道題目，就能揮出一擊；每一次思考，都讓勇者向前一步。</p></div></article><article class="prologue-scene" data-story-scene="3" hidden><img class="story-landscape" src="assets/art/stage-1-meadow.webp" alt="" width="1280" height="853"><div class="story-illustration" aria-hidden="true"><div class="story-crest" aria-hidden="true">✦</div><span class="story-location">從一道題目，開始一場大冒險</span></div><div class="story-caption"><span class="story-chapter">04 · 約定</span><h1>這一次，由你寫下傳說</h1><p>準備裝備、迎戰守衛，向巨龍所在的城堡前進吧！當王國再次迎來晨光，更遙遠的世界，也將為你展開。</p></div></article></div>
+    <footer class="prologue-footer"><div class="story-navigation"><button id="story-previous" aria-label="上一段故事">←</button><nav aria-label="序章段落"><button data-story-page="0" aria-label="第 1 段：果香與鐘聲的王國" aria-current="step">1</button><button data-story-page="1" aria-label="第 2 段：龍堡上空的神祕身影" >2</button><button data-story-page="2" aria-label="第 3 段：讓答案，化作勇氣" >3</button><button data-story-page="3" aria-label="第 4 段：這一次，由你寫下傳說" >4</button></nav><button id="story-pause">暫停播放</button></div><button id="story-next" class="btn story-next">翻開下一頁 →</button><small id="story-help">故事會自動翻頁，也可以按下一頁</small></footer>
+  </section>
 
   <!-- 1. 角色選擇畫面 -->
   <div id="character-select" class="overlay-screen" style="display: none;">
@@ -52,9 +48,11 @@
       <input type="file" id="import-file-input" style="display:none;" accept=".json" onchange="window.importSaveFile(event)">
     </div>
     <div style="display: flex; flex-direction: column; gap: 10px; width: 85%;">
-      <button class="btn btn-purple" onclick="Expedition.open()">🧭 冒險遠征 · 世界地圖</button><button class="btn btn-green" onclick="window.startGame('easy')">普通 (個位數加減)</button>
+      <button class="btn btn-green" onclick="window.startGame('easy')">普通 (個位數加減)</button>
       <button class="btn btn-orange" onclick="window.startGame('medium')">中等 (11-20 加減)</button>
       <button id="btn-boss" class="btn btn-purple" style="display: none;" onclick="window.startGame('boss')">👹 魔王難度 (雙位數挑戰)</button>
+      <button id="btn-expedition" class="btn btn-purple" onclick="Expedition.open()" disabled title="擊敗魔王難度最後一關的巨龍後解鎖">冒險遠征 [封印狀態]</button>
+      <button class="btn btn-blue" onclick="Leaderboard.open()">🏆 遠征排行榜</button>
     </div>
   </div>
 
@@ -215,6 +213,15 @@
   <div id="question-box" aria-live="polite">? + ? = ?</div>
   <div id="fruits-area"></div>
   <div class="ultimate-controls"><button id="ultimate-button" class="btn ultimate-button" onclick="activateUltimate()" disabled><svg class="ultimate-sigil" viewBox="0 0 56 56" aria-hidden="true"><path d="M28 3 48 12 45 34 28 51 11 34 8 12Z" fill="#263d55" stroke="#efd28c" stroke-width="2"/><path d="m13 40 26-29 6-1-1 6-28 27Z" fill="#e3f8ef" stroke="#614c43" stroke-width="1.4"/><path d="m15 29 12 12-4 3-11-11Z" fill="#e4b96d" stroke="#72503c"/><path d="m12 39-5 6 4 4 6-6" fill="#98744e" stroke="#f7db93"/><path d="m28 17 9 11-9 12-9-12Z" fill="#65d8d5" stroke="#f6dfa3" stroke-width="2"/><path d="m28 20 0 15-6-7Z" fill="#d1fff1"/><path d="M14 12h5m18 0h5M26 7h4" stroke="#ffe7b3" stroke-width="1.5"/></svg><span class="ultimate-button-copy"><span class="ultimate-button-title">啟動必殺題</span><small id="ultimate-button-hint">三數連加 · 答對傷害 ×2</small></span></button></div>
+<section id="leaderboard-screen" hidden aria-labelledby="leaderboard-title">
+<header><div><small>FRUIT KINGDOM · COMMUNITY</small><h2 id="leaderboard-title">遠征排行榜</h2></div><button id="leaderboard-close" class="btn btn-blue">返回</button></header>
+<p class="board-disclosure">社群榜 · 基礎檢核。通關時間越短排名越高，同時間比較正確率及剩餘 HP。難度與路線分榜；武器與終點 Boss 可能不同。</p>
+<div class="board-filters"><label>難度<select id="leaderboard-difficulty"><option value="easy">初階</option><option value="medium">中階</option><option value="boss">進階</option></select></label><label>路線<select id="leaderboard-route"><option value="safe">安全補給</option><option value="risk">寶箱菁英</option></select></label></div>
+<label class="board-consent"><input type="checkbox" id="leaderboard-optin"><span>為新遠征啟用網路紀錄。包含切換頁面與返回選單的時間；斷線會影響排行榜資格，離線遊戲照常。</span></label>
+<button class="btn btn-blue" id="leaderboard-refresh">重新整理排行榜</button><p id="leaderboard-status" role="status" aria-live="polite"></p><ol id="leaderboard-rows"></ol>
+<div id="leaderboard-submit" hidden><h3>最近一次通關</h3><p id="leaderboard-result"></p><label>遊戲暱稱<input id="leaderboard-nickname" type="text" maxlength="12" autocomplete="off" placeholder="例如：蘋果小勇者"></label><p id="leaderboard-note"></p><button id="leaderboard-submit-button" class="btn btn-orange">提交成績</button></div>
+<p class="board-disclosure">匿名身分只保存在此瀏覽器，無需真名、電話或電子郵件。請勿在暱稱填入個人資料。換裝置或清除網站資料會視為另一位玩家。只有主動提交的戰績會出現在榜上。</p>
+</section>
 <section id="expedition-screen" hidden aria-labelledby="expedition-title"><header><div><small>FRUIT KINGDOM · EXPEDITION</small><h2 id="expedition-title">冒險遠征</h2><p id="expedition-progress" role="status"></p></div><button class="btn btn-blue" data-action="close">回選單</button></header><div class="exp-scroll"><div class="exp-map"><img src="assets/art/expedition-world.webp" width="900" height="1350" alt="手繪水果王國地圖：南方草原、古木森林、碧海遺跡、夕照峽谷及北方星月龍堡"><div id="expedition-route"></div></div><div id="expedition-content" aria-live="polite"></div></div></section></div>
 <script src="js/weapons.js"></script>
 <script src="js/audio.js"></script>
@@ -225,6 +232,7 @@
 <script src="js/meteors.js"></script>
 <script src="js/boss-specials.js"></script>
 <script src="js/adventure.js"></script>
-<script src="js/expedition.js"></script><script src="js/game.js"></script>
+<script src="js/leaderboard-config.js"></script><script src="js/leaderboard.js"></script><script src="js/expedition.js"></script><script src="js/game.js"></script>
+<script src="js/intro.js"></script>
 </body>
 </html>
