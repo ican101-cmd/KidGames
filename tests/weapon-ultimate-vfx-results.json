@@ -1,0 +1,19 @@
+{
+  "passed": [
+    "wood_sword unique VFX, impact damage and cleanup",
+    "iron_sword unique VFX, impact damage and cleanup",
+    "magic_wand unique VFX, impact damage and cleanup",
+    "silver_spear unique VFX, impact damage and cleanup",
+    "golden_bow unique VFX, impact damage and cleanup",
+    "diamond_sword unique VFX, impact damage and cleanup",
+    "ultimate VFX keeps viewport width 375",
+    "ultimate VFX keeps viewport width 390",
+    "ultimate VFX keeps viewport width 430",
+    "ultimate VFX keeps viewport width 768",
+    "ultimate VFX keeps viewport width 1280",
+    "retry cancels active aura traces and ghosts without stale impact",
+    "reduced motion removes travel particles and ghosts while keeping damage",
+    "no runtime errors"
+  ],
+  "errors": []
+}

@@ -32,7 +32,7 @@ const server=http.createServer((req,res)=>{
  await page.evaluate(()=>{for(const slot of ['helmet','chest','gloves','boots'])buyArmor(slot,'diamond');buyBg('pink');buyBg('blue');buyBg('green');closeShop();});
  assert.equal(await page.evaluate(()=>calculateMaxHp()),100);record('shop buy/equip all weapons, armor, backgrounds');
  const keys=await page.evaluate(()=>Object.keys(localStorage).filter(k=>k.startsWith('fruit_')).sort());
- assert.equal(keys.length,14);
+ assert.equal(keys.length,15);
  await page.reload();assert.equal(await page.evaluate(()=>player.weapon),'diamond_sword');assert.equal(await page.evaluate(()=>player.helmet),'diamond');record('legacy fruit_* save reload');
  await page.evaluate(()=>{skipIntro();confirmCharacter();});
  const downloadPromise=page.waitForEvent('download');await page.evaluate(()=>exportSaveFile());const download=await downloadPromise;await download.saveAs(path.join(root,'tests/export.json'));
@@ -73,9 +73,9 @@ const server=http.createServer((req,res)=>{
   await page.evaluate(({theme,sceneLevel})=>{player.bg=theme;player.gender='boy';player.weapon='wood_sword';for(const slot of ['helmet','chest','gloves','boots'])player[slot]='none';mode='easy';level=sceneLevel;startLevel();updateUI();clearInterval(timerInterval);},{theme,sceneLevel});
   await page.locator('#battle-scene-image').evaluate(img=>img.decode());
   assert.equal(await page.locator('#battle-stage').getAttribute('data-scene'),['meadow','forest','coast','canyon','castle'][sceneLevel-1]);
-  assert.equal(await page.evaluate(()=>slimeMaxHp),{green:100,pink:140,blue:160}[theme]);
+  assert.equal(await page.evaluate(()=>slimeMaxHp),{green:100,pink:140,blue:160}[theme]*(sceneLevel===5?1.5:1));
   assert.equal(await page.locator('#monster-art').getAttribute('href'),`assets/art/${{green:'slime',pink:'flower-spirit',blue:'reef-fish'}[theme]}.webp`);
-  await page.screenshot({path:`tests/illustrated-${theme}-${sceneLevel}.png`});record(`${theme} scene ${sceneLevel}: illustrated background, monster and unchanged HP multiplier`);
+  await page.screenshot({path:`tests/illustrated-${theme}-${sceneLevel}.png`});record(`${theme} scene ${sceneLevel}: illustrated background, monster and theme HP multiplier with chapter Boss`);
  }
  for(const width of [375,390,430,768,1280])for(const id of await page.evaluate(()=>Object.keys(weapons))){
  await page.setViewportSize({width,height:width===375?667:844});

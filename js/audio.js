@@ -58,5 +58,17 @@ const WeaponAudio=(()=>{
   }
   setTimeout(()=>out.disconnect(),event==='death'?1100:400);
  }
- return{start,profiles,hero};
+ function bossAttack(ctx,kind){
+  if(!ctx||ctx.state==='closed')return;const out=ctx.createGain();out.gain.value=.5;out.connect(ctx.destination);const t=ctx.currentTime;
+  if(kind==='easy'){voice(ctx,out,t,.24,.16,180,75,'sine');voice(ctx,out,t+.08,.16,.08,360,170,'triangle');}
+  else if(kind==='medium'){voice(ctx,out,t,.35,.16,800,160,'noise');voice(ctx,out,t,.28,.18,95,42,'sine');}
+  else voice(ctx,out,t,.24,.1,400,95,'noise');setTimeout(()=>out.disconnect(),650);
+ }
+ function bossSkill(ctx,kind,cue){
+  if(!ctx||ctx.state==='closed')return;const out=ctx.createGain();out.gain.value=.45;out.connect(ctx.destination);const t=ctx.currentTime;
+  if(kind==='easy'){const f=cue==='charge'?180:420;voice(ctx,out,t,.22,.18,f,cue==='charge'?300:120,'sine');voice(ctx,out,t+.04,.12,.07,f*2,220,'triangle');}
+  else{voice(ctx,out,t,cue==='charge'?.4:.3,.19,cue==='charge'?650:1800,180,'noise');voice(ctx,out,t,.18,.14,100,45,'sine');}
+  setTimeout(()=>out.disconnect(),650);
+ }
+ return{start,profiles,hero,bossAttack,bossSkill};
 })();

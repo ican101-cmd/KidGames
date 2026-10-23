@@ -45,3 +45,13 @@ Validation: tests/armor.cjs checks 16 asset URLs and alpha metadata, both gender
 all tiers, unequipped state, mixed-tier inspector, legacy save reload and HP.
 Gameplay regression checks include five viewport sizes and Boss battles.
 Real-device and deployed-site verification remain outstanding.
+
+## Boot pose correction
+The far foot points right, but the generated single boot points left. Boot
+placements now include an optional horizontal mirror about their own center.
+Near and far boots retain independent width/height/position for each hero.
+The shared SVG coordinates apply equally to battle, inspection and Boss clones.
+The original painted leather remains beneath the armor; no character pixels or
+save data are altered. tests/armor.cjs checks all four tiers and both genders,
+opposite orientation, and stage containment at 375/390/430/768/1280 pixels.
+Comparison screenshot: tests/boot-alignment-comparison.png (original/before/fixed).
