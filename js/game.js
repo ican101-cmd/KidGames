@@ -169,6 +169,11 @@
       if (bossBtn) bossBtn.style.display = 'block';
     }
 
+    const expeditionButton=document.getElementById('btn-expedition');
+    const expeditionUnlocked=(player.adventure?.boss?.[4]||0)>0;
+    expeditionButton.disabled=!expeditionUnlocked;
+    expeditionButton.textContent=expeditionUnlocked?'🧭 冒險遠征 · 世界地圖':'冒險遠征 [封印狀態]';
+    expeditionButton.title=expeditionUnlocked?'開始冒險遠征':'擊敗魔王難度最後一關的巨龍後解鎖';
     WorldArt.apply(level, mode, player.bg);
     Adventure.scene(level,Expedition.bossMode(mode)==='boss'&&level===5);
     playerMaxHp = calculateMaxHp();
@@ -198,6 +203,7 @@
 
   // 略過劇情，進入角色選擇
   window.skipIntro = function() {
+    window.StoryIntro?.stop();
     safePlayAudio();
     const introScreen = document.getElementById('intro-screen');
     const charSelect = document.getElementById('character-select');
@@ -205,14 +211,7 @@
     if (charSelect) charSelect.style.display = 'flex';
   };
 
-  setTimeout(() => {
-    const introScreen = document.getElementById('intro-screen');
-    const charSelect = document.getElementById('character-select');
-    if (introScreen && introScreen.style.display !== 'none') {
-      introScreen.style.display = 'none';
-      if (charSelect) charSelect.style.display = 'flex';
-    }
-  }, 13200);
+
 
   function startLevel() {
     stopBattle();battleActive=true;
@@ -266,8 +265,9 @@
     }
     WorldArt.apply(level, mode, player.bg);
     Adventure.scene(level,Expedition.bossMode(mode)==='boss'&&level===5);
-    if(Expedition.active&&(Expedition.run.step===6||Expedition.run.step===4&&Expedition.run.branch==="risk"))slimeMaxHp=Math.round(slimeMaxHp*1.25);
+    if(Expedition.active&&(Expedition.isElite()||Expedition.run.step===7))slimeMaxHp=Math.round(slimeMaxHp*1.5);
     slimeHp = slimeMaxHp;
+    if(Expedition.active){document.getElementById("scene-chapter").textContent="冒險遠征 · "+Expedition.battleLabel();document.getElementById("exp-return").textContent="🧭 "+Expedition.battleLabel()+" · 返回地圖";}
 
     document.getElementById('current-level').innerText = level;
     updateBars();
@@ -376,7 +376,7 @@
 
     document.querySelectorAll('.fruit-btn').forEach(b => b.classList.add('disabled'));
     document.getElementById('ultimate-button').disabled=true;
-    Adventure.answer(false);
+    Adventure.answer(false);Expedition.recordAnswer(false);
     if(Adventure.bossFor(mode,level))safePlayAudio(()=>WeaponAudio.bossAttack(audioCtx,Expedition.bossMode(mode)));
     await WeaponAnimationSystem.enemyAttack(() => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;const damage=Expedition.damage(20);playerHp = Math.max(0,playerHp-damage); updateBars(); safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));return damage; },Adventure.enemyProfile(level,Expedition.bossMode(mode)==='boss'&&level===5));
 
@@ -734,7 +734,7 @@
       safePlayAudio();
       const baseWeapon=weapons[player.weapon]||weapons.wood_sword;
       const wObj={...baseWeapon,dmg:empowered?baseWeapon.dmg*2:baseWeapon.dmg+(Expedition.has("hunter")?5:0)};
-      Adventure.answer(true);
+      Adventure.answer(true);Expedition.recordAnswer(true);
       await WeaponAnimationSystem.attack(wObj, () => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;slimeHp -= wObj.dmg;if(empowered&&Expedition.has("focus"))playerHp=Math.min(playerMaxHp,playerHp+3);if(slimeHp<=0){BossMeteors.stop();BossSpecials.stop();} updateBars(); Adventure.phase(slimeHp,slimeMaxHp,Expedition.bossMode(mode)==='boss'&&level===5); },{empowered});
 
       if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;
