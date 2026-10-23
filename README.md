@@ -67,3 +67,13 @@ node tests/armor.cjs 和 node tests/audio.cjs。
 
 ## 手繪冒險遠征
 通關巨龍後，從主選單進入七站手繪世界地圖；包含岔路、精英、營火、臨時能力與進度續玩。詳見 docs/expedition-implementation.md。
+
+遠征普通戰鬥站連續三波，主角 HP 不重置，清完整站才給能力；菁英及終點 Boss 為單隻、HP ×1.5。
+
+## 遠征網路排行榜（待設定後端）
+第一版支援匿名暱稱、六個分榜及每人最佳成績。先依 docs/leaderboard-setup.md 建立 Supabase、執行 backend/leaderboard.sql，再填 js/leaderboard-config.js。空白設定保持離線遊戲可玩，不代表排行榜已上線。
+
+
+## 繪本式序章
+四段王國故事搭配原創場景與角色美術，支援翻頁、暫停、跳過與減少動態；最後由玩家按出發進入角色選擇。詳見 docs/storybook-prologue.md。
+
