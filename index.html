@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/adventure.css"><link rel="stylesheet" href="css/expedition.css">
 <link rel="stylesheet" href="css/leaderboard.css">
 <link rel="stylesheet" href="css/intro.css">
+<link rel="stylesheet" href="css/chests.css">
 </head>
 <body>
 <div id="game-container">
@@ -214,13 +215,15 @@
   <div id="fruits-area"></div>
   <div class="ultimate-controls"><button id="ultimate-button" class="btn ultimate-button" onclick="activateUltimate()" disabled><svg class="ultimate-sigil" viewBox="0 0 56 56" aria-hidden="true"><path d="M28 3 48 12 45 34 28 51 11 34 8 12Z" fill="#263d55" stroke="#efd28c" stroke-width="2"/><path d="m13 40 26-29 6-1-1 6-28 27Z" fill="#e3f8ef" stroke="#614c43" stroke-width="1.4"/><path d="m15 29 12 12-4 3-11-11Z" fill="#e4b96d" stroke="#72503c"/><path d="m12 39-5 6 4 4 6-6" fill="#98744e" stroke="#f7db93"/><path d="m28 17 9 11-9 12-9-12Z" fill="#65d8d5" stroke="#f6dfa3" stroke-width="2"/><path d="m28 20 0 15-6-7Z" fill="#d1fff1"/><path d="M14 12h5m18 0h5M26 7h4" stroke="#ffe7b3" stroke-width="1.5"/></svg><span class="ultimate-button-copy"><span class="ultimate-button-title">啟動必殺題</span><small id="ultimate-button-hint">三數連加 · 答對傷害 ×2</small></span></button></div>
 <section id="leaderboard-screen" hidden aria-labelledby="leaderboard-title">
-<header><div><small>FRUIT KINGDOM · COMMUNITY</small><h2 id="leaderboard-title">遠征排行榜</h2></div><button id="leaderboard-close" class="btn btn-blue">返回</button></header>
-<p class="board-disclosure">社群榜 · 基礎檢核。通關時間越短排名越高，同時間比較正確率及剩餘 HP。難度與路線分榜；武器與終點 Boss 可能不同。</p>
-<div class="board-filters"><label>難度<select id="leaderboard-difficulty"><option value="easy">初階</option><option value="medium">中階</option><option value="boss">進階</option></select></label><label>路線<select id="leaderboard-route"><option value="safe">安全補給</option><option value="risk">寶箱菁英</option></select></label></div>
-<label class="board-consent"><input type="checkbox" id="leaderboard-optin"><span>為新遠征啟用網路紀錄。包含切換頁面與返回選單的時間；斷線會影響排行榜資格，離線遊戲照常。</span></label>
-<button class="btn btn-blue" id="leaderboard-refresh">重新整理排行榜</button><p id="leaderboard-status" role="status" aria-live="polite"></p><ol id="leaderboard-rows"></ol>
-<div id="leaderboard-submit" hidden><h3>最近一次通關</h3><p id="leaderboard-result"></p><label>遊戲暱稱<input id="leaderboard-nickname" type="text" maxlength="12" autocomplete="off" placeholder="例如：蘋果小勇者"></label><p id="leaderboard-note"></p><button id="leaderboard-submit-button" class="btn btn-orange">提交成績</button></div>
-<p class="board-disclosure">匿名身分只保存在此瀏覽器，無需真名、電話或電子郵件。請勿在暱稱填入個人資料。換裝置或清除網站資料會視為另一位玩家。只有主動提交的戰績會出現在榜上。</p>
+<header><div><small>FRUIT KINGDOM · HALL OF HONOR</small><h2 id="leaderboard-title">勇者功勳榜</h2></div><button id="leaderboard-close" class="btn btn-blue">返回</button></header>
+<div class="board-story-banner"><img class="board-hall-landscape" src="assets/art/stage-5-castle.webp" alt="" width="1280" height="853"><div class="board-hall-copy"><span>王國公會 · 榮耀之廳</span><h3>讓勇氣，留下名字。</h3><p>遠征歸來的旅人啊，<br>你的冒險，將被記錄在這裡。</p><button id="board-register-link" class="board-register-link">登錄我的冒險 ↗</button></div><img id="board-banner-hero" src="assets/art/hero-boy.webp" alt="" width="427" height="640"><div class="board-hall-seal" aria-hidden="true">✦</div></div>
+<div class="board-paper"><div class="board-filters"><label>選擇冒險篇章<select id="leaderboard-difficulty" aria-label="難度"><option value="easy">初階 · 晨光之章</option><option value="medium">中階 · 試煉之章</option><option value="boss">進階 · 傳說之章</option></select></label><button class="btn btn-blue" id="leaderboard-refresh">重新整理排行榜</button></div>
+<div class="board-roster-heading"><h3>遠征名冊</h3><span>每位勇者 · 最佳戰績</span></div><p id="leaderboard-status" role="status" aria-live="polite"></p><ol id="leaderboard-rows" aria-label="勇者排名"></ol>
+<div class="board-empty"><svg viewBox="0 0 140 90" aria-hidden="true"><path d="M12 18q28-15 58 0 30-15 58 0v57q-30-15-58 0-30-15-58 0Z" fill="#f5e3b1" stroke="#997a48" stroke-width="3"/><path d="M70 18v57M24 30h30m-30 11h30m-30 11h22m40-22h30m-30 11h30m-30 11h22" fill="none" stroke="#bda570" stroke-width="2"/><path d="m70 0 3 7 7 3-7 3-3 7-3-7-7-3 7-3Z" fill="#ddbb65"/></svg><h3>功勳冊，尚待書寫</h3><p>完成一次遠征，為這段傳說寫下第一個名字。</p></div>
+<div class="board-registration" id="board-registration"><span class="board-section-kicker">ADVENTURER REGISTRY</span><h3>向公會登錄你的冒險</h3><label class="board-consent"><input type="checkbox" id="leaderboard-optin"><span>為新遠征啟用網路紀錄。包含切換頁面與返回選單的時間；斷線會影響排行榜資格，離線遊戲照常。</span></label>
+<div id="leaderboard-submit" hidden><h3>你的遠征戰報</h3><p id="leaderboard-result"></p><label>遊戲暱稱<input id="leaderboard-nickname" type="text" maxlength="12" autocomplete="off" placeholder="例如：蘋果小勇者"></label><p id="leaderboard-note"></p><button id="leaderboard-submit-button" class="btn btn-orange">提交成績</button></div></div>
+<details class="board-rules"><summary>公會告示 · 排名規則與隱私</summary><p class="board-disclosure">社群榜 · 基礎檢核。通關時間越短排名越高，同時間比較正確率及剩餘 HP。依初階／中階／進階分榜，每人每個難度只取最佳成績；武器與終點 Boss 可能不同。</p><p class="board-disclosure">匿名身分只保存在此瀏覽器，無需真名、電話或電子郵件。請勿在暱稱填入個人資料。換裝置或清除網站資料會視為另一位玩家。只有主動提交的戰績會出現在榜上。</p></details>
+<p class="board-footer-motto" aria-hidden="true">✦ 每一次思考，都是勇者向前的一步 ✦</p></div>
 </section>
 <section id="expedition-screen" hidden aria-labelledby="expedition-title"><header><div><small>FRUIT KINGDOM · EXPEDITION</small><h2 id="expedition-title">冒險遠征</h2><p id="expedition-progress" role="status"></p></div><button class="btn btn-blue" data-action="close">回選單</button></header><div class="exp-scroll"><div class="exp-map"><img src="assets/art/expedition-world.webp" width="900" height="1350" alt="手繪水果王國地圖：南方草原、古木森林、碧海遺跡、夕照峽谷及北方星月龍堡"><div id="expedition-route"></div></div><div id="expedition-content" aria-live="polite"></div></div></section></div>
 <script src="js/weapons.js"></script>
@@ -232,7 +235,7 @@
 <script src="js/meteors.js"></script>
 <script src="js/boss-specials.js"></script>
 <script src="js/adventure.js"></script>
-<script src="js/leaderboard-config.js"></script><script src="js/leaderboard.js"></script><script src="js/expedition.js"></script><script src="js/game.js"></script>
+<script src="js/leaderboard-config.js"></script><script src="js/leaderboard.js"></script><script src="js/chests.js"></script><script src="js/expedition.js"></script><script src="js/game.js"></script>
 <script src="js/intro.js"></script>
 </body>
 </html>
