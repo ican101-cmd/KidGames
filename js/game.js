@@ -74,10 +74,14 @@
   let pendingReward = 0;
   let isAnswering = false;
   let battleEpoch=0,battleActive=false,ultimateQuestion=false;
+  let ultimateRecovery=0,scorpionOpening=false,questionSettled=false;
+  function setScorpionOpening(open){scorpionOpening=open;document.getElementById('slime-container').classList.toggle('scorpion-opening',open);}
+  function setUltimateRecovery(n){ultimateRecovery=n;if(Expedition.active)Expedition.setUltimateRecovery(n);}
+  function finishQuestion(){if(questionSettled)return false;questionSettled=true;if(!ultimateQuestion&&ultimateRecovery>0)setUltimateRecovery(ultimateRecovery-1);setScorpionOpening(false);return true;}
   function battleLater(callback,delay){const epoch=battleEpoch;setTimeout(()=>{if(epoch===battleEpoch&&battleActive)callback();},delay);}
-  function stopBattle(){document.getElementById("exp-return").hidden=true;ultimateQuestion=false;document.getElementById('ultimate-button').disabled=true;battleActive=false;battleEpoch++;BossMeteors.stop();BossSpecials.stop();if(timerInterval)clearInterval(timerInterval);}
+  function stopBattle(){setScorpionOpening(false);BossSkillTiming.reset();MonsterRegeneration.stop();document.getElementById("exp-return").hidden=true;ultimateQuestion=false;document.getElementById('ultimate-button').disabled=true;battleActive=false;battleEpoch++;BossMeteors.stop();BossSpecials.stop();if(timerInterval)clearInterval(timerInterval);}
   function defeatHero(){
-    if(!battleActive)return;stopBattle();isAnswering=true;
+    if(!battleActive)return;Expedition.report(false);document.getElementById('expedition-failure-report').innerHTML=Expedition.active?Expedition.reportMarkup():'';document.getElementById('expedition-failure-report').hidden=!Expedition.active;stopBattle();isAnswering=true;
     document.querySelectorAll('.fruit-btn').forEach(b=>b.classList.add('disabled'));
     safePlayAudio(()=>WeaponAudio.hero(audioCtx,'death'));
     const epoch=battleEpoch;setTimeout(()=>{if(epoch===battleEpoch)document.getElementById('game-over-screen').style.display='flex';},500);
@@ -85,7 +89,7 @@
   function startBossMeteors(){
     const epoch=battleEpoch;
     BossMeteors.start(()=>battleActive&&epoch===battleEpoch&&Expedition.bossMode(mode)==='boss'&&level===5&&Adventure.state.phase===2&&slimeHp>0&&playerHp>0,()=>{
-      const damage=Expedition.damage(6);playerHp=Math.max(0,playerHp-damage);updateBars();
+      const damage=Expedition.damage(6);Expedition.recordDamage('special',Math.min(playerHp,damage));playerHp=Math.max(0,playerHp-damage);updateBars();
       const hero=document.getElementById('player-visual-box');BattleEffects.burst(hero,'smallHit','#ffc77a');BattleEffects.damage(hero,damage);safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));
       if(playerHp<=0)defeatHero();
     });
@@ -94,7 +98,7 @@
   function startChapterBossSpecial(){
     const epoch=battleEpoch,kind=Expedition.bossMode(mode);
     BossSpecials.start(kind,()=>battleActive&&epoch===battleEpoch&&Expedition.bossMode(mode)===kind&&level===5&&Adventure.state.phase===2&&slimeHp>0&&playerHp>0,(amount,color)=>{
-      amount=Expedition.damage(amount);playerHp=Math.max(0,playerHp-amount);updateBars();
+      amount=Expedition.damage(amount);Expedition.recordDamage('special',Math.min(playerHp,amount));playerHp=Math.max(0,playerHp-amount);updateBars();
       const hero=document.getElementById('player-visual-box');BattleEffects.burst(hero,kind==='easy'?'smallHit':'magicHit',color);BattleEffects.damage(hero,amount);safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));
       if(playerHp<=0)defeatHero();
     },cue=>safePlayAudio(()=>WeaponAudio.bossSkill(audioCtx,kind,cue)));
@@ -215,6 +219,7 @@
 
   function startLevel() {
     stopBattle();battleActive=true;
+    ultimateRecovery=Expedition.active?Math.max(0,Math.min(2,Math.floor(Number(Expedition.run.ultimateRecovery)||0))):0;scorpionOpening=false;
     BattleEffects.reset();
     Adventure.begin();
     isAnswering = false;
@@ -227,16 +232,15 @@
     const enemyTitle = document.getElementById('enemy-title-text');
     const slimeBodyPath = document.getElementById('slime-body-path');
 
-    const mult = backgrounds[player.bg]?.multiplier || 1;
-
     if (level === 5) {
       const chapterBoss=Adventure.bossFor(mode,level);
-      slimeMaxHp = Math.round(chapterBoss.hp * mult);
+      slimeMaxHp = Expedition.active?chapterBoss.expeditionHp:chapterBoss.hp;
       if (slimeElem) slimeElem.style.display = 'none';
       if (bossElem) bossElem.style.display = 'block';
       if (enemyTitle) enemyTitle.innerText = chapterBoss.name;
     } else {
-      slimeMaxHp = Math.round(100 * mult);
+      const ordinaryHp=Expedition.active&&Expedition.run?.step===6?200:Expedition.active&&Expedition.run?.routeVersion>=3&&Expedition.run.step===5?[100,110,120][Expedition.waveNumber()-1]:100;
+      slimeMaxHp = ordinaryHp;
       if (bossElem) bossElem.style.display = 'none';
       if (slimeElem) slimeElem.style.display = 'block';
 
@@ -265,9 +269,9 @@
     }
     WorldArt.apply(level, mode, player.bg);
     Adventure.scene(level,Expedition.bossMode(mode)==='boss'&&level===5);
-    if(Expedition.active&&(Expedition.isElite()||Expedition.run.step===7))slimeMaxHp=Math.round(slimeMaxHp*1.5);
+    if(Expedition.active&&Expedition.isElite()&&Expedition.run.step!==6)slimeMaxHp=Math.round(slimeMaxHp*1.5);
     slimeHp = slimeMaxHp;
-    if(Expedition.active){document.getElementById("scene-chapter").textContent="冒險遠征 · "+Expedition.battleLabel();document.getElementById("exp-return").textContent="🧭 "+Expedition.battleLabel()+" · 返回地圖";}
+    if(Expedition.active){document.getElementById("scene-name").textContent=Expedition.stationName();document.getElementById("scene-chapter").textContent="冒險遠征 · "+Expedition.battleLabel();document.getElementById("exp-return").textContent="🧭 "+Expedition.battleLabel()+" · 返回地圖";}
 
     document.getElementById('current-level').innerText = level;
     updateBars();
@@ -286,6 +290,12 @@
 
     document.getElementById('slime-hp-fill').style.width = Math.max(0, (slimeHp / slimeMaxHp) * 100) + '%';
     document.getElementById('slime-hp-text').innerText = `${Math.max(0, slimeHp)}/${slimeMaxHp}`;
+    const epoch=battleEpoch;
+    MonsterRegeneration.observe(slimeHp,slimeMaxHp,{
+      eligible:battleActive&&Expedition.active&&Expedition.run?.routeVersion>=3&&Expedition.run.step===5&&Expedition.waveNumber()===3,
+      valid:()=>battleActive&&epoch===battleEpoch&&slimeHp>0&&playerHp>0,
+      restore:amount=>{const restored=Math.min(amount,slimeMaxHp-slimeHp);if(restored<=0)return;slimeHp+=restored;updateBars();BattleEffects.heal(document.getElementById('slime-container'),restored);}
+    });
   }
 
   function generateOptions(ans) {
@@ -312,15 +322,17 @@
   }
 
   window.activateUltimate=function(){
-    if(!battleActive||isAnswering||ultimateQuestion||playerHp<=0||slimeHp<=0||timeLeft<=0)return;
-    safePlayAudio();generateQuestion({ultimate:true,seconds:timeLeft});
+    if(!battleActive||isAnswering||ultimateQuestion||ultimateRecovery>0||playerHp<=0||slimeHp<=0||timeLeft<=0)return;
+    setUltimateRecovery(2);safePlayAudio();generateQuestion({ultimate:true,seconds:timeLeft});
   };
+  function showCorrectAnswer(){const el=document.getElementById('answer-feedback');el.textContent='正確答案：'+document.getElementById('question-box').innerText.replace('?',String(currentAnswer));el.hidden=false;}
   function generateQuestion({ultimate=false,seconds=null}={}) {
     if(!battleActive||playerHp<=0||slimeHp<=0)return;
-    isAnswering = false;ultimateQuestion=ultimate;
-    document.getElementById('ultimate-button').disabled=ultimate;
-    document.getElementById('ultimate-button-hint').textContent=ultimate?'選出答案，釋放必殺一擊！':'三數連加 · 答對傷害 ×2';
+    isAnswering = false;ultimateQuestion=ultimate;questionSettled=false;document.getElementById('answer-feedback').hidden=true;
+    document.getElementById('ultimate-button').disabled=ultimate||ultimateRecovery>0;
+    document.getElementById('ultimate-button-hint').textContent=ultimate?'選出答案，釋放必殺一擊！':ultimateRecovery>0?'再完成 '+ultimateRecovery+' 道普通題':'三數連加 · 答對傷害 ×2';
     document.getElementById('question-box').classList.toggle('ultimate-question',ultimate);
+    document.querySelector('.battle-hint').textContent=Expedition.active&&Expedition.run.step===6?(scorpionOpening?'鎧甲破綻！這一題答對即可命中':'鎧甲反彈：剩 5 秒內答對會反彈 10 HP'):Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===5?'烈焰牛頭 · 第 '+Expedition.waveNumber()+' 波'+(Expedition.waveNumber()===3?'：半血後每 5 秒回血 10':'：趁勢前進！'):'選出正確的水果答案，幫勇者出招！';
     if (timerInterval) clearInterval(timerInterval);
 
     let num1, num2, isAdd = Math.random() > 0.5;
@@ -355,7 +367,7 @@
       area.appendChild(btn);
     });
 
-    timeLeft = seconds===null?Adventure.answerSeconds(Math.max(5,15-(level-1)*2),Expedition.bossMode(mode)==='boss'&&level===5):seconds;
+    timeLeft = seconds===null?Adventure.answerSeconds(Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===5?11:Math.max(5,15-(level-1)*2),Expedition.bossMode(mode)==='boss'&&level===5):seconds;
     if(seconds===null&&Expedition.has("sandglass"))timeLeft++;
     document.getElementById('timer').innerText = timeLeft;
     timerInterval = setInterval(() => {
@@ -363,22 +375,24 @@
       document.getElementById('timer').innerText = timeLeft;
       if (timeLeft <= 0) {
         if (timerInterval) clearInterval(timerInterval);
-        handleMonsterAttack();
+        handleMonsterAttack('timeout');
       }
     }, 1000);
   }
 
-  async function handleMonsterAttack() {
+  async function handleMonsterAttack(reason='wrong') {
     if(!battleActive||playerHp<=0||slimeHp<=0)return;
     const epoch=battleEpoch;
+    if(!finishQuestion())return;
+    showCorrectAnswer();
     isAnswering = true;
     if (timerInterval) clearInterval(timerInterval);
 
     document.querySelectorAll('.fruit-btn').forEach(b => b.classList.add('disabled'));
     document.getElementById('ultimate-button').disabled=true;
-    Adventure.answer(false);Expedition.recordAnswer(false);
+    Adventure.answer(false);Expedition.recordAnswer(false,reason==='timeout');
     if(Adventure.bossFor(mode,level))safePlayAudio(()=>WeaponAudio.bossAttack(audioCtx,Expedition.bossMode(mode)));
-    await WeaponAnimationSystem.enemyAttack(() => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;const damage=Expedition.damage(20);playerHp = Math.max(0,playerHp-damage); updateBars(); safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));return damage; },Adventure.enemyProfile(level,Expedition.bossMode(mode)==='boss'&&level===5));
+    await WeaponAnimationSystem.enemyAttack(() => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;const damage=Expedition.damage(20);Expedition.recordDamage('normal',Math.min(playerHp,damage));playerHp = Math.max(0,playerHp-damage); updateBars(); safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));return damage; },Adventure.enemyProfile(level,Expedition.bossMode(mode)==='boss'&&level===5));
 
     if(epoch!==battleEpoch||!battleActive)return;
     if(playerHp<=0)defeatHero();else battleLater(()=>generateQuestion(),700);
@@ -506,7 +520,7 @@
             <div class="shop-icon-preview">${w.isSvg ? w.icon : w.icon}</div>
             <div>
               <div style="font-weight:bold; font-size:14px;">${w.name}</div>
-              <div style="font-size:12px; color:#666;">⚔️ 傷害: ${w.dmg} HP</div>
+              <div style="font-size:12px; color:#666;">⚔️ 普通攻擊：${w.dmg} HP</div><div class="shop-stat">✨ 必殺技：${w.dmg*2} HP</div>
             </div>
           </div>
           <button class="btn ${isEquipped ? 'btn-green' : 'btn-orange'}" style="font-size:12px; padding:6px 12px;" onclick="window.buyWeapon('${k}')">
@@ -517,6 +531,7 @@
     } else if (['helmet', 'chest', 'gloves', 'boots'].includes(currentShopTab)) {
       Object.keys(armorTiers).forEach(tierKey => {
         const arm = armorTiers[tierKey];
+        const currentHp=calculateMaxHp(),previewHp=currentHp-(armorTiers[player[currentShopTab]]?.hp||0)+arm.hp;
         const isEquipped = player[currentShopTab] === tierKey;
         const listKey = `unlocked${currentShopTab.charAt(0).toUpperCase() + currentShopTab.slice(1)}s`;
         const unlockedArr = player[listKey];
@@ -528,7 +543,7 @@
             <div class="shop-icon-preview armor-shop-preview">${tierKey==='none'?'—':`<img src="assets/art/armor/${currentShopTab}-${tierKey}.webp" alt="${arm.name}" width="48" height="48">`}</div>
             <div>
               <div style="font-weight:bold; font-size:14px;">${arm.name} 裝備</div>
-              <div style="font-size:12px; color:#666;">❤️ 血量加成: +${arm.hp} HP</div>
+              <div style="font-size:12px; color:#666;">❤️ 血量加成: +${arm.hp} HP</div><div class="shop-stat">目前 HP ${currentHp} → 裝備後 ${previewHp}</div>
             </div>
           </div>
           <button class="btn ${isEquipped ? 'btn-green' : 'btn-orange'}" style="font-size:12px; padding:6px 12px;" onclick="window.buyArmor('${currentShopTab}', '${tierKey}')">
@@ -548,7 +563,7 @@
             <div class="shop-icon-preview">🎨</div>
             <div>
               <div style="font-weight:bold; font-size:14px;">${bg.name}</div>
-              <div style="font-size:12px; color:#666;">主題場景替換 (金幣倍率 x${bg.multiplier})</div>
+              <div style="font-size:12px; color:#666;">敵人 HP 不變 · 故事金幣 ×${bg.multiplier}</div>
             </div>
           </div>
           <button class="btn ${isEquipped ? 'btn-green' : 'btn-orange'}" style="font-size:12px; padding:6px 12px;" onclick="window.buyBg('${bgKey}')">
@@ -723,9 +738,12 @@
     if (isAnswering||!battleActive||playerHp<=0||slimeHp<=0) return;
     const epoch=battleEpoch;
     const empowered=ultimateQuestion;
+    const reflection=Expedition.active&&Expedition.run?.step===6&&!scorpionOpening&&timeLeft>0&&timeLeft<=5;
+    const attackValid=()=>epoch===battleEpoch&&battleActive&&playerHp>0;
     document.getElementById('ultimate-button').disabled=true;
 
     if (val === currentAnswer) {
+      if(!finishQuestion())return;
       isAnswering = true;
       if (timerInterval) clearInterval(timerInterval);
 
@@ -735,7 +753,11 @@
       const baseWeapon=weapons[player.weapon]||weapons.wood_sword;
       const wObj={...baseWeapon,dmg:empowered?baseWeapon.dmg*2:baseWeapon.dmg+(Expedition.has("hunter")?5:0)};
       Adventure.answer(true);Expedition.recordAnswer(true);
-      await WeaponAnimationSystem.attack(wObj, () => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;slimeHp -= wObj.dmg;if(empowered&&Expedition.has("focus"))playerHp=Math.min(playerMaxHp,playerHp+3);if(slimeHp<=0){BossMeteors.stop();BossSpecials.stop();} updateBars(); Adventure.phase(slimeHp,slimeMaxHp,Expedition.bossMode(mode)==='boss'&&level===5); },{empowered});
+      await WeaponAnimationSystem.attack(wObj, () => {
+        if(!attackValid())return false;
+        if(reflection){setScorpionOpening(true);Expedition.recordDamage('reflection',Math.min(playerHp,10));playerHp=Math.max(0,playerHp-10);updateBars();if(playerHp<=0)defeatHero();return;}
+        slimeHp -= wObj.dmg;if(empowered&&Expedition.has("focus"))playerHp=Math.min(playerMaxHp,playerHp+3);if(slimeHp<=0){BossMeteors.stop();BossSpecials.stop();} updateBars(); Adventure.phase(slimeHp,slimeMaxHp,Expedition.bossMode(mode)==='boss'&&level===5);
+      },{empowered,reflection,valid:attackValid});
 
       if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;
       if (slimeHp <= 0) {
@@ -754,6 +776,10 @@
         const mult = backgrounds[player.bg]?.multiplier || 1;
         pendingReward = Math.round(baseReward * mult);
 
+        const firstReward=Adventure.chapterReward(player,mode,level);
+        pendingReward+=firstReward;
+        for(const id of ['chapter-first-reward','boss-first-reward']){const el=document.getElementById(id);el.hidden=!firstReward;el.textContent='章節首次通關獎勵 +'+firstReward+' 金幣！';}
+        document.getElementById('boss-total-reward').textContent=pendingReward;
         Adventure.finish(player,mode,level);
         player.coins += pendingReward;
         if (mode === 'medium') player.bossUnlocked = true;
@@ -779,6 +805,7 @@
       isAnswering = true;
       if (timerInterval) clearInterval(timerInterval);
       document.querySelectorAll('.fruit-btn').forEach(b => b.classList.add('disabled'));
+      showCorrectAnswer();
       if (btnElem) btnElem.style.background = '#ffcdd2';
       battleLater(() => { handleMonsterAttack(); }, 400);
     }

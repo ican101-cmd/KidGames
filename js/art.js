@@ -22,8 +22,11 @@ const WorldArt = (() => {
     document.getElementById('scene-name').textContent=scene.name;
     document.getElementById('scene-chapter').textContent=`第 ${level} 章 · ${scene.chapter}`;
     const monster=document.getElementById('monster-art');
-    const monsterFile={pink:'flower-spirit',blue:'reef-fish'}[theme] || 'slime';
+    const flameBull=typeof Expedition!=='undefined'&&Expedition.active&&Expedition.run?.routeVersion>=3&&Expedition.run.step===5;
+    const rockScorpion=typeof Expedition!=='undefined'&&Expedition.active&&Expedition.run?.step===6;
+    const monsterFile=rockScorpion?'crimson-rock-scorpion':flameBull?'flame-minotaur':{pink:'flower-spirit',blue:'reef-fish'}[theme] || 'slime';
     monster.setAttribute('href',path(monsterFile));
+    if(flameBull||rockScorpion)document.getElementById('enemy-title-text').textContent=rockScorpion?'赤岩鎧蠍':'烈焰牛頭';
     monster.style.filter=monsterFile==='slime'?`hue-rotate(${[0,40,150,300,230][(level-1)%5]}deg)`:'none';
     document.getElementById('slime-container').classList.toggle('is-dragon',mode==='boss'&&level===5);
     document.getElementById('slime-container').classList.toggle('is-chapter-boss',mode!=='boss'&&level===5);

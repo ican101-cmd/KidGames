@@ -99,7 +99,7 @@
     <div class="hero-modal-box">
       <h2 id="clear-title" style="color: #2e7d32; margin: 0;">🎉 順利擊敗怪物！</h2>
       <div style="font-size: 38px; margin: 5px 0;">⭐ 🪙 ⭐</div>
-      <p id="clear-stars" class="clear-stars"></p><p style="margin: 0; font-size: 16px; color: #444;">獲得獎勵金幣：<b id="level-reward-text" style="color: #f57f17;">+10</b> 🪙</p>
+      <p id="chapter-first-reward" class="chapter-first-reward" hidden></p><p id="clear-stars" class="clear-stars"></p><p style="margin: 0; font-size: 16px; color: #444;">獲得獎勵金幣：<b id="level-reward-text" style="color: #f57f17;">+10</b> 🪙</p>
       
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-top: 10px;">
         <button class="btn btn-blue" style="font-size: 13px; padding: 10px 6px;" onclick="window.openHeroInspectorFromModal()">🔍 檢視角色</button>
@@ -113,10 +113,11 @@
   <!-- 4.5 Game Over 畫面 -->
   <div id="game-over-screen" class="overlay-screen" style="display: none; z-index: 35;">
     <div class="hero-modal-box" style="border-color: #f44336; text-align: center;">
-      <h1 style="color: #d32f2f; margin: 0; font-size: 32px;">💀 GAME OVER 💀</h1>
-      <div style="font-size: 50px; margin: 8px 0;">💔</div>
+      <h1 style="color: #d32f2f; margin: 0; font-size: clamp(20px,6vw,28px);">💀 GAME OVER 💀</h1>
+      <div style="font-size: 30px; margin: 4px 0;">💔</div>
       <p style="margin: 0; font-size: 15px; color: #555; font-weight: bold;">勇者體力不支倒下了！</p>
       
+      <div id="expedition-failure-report" hidden></div>
       <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 12px;">
         <button class="btn btn-orange" style="font-size: 16px; padding: 10px;" onclick="window.retryCurrentLevel()">🔥 不放棄，再戰一回</button>
         <button class="btn btn-gray" style="font-size: 14px; padding: 8px;" onclick="window.endAdventureFromGameOver()">🏠 返回主選單</button>
@@ -163,9 +164,9 @@
       </div>
     </div>
     <div id="boss-victory-card" style="display: none; background: #fff; color: #333; padding: 18px; border-radius: 15px; text-align: center; max-width: 85%;">
-      <p id="boss-clear-stars" class="clear-stars"></p><div style="font-size: 40px;">🏆👑</div>
+      <p id="boss-first-reward" class="chapter-first-reward" hidden></p><p id="boss-clear-stars" class="clear-stars"></p><div style="font-size: 40px;">🏆👑</div>
       <h2 style="color: #9c27b0; margin: 8px 0;">暮星巨龍已被討伐！</h2>
-      <p style="font-size: 14px; color: #333;">拯救了水果王國！<br><b style="color:#f57f17;">獲得 300 金幣獎勵！</b></p>
+      <p style="font-size: 14px; color: #333;">拯救了水果王國！<br><b style="color:#f57f17;">獲得 <span id="boss-total-reward">300</span> 金幣獎勵！</b></p>
       <button class="btn btn-purple" style="margin-top: 8px;" onclick="window.closeBossStage()">回主選單 🏠</button>
     </div>
   </div>
@@ -199,6 +200,7 @@
 
     <div class="combatant-box">
       <div id="slime-container" class="slime-container">
+      <svg class="scorpion-opening-art" viewBox="0 0 100 100" aria-hidden="true"><ellipse class="opening-halo" cx="50" cy="55" rx="43" ry="37"/><path class="opening-cracks" d="m53 26-9 18 13 5-15 24m2-29-12-6m25 11 12-8m-21 22 15 8"/><path class="opening-glints" d="M17 33v10m-5-5h10m56 20v14m-7-7h14M29 76v8m-4-4h8"/></svg>
         <!-- 普通/花朵/魚類 怪物 SVG -->
         <svg id="slime-svg-elem" class="slime-svg" viewBox="0 0 100 100"><image id="monster-art" href="assets/art/slime.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid meet"/></svg>
         <!-- 魔王：暮星巨龍 -->
@@ -212,6 +214,7 @@
   </div>
   <button id="exp-return" hidden onclick="Expedition.open()">🧭 暫停並返回遠征地圖</button><p class="battle-hint">選出正確的水果答案，幫勇者出招！</p>
   <div id="question-box" aria-live="polite">? + ? = ?</div>
+  <p id="answer-feedback" class="answer-feedback" role="status" hidden></p>
   <div id="fruits-area"></div>
   <div class="ultimate-controls"><button id="ultimate-button" class="btn ultimate-button" onclick="activateUltimate()" disabled><svg class="ultimate-sigil" viewBox="0 0 56 56" aria-hidden="true"><path d="M28 3 48 12 45 34 28 51 11 34 8 12Z" fill="#263d55" stroke="#efd28c" stroke-width="2"/><path d="m13 40 26-29 6-1-1 6-28 27Z" fill="#e3f8ef" stroke="#614c43" stroke-width="1.4"/><path d="m15 29 12 12-4 3-11-11Z" fill="#e4b96d" stroke="#72503c"/><path d="m12 39-5 6 4 4 6-6" fill="#98744e" stroke="#f7db93"/><path d="m28 17 9 11-9 12-9-12Z" fill="#65d8d5" stroke="#f6dfa3" stroke-width="2"/><path d="m28 20 0 15-6-7Z" fill="#d1fff1"/><path d="M14 12h5m18 0h5M26 7h4" stroke="#ffe7b3" stroke-width="1.5"/></svg><span class="ultimate-button-copy"><span class="ultimate-button-title">啟動必殺題</span><small id="ultimate-button-hint">三數連加 · 答對傷害 ×2</small></span></button></div>
 <section id="leaderboard-screen" hidden aria-labelledby="leaderboard-title">
@@ -232,9 +235,10 @@
 <script src="js/effects.js"></script>
 <script src="js/art.js"></script>
 <script src="js/armor-art.js"></script>
+<script src="js/boss-skill-timing.js"></script>
 <script src="js/meteors.js"></script>
 <script src="js/boss-specials.js"></script>
-<script src="js/adventure.js"></script>
+<script src="js/monster-regeneration.js"></script><script src="js/adventure.js"></script>
 <script src="js/leaderboard-config.js"></script><script src="js/leaderboard.js"></script><script src="js/chests.js"></script><script src="js/expedition.js"></script><script src="js/game.js"></script>
 <script src="js/intro.js"></script>
 </body>
