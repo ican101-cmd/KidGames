@@ -26,3 +26,41 @@
 原商店背景主題與倍率仍保留。11 張 WebP 圖片均位於 assets/art/。
 
 素材規格與繪圖提示見 [docs/art-direction.md](docs/art-direction.md)。
+
+## 冒險成長系統
+五關敵人動作特徵、
+巨龍半血覺醒，以及分難度的地圖解鎖與三枚通關星章。
+原武器傷害、敵人傷害、血量與獎勵倍率維持既有設定。
+新增獨立 fruit_adventure_v1 儲存地圖；原 14 個存檔鍵保持不變，
+JSON 匯出／匯入支援新進度及舊版檔案。詳見 docs/adventure-progression.md。
+新增驗證：node tests/adventure.cjs；裝備及音效測試分別執行
+node tests/armor.cjs 和 node tests/audio.cjs。
+
+## 覺醒流星雨
+巨龍第二階段每兩秒發射一波流星，右上往左下快速落下，整波命中扣 5 HP。
+答題與攻擊期間均會持續，死亡、重試、離場及 Boss 倒下會停止。
+支援降低動態效果。測試：node tests/meteors.cjs，細節見 docs/boss-meteors.md。
+
+## 各難度專屬 Boss
+普通第 5 關為蘋果布丁王，中等第 5 關為蒼潮甲龜；魔王難度保留覺醒巨龍。
+勇氣蓄力及連答必殺已移除，星章改採通關、正確率 80%、全題答對。
+素材與提示詞：docs/difficulty-bosses.md；測試：node tests/difficulty-bosses.cjs。
+
+## 關卡 Boss 絕技
+普通 Boss 半血後每 6 秒蓄力，預警 0.8 秒後發射兩次彈跳的皇家果凍彈，
+命中扣 3 HP。中等 Boss 半血後每 5 秒蓄力，預警 1 秒後發出雙重潮汐，
+兩道水浪相隔 0.4 秒命中，各扣 3 HP。兩者保留 7 秒作答時間及原答錯反擊，
+特殊攻擊不影響答題正確率。死亡、通關、重試與離場會清除預警及飛行中的攻擊。
+詳見 docs/chapter-boss-specials.md；測試：node tests/boss-specials.cjs。
+
+## 手動必殺技
+戰鬥底部新增必殺技按鈕，立即換成三數連加、兩個答案；答對造成目前武器兩倍傷害，
+並保留武器動作加上能量斬、粒子、大字傷害與短促震動。保留剩餘倒數時間，
+必殺題作答前不可重按洗題，答錯及超時照原反擊。無勇氣條、無額外存檔欄位。
+詳見 docs/manual-ultimate.md；測試：node tests/ultimate.cjs。
+
+## 各武器必殺特效
+木劍烈焰、鐵劍電光、魔杖星環洪流、銀槍雷霆突刺、黃金弓烈陽箭、鑽石劍極光殘影。
+特效資料在 weapons[].animation.ultimate，呈現由 js/ultimate-vfx.js 管理；
+傷害、作答與存檔規則保持不變。詳見 docs/weapon-ultimate-vfx.md，
+測試：node tests/weapon-ultimate-vfx.cjs。

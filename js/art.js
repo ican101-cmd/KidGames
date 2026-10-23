@@ -25,6 +25,7 @@ const WorldArt = (() => {
     monster.setAttribute('href',path(monsterFile));
     monster.style.filter=monsterFile==='slime'?`hue-rotate(${[0,40,150,300,230][(level-1)%5]}deg)`:'none';
     document.getElementById('slime-container').classList.toggle('is-dragon',mode==='boss'&&level===5);
+    document.getElementById('slime-container').classList.toggle('is-chapter-boss',mode!=='boss'&&level===5);
     // A single next-scene image, not a persistent particle/animation allocation loop.
     if(level<scenes.length&&!preloaded.has(level)){preloaded.add(level);nextScene=new Image();nextScene.src=path(scenes[level].file);}
   }

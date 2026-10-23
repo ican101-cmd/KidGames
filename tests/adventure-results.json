@@ -1,0 +1,24 @@
+{
+  "passed": [
+    "awakened dragon loads with genuine alpha transparency",
+    "new map locks later stages and Boss with API guard",
+    "consecutive correct answers keep normal damage with no courage state or meter",
+    "perfect clear earns three stars without triggering a finisher",
+    "cleared route unlocks next stage and resets level-only accuracy score",
+    "mistakes update accuracy only without a courage mechanic",
+    "star criteria distinguish accuracy and perfect clears and never downgrade records",
+    "additive progress key reloads with original saves",
+    "export carries stars and legacy import preserves current progress",
+    "Boss awakening gives the next question five seconds instead of seven",
+    "Boss half-HP phase changes attack feints with unchanged HP and contact damage",
+    "map and battle answer buttons fit five viewport sizes including 375x667",
+    "reduced-motion weapon attacks complete without finisher effects",
+    "phase-two timeout causes one normal 20 HP counterattack",
+    "invalid progress values normalize to bounded integer stars",
+    "awakened sprite changes at half HP, victory matches, retry restores original",
+    "Boss retry resets answer time to seven seconds",
+    "reset clears new route data and original equipment together",
+    "no browser runtime errors"
+  ],
+  "errors": []
+}

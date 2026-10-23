@@ -1,0 +1,16 @@
+{
+  "passed": [
+    "all modes switch to three-term addition and two choices without resetting time or allowing rerolls",
+    "all six weapons deal exactly double damage at impact and preserve ranged motion and item stats",
+    "wrong ultimate answer deals no enemy damage and returns to normal questions after counterattack",
+    "ultimate timeout causes one regular counterattack and resets to normal",
+    "bottom button two answers and three-term question fit five viewports including 375x667",
+    "reduced-motion ultimate retains feedback and double damage without stage shake",
+    "activating an ultimate does not cancel chapter Boss skills",
+    "ultimate Boss kill awards normal coins and perfect-clear stars once",
+    "meteor death during ultimate cancels its damage and leaves controls disabled",
+    "retry restores the normal question and enabled ultimate button",
+    "no runtime errors"
+  ],
+  "errors": []
+}

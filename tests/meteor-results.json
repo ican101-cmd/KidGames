@@ -1,0 +1,14 @@
+{
+  "passed": [
+    "phase one has no automatic meteor damage",
+    "one five-meteor wave every two seconds applies exactly five HP at contact",
+    "leaving battle cancels waves and damage",
+    "retry cancels an in-flight rain without hurting the new hero",
+    "Boss defeat stops future rain and awards victory once",
+    "lethal meteor ends battle once without negative HP or new questions",
+    "meteor death during hero attack cancels damage and victory rewards",
+    "reduced motion keeps damage and uses a short stationary glow",
+    "no runtime errors"
+  ],
+  "errors": []
+}

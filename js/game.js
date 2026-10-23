@@ -42,6 +42,7 @@
     unlockedBoots: ['none'],
     bg: 'green',
     unlockedBgs: ['green'],
+    adventure: Adventure.normalize(),
     bossUnlocked: false
   };
 
@@ -64,13 +65,40 @@
     player.bossUnlocked = localStorage.getItem('fruit_boss') === 'true';
   } catch (e) {}
 
+  try { player.adventure=Adventure.normalize(JSON.parse(localStorage.getItem('fruit_adventure_v1'))); } catch(e) { player.adventure=Adventure.normalize(); }
+
   let mode = 'easy', level = 1, currentAnswer = 0, timerInterval = null, timeLeft = 15;
   let playerMaxHp = 20, playerHp = 20, slimeMaxHp = 100, slimeHp = 100;
   let currentShopTab = 'weapons';
   let openedFromModal = false;
   let pendingReward = 0;
   let isAnswering = false;
+  let battleEpoch=0,battleActive=false,ultimateQuestion=false;
+  function battleLater(callback,delay){const epoch=battleEpoch;setTimeout(()=>{if(epoch===battleEpoch&&battleActive)callback();},delay);}
+  function stopBattle(){ultimateQuestion=false;document.getElementById('ultimate-button').disabled=true;battleActive=false;battleEpoch++;BossMeteors.stop();BossSpecials.stop();if(timerInterval)clearInterval(timerInterval);}
+  function defeatHero(){
+    if(!battleActive)return;stopBattle();isAnswering=true;
+    document.querySelectorAll('.fruit-btn').forEach(b=>b.classList.add('disabled'));
+    safePlayAudio(()=>WeaponAudio.hero(audioCtx,'death'));
+    const epoch=battleEpoch;setTimeout(()=>{if(epoch===battleEpoch)document.getElementById('game-over-screen').style.display='flex';},500);
+  }
+  function startBossMeteors(){
+    const epoch=battleEpoch;
+    BossMeteors.start(()=>battleActive&&epoch===battleEpoch&&mode==='boss'&&level===5&&Adventure.state.phase===2&&slimeHp>0&&playerHp>0,()=>{
+      playerHp=Math.max(0,playerHp-5);updateBars();
+      const hero=document.getElementById('player-visual-box');BattleEffects.burst(hero,'smallHit','#ffc77a');BattleEffects.damage(hero,5);safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));
+      if(playerHp<=0)defeatHero();
+    });
+  }
 
+  function startChapterBossSpecial(){
+    const epoch=battleEpoch,kind=mode;
+    BossSpecials.start(kind,()=>battleActive&&epoch===battleEpoch&&mode===kind&&level===5&&Adventure.state.phase===2&&slimeHp>0&&playerHp>0,(amount,color)=>{
+      playerHp=Math.max(0,playerHp-amount);updateBars();
+      const hero=document.getElementById('player-visual-box');BattleEffects.burst(hero,kind==='easy'?'smallHit':'magicHit',color);BattleEffects.damage(hero,amount);safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));
+      if(playerHp<=0)defeatHero();
+    },cue=>safePlayAudio(()=>WeaponAudio.bossSkill(audioCtx,kind,cue)));
+  }
   function calculateMaxHp() {
     let extraHp = (armorTiers[player.helmet]?.hp || 0) +
                  (armorTiers[player.chest]?.hp || 0) +
@@ -81,6 +109,8 @@
 
   function saveGame() {
     try {
+      player.adventure=Adventure.normalize(player.adventure);
+      localStorage.setItem('fruit_adventure_v1',JSON.stringify(player.adventure));
       localStorage.setItem('fruit_coins', player.coins);
       localStorage.setItem('fruit_weapon', player.weapon);
       localStorage.setItem('fruit_unlocked_weapons', JSON.stringify(player.unlockedWeapons));
@@ -140,6 +170,7 @@
     }
 
     WorldArt.apply(level, mode, player.bg);
+    Adventure.scene(level,mode==='boss'&&level===5);
     playerMaxHp = calculateMaxHp();
     renderArmorVisuals('hero-armor-layer');
     document.querySelectorAll('.rpg-hero').forEach(el => el.classList.toggle('girl', player.gender === 'girl'));
@@ -184,7 +215,9 @@
   }, 13200);
 
   function startLevel() {
+    stopBattle();battleActive=true;
     BattleEffects.reset();
+    Adventure.begin();
     isAnswering = false;
     playerMaxHp = calculateMaxHp();
     playerHp = playerMaxHp;
@@ -196,11 +229,12 @@
 
     const mult = backgrounds[player.bg]?.multiplier || 1;
 
-    if (mode === 'boss' && level === 5) {
-      slimeMaxHp = Math.round(200 * mult);
+    if (level === 5) {
+      const chapterBoss=Adventure.bossFor(mode,level);
+      slimeMaxHp = Math.round(chapterBoss.hp * mult);
       if (slimeElem) slimeElem.style.display = 'none';
       if (bossElem) bossElem.style.display = 'block';
-      if (enemyTitle) enemyTitle.innerText = '暮星巨龍';
+      if (enemyTitle) enemyTitle.innerText = chapterBoss.name;
     } else {
       slimeMaxHp = Math.round(100 * mult);
       if (bossElem) bossElem.style.display = 'none';
@@ -230,6 +264,7 @@
       }
     }
     WorldArt.apply(level, mode, player.bg);
+    Adventure.scene(level,mode==='boss'&&level===5);
     slimeHp = slimeMaxHp;
 
     document.getElementById('current-level').innerText = level;
@@ -274,8 +309,16 @@
     return opts.sort(() => Math.random() - 0.5);
   }
 
-  function generateQuestion() {
-    isAnswering = false;
+  window.activateUltimate=function(){
+    if(!battleActive||isAnswering||ultimateQuestion||playerHp<=0||slimeHp<=0||timeLeft<=0)return;
+    safePlayAudio();generateQuestion({ultimate:true,seconds:timeLeft});
+  };
+  function generateQuestion({ultimate=false,seconds=null}={}) {
+    if(!battleActive||playerHp<=0||slimeHp<=0)return;
+    isAnswering = false;ultimateQuestion=ultimate;
+    document.getElementById('ultimate-button').disabled=ultimate;
+    document.getElementById('ultimate-button-hint').textContent=ultimate?'選出答案，釋放必殺一擊！':'三數連加 · 答對傷害 ×2';
+    document.getElementById('question-box').classList.toggle('ultimate-question',ultimate);
     if (timerInterval) clearInterval(timerInterval);
 
     let num1, num2, isAdd = Math.random() > 0.5;
@@ -290,10 +333,16 @@
       if (!isAdd) { const m = Math.max(num1, num2), n = Math.min(num1, num2); num1 = m; num2 = n; }
     }
 
-    currentAnswer = isAdd ? (num1 + num2) : (num1 - num2);
-    document.getElementById('question-box').innerText = `${num1} ${isAdd ? '+' : '-'} ${num2} = ?`;
-
+    if(ultimate){
+      const third=mode==='easy'?Math.floor(Math.random()*9)+1:mode==='medium'?Math.floor(Math.random()*10)+11:Math.floor(Math.random()*50)+20;
+      currentAnswer=num1+num2+third;
+      document.getElementById('question-box').innerText=num1+' + '+num2+' + '+third+' = ?';
+    }else{
+      currentAnswer = isAdd ? (num1 + num2) : (num1 - num2);
+      document.getElementById('question-box').innerText = num1+' '+(isAdd?'+':'−')+' '+num2+' = ?';
+    }
     let options = generateOptions(currentAnswer);
+    if(ultimate)options=[currentAnswer,options.find(value=>value!==currentAnswer)].sort(()=>Math.random()-.5);
     const area = document.getElementById('fruits-area');
     area.innerHTML = '';
     options.forEach(val => {
@@ -304,7 +353,7 @@
       area.appendChild(btn);
     });
 
-    timeLeft = Math.max(5, 15 - (level-1)*2);
+    timeLeft = seconds===null?Adventure.answerSeconds(Math.max(5,15-(level-1)*2),mode==='boss'&&level===5):seconds;
     document.getElementById('timer').innerText = timeLeft;
     timerInterval = setInterval(() => {
       timeLeft--;
@@ -317,21 +366,19 @@
   }
 
   async function handleMonsterAttack() {
+    if(!battleActive||playerHp<=0||slimeHp<=0)return;
+    const epoch=battleEpoch;
     isAnswering = true;
     if (timerInterval) clearInterval(timerInterval);
 
     document.querySelectorAll('.fruit-btn').forEach(b => b.classList.add('disabled'));
-    await WeaponAnimationSystem.enemyAttack(() => { playerHp -= 20; updateBars(); safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit')); });
+    document.getElementById('ultimate-button').disabled=true;
+    Adventure.answer(false);
+    if(Adventure.bossFor(mode,level))safePlayAudio(()=>WeaponAudio.bossAttack(audioCtx,mode));
+    await WeaponAnimationSystem.enemyAttack(() => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;playerHp = Math.max(0,playerHp-20); updateBars(); safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit')); },Adventure.enemyProfile(level,mode==='boss'&&level===5));
 
-    if (playerHp <= 0) {
-      safePlayAudio(()=>WeaponAudio.hero(audioCtx,'death'));
-      setTimeout(() => {
-        const gameOverScreen = document.getElementById('game-over-screen');
-        if (gameOverScreen) gameOverScreen.style.display = 'flex';
-      }, 500);
-    } else {
-      setTimeout(() => { generateQuestion(); }, 700);
-    }
+    if(epoch!==battleEpoch||!battleActive)return;
+    if(playerHp<=0)defeatHero();else battleLater(()=>generateQuestion(),700);
   }
 
   window.selectChar = function(g) {
@@ -660,6 +707,7 @@
 
   window.startGame = function(m) {
     safePlayAudio();
+    
     mode = m; level = 1;
     const modeSelect = document.getElementById('mode-select');
     if (modeSelect) modeSelect.style.display = 'none';
@@ -667,7 +715,10 @@
   };
 
   window.checkAnswer = async function(val, btnElem) {
-    if (isAnswering) return;
+    if (isAnswering||!battleActive||playerHp<=0||slimeHp<=0) return;
+    const epoch=battleEpoch;
+    const empowered=ultimateQuestion;
+    document.getElementById('ultimate-button').disabled=true;
 
     if (val === currentAnswer) {
       isAnswering = true;
@@ -676,11 +727,15 @@
       document.querySelectorAll('.fruit-btn').forEach(b => b.classList.add('disabled'));
 
       safePlayAudio();
-      const wObj = weapons[player.weapon] || weapons.wood_sword;
-      await WeaponAnimationSystem.attack(wObj, () => { slimeHp -= wObj.dmg; updateBars(); });
+      const baseWeapon=weapons[player.weapon]||weapons.wood_sword;
+      const wObj=empowered?{...baseWeapon,dmg:baseWeapon.dmg*2}:baseWeapon;
+      Adventure.answer(true);
+      await WeaponAnimationSystem.attack(wObj, () => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;slimeHp -= wObj.dmg;if(slimeHp<=0){BossMeteors.stop();BossSpecials.stop();} updateBars(); Adventure.phase(slimeHp,slimeMaxHp,mode==='boss'&&level===5); },{empowered});
 
+      if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;
       if (slimeHp <= 0) {
         await BattleEffects.death(document.getElementById("slime-container"));
+        if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;
         let baseReward = 0;
         if (mode === 'boss') {
           baseReward = (level === 5) ? 300 : 0;
@@ -693,14 +748,16 @@
         const mult = backgrounds[player.bg]?.multiplier || 1;
         pendingReward = Math.round(baseReward * mult);
 
+        Adventure.finish(player,mode,level);
         player.coins += pendingReward;
         if (mode === 'medium') player.bossUnlocked = true;
         saveGame();
 
-        setTimeout(() => {
+        battleLater(() => {
           if (mode === 'boss' && level === 5) {
             triggerBossVictoryStage();
           } else {
+            document.getElementById('clear-title').textContent=level===5?'成功擊敗'+Adventure.bossFor(mode,level).name+'！':'順利擊敗怪物！';
             const rewardText = document.getElementById('level-reward-text');
             const nextBtn = document.getElementById('btn-next-level');
             const levelCleared = document.getElementById('level-cleared-screen');
@@ -710,18 +767,24 @@
           }
         }, 500);
       } else {
-        setTimeout(() => { generateQuestion(); }, 600);
+        battleLater(() => { generateQuestion(); }, 600);
       }
     } else {
       isAnswering = true;
       if (timerInterval) clearInterval(timerInterval);
       document.querySelectorAll('.fruit-btn').forEach(b => b.classList.add('disabled'));
       if (btnElem) btnElem.style.background = '#ffcdd2';
-      setTimeout(() => { handleMonsterAttack(); }, 400);
+      battleLater(() => { handleMonsterAttack(); }, 400);
     }
   };
 
+  window.startMapLevel=function(selectedMode,selectedLevel){
+    const progress=Adventure.normalize(player.adventure);
+    if(!['easy','medium','boss'].includes(selectedMode)||!Number.isInteger(selectedLevel)||selectedLevel<1||selectedLevel>5||(selectedMode==='boss'&&!player.bossUnlocked)||(selectedLevel>1&&!progress[selectedMode][selectedLevel-2]))return;
+    safePlayAudio();mode=selectedMode;level=selectedLevel;document.getElementById('mode-select').style.display='none';document.getElementById('adventure-map').style.display='none';startLevel();
+  };
   window.retryCurrentLevel = function() {
+    
     safePlayAudio();
     const gameOverScreen = document.getElementById('game-over-screen');
     if (gameOverScreen) gameOverScreen.style.display = 'none';
@@ -729,6 +792,7 @@
   };
 
   window.endAdventureFromGameOver = function() {
+    stopBattle();
     safePlayAudio();
     if (timerInterval) clearInterval(timerInterval);
     const gameOverScreen = document.getElementById('game-over-screen');
@@ -750,6 +814,7 @@
   };
 
   window.endAdventure = function() {
+    stopBattle();
     safePlayAudio();
     if (timerInterval) clearInterval(timerInterval);
     const levelCleared = document.getElementById('level-cleared-screen');
@@ -759,6 +824,7 @@
   };
 
   window.closeBossStage = function() {
+    stopBattle();
     const bossStage = document.getElementById('boss-battle-stage');
     const modeSelect = document.getElementById('mode-select');
     if (bossStage) bossStage.style.display = 'none';
@@ -766,7 +832,11 @@
   };
 
   function triggerBossVictoryStage() {
+    stopBattle();
     const stage = document.getElementById('boss-battle-stage');
+    const victoryDragon=stage.querySelector('.victory-dragon-art');
+    victoryDragon.src=document.getElementById('boss-svg-elem').src;
+    victoryDragon.alt=document.getElementById('boss-svg-elem').alt;
     const heroIcon = player.gender === 'boy' ? '👦' : '👧';
 
     const bossHeroIcon = document.getElementById('boss-hero-icon');

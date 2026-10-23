@@ -23,3 +23,14 @@ const weapons={};
 ].forEach(([id,name,dmg,price,type,duration,impactDelay,projectile,hitEffect,color,reach,width,height])=>{
  weapons[id]={name,dmg,price,isSvg:true,icon:weaponSvg(WeaponArt[id],id),visual:{width,height,grip:type==='bow'?50:85},animation:{type,duration,impactDelay,projectile,hitEffect,color,reach,effect:{slash:'slash_arc',heavy:'silver_trail',cast:'charge',thrust:'pierce_line',bow:'golden_trail',ultimate:'energy_arc'}[type],shake:type==='ultimate'?'medium':(dmg>=40&&type!=='cast'?'small':null)}};
 });
+
+// Presentation metadata only; item IDs, damage and prices remain stable.
+const ultimateStyles={
+ wood_sword:{style:'flame',name:'烈焰勇者斬',color:'#ffaf50',accent:'#ffeaa2'},
+ iron_sword:{style:'lightning',name:'閃電拔刀斬',color:'#9aeaff',accent:'#f0fcff'},
+ magic_wand:{style:'arcane',name:'星環魔力洪流',color:'#c598ff',accent:'#ffcfef'},
+ silver_spear:{style:'thunder',name:'雷霆貫穿',color:'#9bbaff',accent:'#f8edab'},
+ golden_bow:{style:'solar',name:'烈陽穿雲箭',color:'#ffd36a',accent:'#ff9858'},
+ diamond_sword:{style:'crystal',name:'星晶極光連斬',color:'#75f1ee',accent:'#c9acff'}
+};
+Object.entries(ultimateStyles).forEach(([id,profile])=>{weapons[id].animation.ultimate=profile;});

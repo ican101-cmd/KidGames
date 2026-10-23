@@ -1,0 +1,14 @@
+{
+  "passed": [
+    "chapter Boss specials stay inactive above half HP",
+    "Apple King waits six seconds, warns, bounces and applies one 3 HP hit without affecting accuracy",
+    "Tortoise waits five seconds, warns, then applies two 3 HP hits 400 ms apart",
+    "retry during charge clears warning animation and delayed damage",
+    "leaving between waves cancels the second hit",
+    "first-wave death cancels the second wave and shows game over once",
+    "Boss death during charge cancels projectile and preserves victory",
+    "reduced-motion skill preserves timing damage and cleanup",
+    "no runtime errors"
+  ],
+  "errors": []
+}

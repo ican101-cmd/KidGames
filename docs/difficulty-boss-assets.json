@@ -1,0 +1,22 @@
+[
+  {
+    "id": "boss-apple-king",
+    "file": "assets/art/boss-apple-king.webp",
+    "size": [
+      640,
+      640
+    ],
+    "bytes": 154012,
+    "alpha": true
+  },
+  {
+    "id": "boss-tide-tortoise",
+    "file": "assets/art/boss-tide-tortoise.webp",
+    "size": [
+      640,
+      585
+    ],
+    "bytes": 185136,
+    "alpha": true
+  }
+]

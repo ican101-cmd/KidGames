@@ -1,0 +1,14 @@
+{
+  "passed": [
+    "easy final Boss uses its own artwork, name and theme HP multiplier",
+    "easy Boss fits five viewport sizes without overlapping hero",
+    "easy Boss attacks, dies, awards original coins and saves route stars",
+    "medium final Boss uses its own artwork, name and theme HP multiplier",
+    "medium Boss fits five viewport sizes without overlapping hero",
+    "medium Boss attacks, dies, awards original coins and saves route stars",
+    "courage UI state and finisher API are removed",
+    "perfect-answer stars and older chapter records survive reload",
+    "no runtime errors"
+  ],
+  "errors": []
+}
