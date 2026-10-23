@@ -8,3 +8,12 @@
 .exp-node[aria-current]:focus-visible{outline:3px solid #fff;outline-offset:6px}
 
 #btn-expedition:disabled{background:linear-gradient(#8c8b94,#676773);color:#e4e0d8;cursor:not-allowed;opacity:.8;transform:none;box-shadow:0 3px 0 #4e4c57}
+
+#expedition-content .btn:hover{transform:none} /* Keep event buttons stable when a tall chest card collapses. */
+.exp-report{margin:12px 0;padding:14px;border:2px solid #c6a36a;border-radius:12px;background:linear-gradient(135deg,#fff9e7,#f1e2b9);color:#4e4534;box-shadow:inset 0 0 0 3px #fff9e780;text-align:left}
+.exp-report>small{font-size:10px;letter-spacing:.8px;color:#806139}.exp-report h3{margin:6px 0 10px}.exp-report p{font-size:13px;line-height:1.5}
+.exp-report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.exp-report-grid span{padding:7px;background:#fff9e7b0;border-radius:6px;font-size:12px}.exp-report-grid b{display:block;font-size:17px;color:#46625b}
+.exp-report-note{color:#766953}.exp-report-tip{border-top:1px solid #ccb58a;padding-top:9px;margin-bottom:0}
+#game-over-screen{overflow:auto;justify-content:flex-start;padding-block:16px}#game-over-screen .hero-modal-box{margin:auto 0;flex-shrink:0}
+.answer-feedback{margin:4px 12px;padding:7px;border:1px solid #dab669;border-radius:8px;background:#fff0cb;color:#705020;font-weight:bold;font-size:14px;text-align:center}
+.answer-feedback[hidden]{display:none}.chapter-first-reward{color:#926320;font-weight:bold;background:#fff0c3;border-radius:8px;padding:8px;font-size:14px}
