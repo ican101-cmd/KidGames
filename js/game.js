@@ -75,7 +75,7 @@
   let isAnswering = false;
   let battleEpoch=0,battleActive=false,ultimateQuestion=false;
   function battleLater(callback,delay){const epoch=battleEpoch;setTimeout(()=>{if(epoch===battleEpoch&&battleActive)callback();},delay);}
-  function stopBattle(){ultimateQuestion=false;document.getElementById('ultimate-button').disabled=true;battleActive=false;battleEpoch++;BossMeteors.stop();BossSpecials.stop();if(timerInterval)clearInterval(timerInterval);}
+  function stopBattle(){document.getElementById("exp-return").hidden=true;ultimateQuestion=false;document.getElementById('ultimate-button').disabled=true;battleActive=false;battleEpoch++;BossMeteors.stop();BossSpecials.stop();if(timerInterval)clearInterval(timerInterval);}
   function defeatHero(){
     if(!battleActive)return;stopBattle();isAnswering=true;
     document.querySelectorAll('.fruit-btn').forEach(b=>b.classList.add('disabled'));
@@ -84,17 +84,17 @@
   }
   function startBossMeteors(){
     const epoch=battleEpoch;
-    BossMeteors.start(()=>battleActive&&epoch===battleEpoch&&mode==='boss'&&level===5&&Adventure.state.phase===2&&slimeHp>0&&playerHp>0,()=>{
-      playerHp=Math.max(0,playerHp-5);updateBars();
-      const hero=document.getElementById('player-visual-box');BattleEffects.burst(hero,'smallHit','#ffc77a');BattleEffects.damage(hero,5);safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));
+    BossMeteors.start(()=>battleActive&&epoch===battleEpoch&&Expedition.bossMode(mode)==='boss'&&level===5&&Adventure.state.phase===2&&slimeHp>0&&playerHp>0,()=>{
+      const damage=Expedition.damage(6);playerHp=Math.max(0,playerHp-damage);updateBars();
+      const hero=document.getElementById('player-visual-box');BattleEffects.burst(hero,'smallHit','#ffc77a');BattleEffects.damage(hero,damage);safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));
       if(playerHp<=0)defeatHero();
     });
   }
 
   function startChapterBossSpecial(){
-    const epoch=battleEpoch,kind=mode;
-    BossSpecials.start(kind,()=>battleActive&&epoch===battleEpoch&&mode===kind&&level===5&&Adventure.state.phase===2&&slimeHp>0&&playerHp>0,(amount,color)=>{
-      playerHp=Math.max(0,playerHp-amount);updateBars();
+    const epoch=battleEpoch,kind=Expedition.bossMode(mode);
+    BossSpecials.start(kind,()=>battleActive&&epoch===battleEpoch&&Expedition.bossMode(mode)===kind&&level===5&&Adventure.state.phase===2&&slimeHp>0&&playerHp>0,(amount,color)=>{
+      amount=Expedition.damage(amount);playerHp=Math.max(0,playerHp-amount);updateBars();
       const hero=document.getElementById('player-visual-box');BattleEffects.burst(hero,kind==='easy'?'smallHit':'magicHit',color);BattleEffects.damage(hero,amount);safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));
       if(playerHp<=0)defeatHero();
     },cue=>safePlayAudio(()=>WeaponAudio.bossSkill(audioCtx,kind,cue)));
@@ -170,7 +170,7 @@
     }
 
     WorldArt.apply(level, mode, player.bg);
-    Adventure.scene(level,mode==='boss'&&level===5);
+    Adventure.scene(level,Expedition.bossMode(mode)==='boss'&&level===5);
     playerMaxHp = calculateMaxHp();
     renderArmorVisuals('hero-armor-layer');
     document.querySelectorAll('.rpg-hero').forEach(el => el.classList.toggle('girl', player.gender === 'girl'));
@@ -220,7 +220,8 @@
     Adventure.begin();
     isAnswering = false;
     playerMaxHp = calculateMaxHp();
-    playerHp = playerMaxHp;
+    playerHp = Expedition.active?Expedition.run.entryHp:playerMaxHp;
+    document.getElementById("exp-return").hidden=!Expedition.active;
 
     const slimeElem = document.getElementById('slime-svg-elem');
     const bossElem = document.getElementById('boss-svg-elem');
@@ -264,7 +265,8 @@
       }
     }
     WorldArt.apply(level, mode, player.bg);
-    Adventure.scene(level,mode==='boss'&&level===5);
+    Adventure.scene(level,Expedition.bossMode(mode)==='boss'&&level===5);
+    if(Expedition.active&&(Expedition.run.step===6||Expedition.run.step===4&&Expedition.run.branch==="risk"))slimeMaxHp=Math.round(slimeMaxHp*1.25);
     slimeHp = slimeMaxHp;
 
     document.getElementById('current-level').innerText = level;
@@ -353,7 +355,8 @@
       area.appendChild(btn);
     });
 
-    timeLeft = seconds===null?Adventure.answerSeconds(Math.max(5,15-(level-1)*2),mode==='boss'&&level===5):seconds;
+    timeLeft = seconds===null?Adventure.answerSeconds(Math.max(5,15-(level-1)*2),Expedition.bossMode(mode)==='boss'&&level===5):seconds;
+    if(seconds===null&&Expedition.has("sandglass"))timeLeft++;
     document.getElementById('timer').innerText = timeLeft;
     timerInterval = setInterval(() => {
       timeLeft--;
@@ -374,8 +377,8 @@
     document.querySelectorAll('.fruit-btn').forEach(b => b.classList.add('disabled'));
     document.getElementById('ultimate-button').disabled=true;
     Adventure.answer(false);
-    if(Adventure.bossFor(mode,level))safePlayAudio(()=>WeaponAudio.bossAttack(audioCtx,mode));
-    await WeaponAnimationSystem.enemyAttack(() => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;playerHp = Math.max(0,playerHp-20); updateBars(); safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit')); },Adventure.enemyProfile(level,mode==='boss'&&level===5));
+    if(Adventure.bossFor(mode,level))safePlayAudio(()=>WeaponAudio.bossAttack(audioCtx,Expedition.bossMode(mode)));
+    await WeaponAnimationSystem.enemyAttack(() => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;const damage=Expedition.damage(20);playerHp = Math.max(0,playerHp-damage); updateBars(); safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));return damage; },Adventure.enemyProfile(level,Expedition.bossMode(mode)==='boss'&&level===5));
 
     if(epoch!==battleEpoch||!battleActive)return;
     if(playerHp<=0)defeatHero();else battleLater(()=>generateQuestion(),700);
@@ -652,7 +655,7 @@
   };
 
   window.exportSaveFile = function() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(player));
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({...player,expedition:Expedition.export()}));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
     downloadAnchor.setAttribute("download", `fruit_game_save_${new Date().toISOString().slice(0,10)}.json`);
@@ -667,7 +670,8 @@
       try {
         const importedData = JSON.parse(e.target.result);
         if (importedData && typeof importedData.coins === 'number') {
-          player = Object.assign({}, player, importedData);
+          if(importedData.expedition){Expedition.load(importedData.expedition);localStorage.setItem("fruit_expedition_v1",JSON.stringify(Expedition.export()));}
+          player = Object.assign({}, player, importedData);delete player.expedition;
           saveGame();
           alert('🎉 存檔載入成功！');
         } else {
@@ -683,6 +687,7 @@
   window.resetAllSaveData = function() {
     if (confirm("⚠️ 確定要清除所有存檔資料嗎？")) {
       Object.keys(localStorage).filter(k => k.startsWith('fruit_')).forEach(k => localStorage.removeItem(k));
+      Expedition.reset();
       player = {
         gender: 'boy',
         coins: 0,
@@ -728,14 +733,15 @@
 
       safePlayAudio();
       const baseWeapon=weapons[player.weapon]||weapons.wood_sword;
-      const wObj=empowered?{...baseWeapon,dmg:baseWeapon.dmg*2}:baseWeapon;
+      const wObj={...baseWeapon,dmg:empowered?baseWeapon.dmg*2:baseWeapon.dmg+(Expedition.has("hunter")?5:0)};
       Adventure.answer(true);
-      await WeaponAnimationSystem.attack(wObj, () => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;slimeHp -= wObj.dmg;if(slimeHp<=0){BossMeteors.stop();BossSpecials.stop();} updateBars(); Adventure.phase(slimeHp,slimeMaxHp,mode==='boss'&&level===5); },{empowered});
+      await WeaponAnimationSystem.attack(wObj, () => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;slimeHp -= wObj.dmg;if(empowered&&Expedition.has("focus"))playerHp=Math.min(playerMaxHp,playerHp+3);if(slimeHp<=0){BossMeteors.stop();BossSpecials.stop();} updateBars(); Adventure.phase(slimeHp,slimeMaxHp,Expedition.bossMode(mode)==='boss'&&level===5); },{empowered});
 
       if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;
       if (slimeHp <= 0) {
         await BattleEffects.death(document.getElementById("slime-container"));
         if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;
+        if(Expedition.active){Expedition.win(playerHp);return;}
         let baseReward = 0;
         if (mode === 'boss') {
           baseReward = (level === 5) ? 300 : 0;
@@ -784,6 +790,7 @@
     safePlayAudio();mode=selectedMode;level=selectedLevel;document.getElementById('mode-select').style.display='none';document.getElementById('adventure-map').style.display='none';startLevel();
   };
   window.retryCurrentLevel = function() {
+    if(Expedition.active){document.getElementById("game-over-screen").style.display="none";Expedition.open();return;}
     
     safePlayAudio();
     const gameOverScreen = document.getElementById('game-over-screen');
@@ -792,6 +799,7 @@
   };
 
   window.endAdventureFromGameOver = function() {
+    if(Expedition.active){document.getElementById("game-over-screen").style.display="none";Expedition.open();return;}
     stopBattle();
     safePlayAudio();
     if (timerInterval) clearInterval(timerInterval);
@@ -814,6 +822,7 @@
   };
 
   window.endAdventure = function() {
+    if(Expedition.active){document.getElementById("game-over-screen").style.display="none";Expedition.open();return;}
     stopBattle();
     safePlayAudio();
     if (timerInterval) clearInterval(timerInterval);
@@ -872,4 +881,6 @@
   }
 
   // 初始化遊戲 UI
+  Expedition.recover();
   saveGame();
+

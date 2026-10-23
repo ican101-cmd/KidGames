@@ -43,7 +43,7 @@ Question number ranges, weapon damage, enemy HP and other modes' time limits
 remain unchanged. New run/retry returns the Boss to phase one and seven seconds.
 The enemy trait label explicitly announces the five-second limit.
 
-Second-phase meteors additionally deal 5 HP per wave every two seconds; see boss-meteors.md.
+Second-phase meteors additionally deal 6 HP per wave every three seconds; see boss-meteors.md.
 
 Easy and medium chapter-five bosses now have 150/180 base HP respectively;
 see difficulty-bosses.md. Earlier HP-preservation notes refer to normal chapters.

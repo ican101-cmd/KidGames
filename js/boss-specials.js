@@ -1,6 +1,6 @@
 // Shared cancellable scheduler for the two chapter Boss skills.
 const BossSpecials=(()=>{
- const profiles={easy:{interval:6000,warning:800,text:'果凍彈來了！',color:'#f3df83'},medium:{interval:5000,warning:1000,text:'雙重潮汐，準備迎擊！',color:'#a4e9ff'}};
+ const profiles={easy:{interval:5000,warning:800,text:'果凍彈來了！',color:'#f3df83'},medium:{interval:4000,warning:1000,text:'雙重潮汐，準備迎擊！',color:'#a4e9ff'}};
  let timer=null,generation=0;const nodes=new Set(),sleeps=new Map(),animations=new Set();
  function stop(){delete document.getElementById('battle-stage').dataset.skillCharge;generation++;clearTimeout(timer);timer=null;for(const [id,resolve] of sleeps){clearTimeout(id);resolve(false);}sleeps.clear();for(const animation of animations)animation.cancel();animations.clear();for(const node of nodes)node.remove();nodes.clear();}
  function wait(ms){return new Promise(resolve=>{const id=setTimeout(()=>{sleeps.delete(id);resolve(true);},ms);sleeps.set(id,resolve);});}

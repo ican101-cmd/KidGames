@@ -8,7 +8,7 @@ Purchased theme HP/reward multipliers still apply. Both counterattacks retain
 20 HP damage; chapter answer time remains 7 seconds. Existing 10/20 coin rewards
 and medium-mode dragon unlock remain intact. No meteor rain or dragon transformation in these
 two modes. Half-HP chapter skills are documented in chapter-boss-specials.md. Dragon mode retains 200 base HP, awakening, five-second phase-two
-questions and two-second meteor waves.
+questions and three-second meteor waves.
 
 The courage bar, charge/ready/consume API and finisher effects are removed.
 Stars now mean clear / >=80% accuracy / perfect accuracy. No streak requirement.

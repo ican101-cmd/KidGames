@@ -11,6 +11,7 @@ const WorldArt = (() => {
   let nextScene;
   const preloaded = new Set();
   function apply(level, mode, theme) {
+    mode=typeof Expedition!=="undefined"?Expedition.bossMode(mode):mode;
     const scene = scenes[Math.max(0,Math.min(scenes.length-1,level-1))];
     const stage=document.getElementById('battle-stage');
     stage.dataset.scene=scene.id;

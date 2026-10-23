@@ -1,4 +1,4 @@
-// One cancellable hazard timer. Five visual meteors constitute ONE 5 HP wave.
+// One cancellable hazard timer. Five visual meteors constitute ONE 6 HP wave.
 const BossMeteors=(()=>{
  let timer=null,generation=0;const nodes=new Set();
  function stop(){generation++;clearTimeout(timer);timer=null;for(const node of nodes){node.getAnimations().forEach(a=>a.cancel());node.remove();}nodes.clear();}
@@ -17,6 +17,6 @@ const BossMeteors=(()=>{
   if(token===generation&&valid())impact();
   await Promise.all(flights);
  }
- function start(valid,impact){stop();const token=generation;function tick(){if(token!==generation)return;if(!valid()){stop();return;}timer=setTimeout(tick,2000);if(!document.hidden)rain(valid,impact,token);}timer=setTimeout(tick,2000);}
+ function start(valid,impact){stop();const token=generation;function tick(){if(token!==generation)return;if(!valid()){stop();return;}timer=setTimeout(tick,3000);if(!document.hidden)rain(valid,impact,token);}timer=setTimeout(tick,3000);}
  return{start,stop,get running(){return timer!==null;}};
 })();

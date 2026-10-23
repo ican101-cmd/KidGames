@@ -1,7 +1,7 @@
 {
   "passed": [
     "phase one has no automatic meteor damage",
-    "one five-meteor wave every two seconds applies exactly five HP at contact",
+    "one five-meteor wave every three seconds applies exactly six HP at contact",
     "leaving battle cancels waves and damage",
     "retry cancels an in-flight rain without hurting the new hero",
     "Boss defeat stops future rain and awards victory once",

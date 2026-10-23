@@ -37,7 +37,7 @@ JSON 匯出／匯入支援新進度及舊版檔案。詳見 docs/adventure-progr
 node tests/armor.cjs 和 node tests/audio.cjs。
 
 ## 覺醒流星雨
-巨龍第二階段每兩秒發射一波流星，右上往左下快速落下，整波命中扣 5 HP。
+巨龍第二階段每三秒發射一波流星，右上往左下快速落下，整波命中扣 6 HP。
 答題與攻擊期間均會持續，死亡、重試、離場及 Boss 倒下會停止。
 支援降低動態效果。測試：node tests/meteors.cjs，細節見 docs/boss-meteors.md。
 
@@ -47,8 +47,8 @@ node tests/armor.cjs 和 node tests/audio.cjs。
 素材與提示詞：docs/difficulty-bosses.md；測試：node tests/difficulty-bosses.cjs。
 
 ## 關卡 Boss 絕技
-普通 Boss 半血後每 6 秒蓄力，預警 0.8 秒後發射兩次彈跳的皇家果凍彈，
-命中扣 3 HP。中等 Boss 半血後每 5 秒蓄力，預警 1 秒後發出雙重潮汐，
+普通 Boss 半血後每 5 秒蓄力，預警 0.8 秒後發射兩次彈跳的皇家果凍彈，
+命中扣 3 HP。中等 Boss 半血後每 4 秒蓄力，預警 1 秒後發出雙重潮汐，
 兩道水浪相隔 0.4 秒命中，各扣 3 HP。兩者保留 7 秒作答時間及原答錯反擊，
 特殊攻擊不影響答題正確率。死亡、通關、重試與離場會清除預警及飛行中的攻擊。
 詳見 docs/chapter-boss-specials.md；測試：node tests/boss-specials.cjs。
@@ -64,3 +64,6 @@ node tests/armor.cjs 和 node tests/audio.cjs。
 特效資料在 weapons[].animation.ultimate，呈現由 js/ultimate-vfx.js 管理；
 傷害、作答與存檔規則保持不變。詳見 docs/weapon-ultimate-vfx.md，
 測試：node tests/weapon-ultimate-vfx.cjs。
+
+## 手繪冒險遠征
+通關巨龍後，從主選單進入七站手繪世界地圖；包含岔路、精英、營火、臨時能力與進度續玩。詳見 docs/expedition-implementation.md。
