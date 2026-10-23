@@ -1,9 +1,9 @@
 # Awakened Boss meteor rain
 
-Second-phase activation starts one cancellable recursive 2-second timeout. The
-first wave launches two seconds after awakening; lead impact is 420 ms later.
+Second-phase activation starts one cancellable recursive 3-second timeout. The
+first wave launches three seconds after awakening; lead impact is 420 ms later.
 Five short staggered meteors descend from stage upper right toward the hero at
-lower left. A whole wave deducts exactly 5 HP once at lead contact, not per sprite.
+lower left. A whole wave deducts exactly 6 HP once at lead contact, not per sprite.
 Meteor damage is independent of question countdown and weapon/counterattack motion.
 It does not count as a wrong answer or remove courage. Standard wrong-answer
 counterattacks remain 20 HP; phase-two answer time remains five seconds.

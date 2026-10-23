@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="css/game.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/illustrations.css">
-  <link rel="stylesheet" href="css/adventure.css">
+  <link rel="stylesheet" href="css/adventure.css"><link rel="stylesheet" href="css/expedition.css">
 </head>
 <body>
 <div id="game-container">
@@ -26,7 +26,7 @@
 
   <!-- 1. 角色選擇畫面 -->
   <div id="character-select" class="overlay-screen" style="display: none;">
-    <h2 id="clear-title" style="color: #2e7d32; margin-top: 0;">⚔️ 選擇你的勇者</h2>
+    <h2 style="color: #2e7d32; margin-top: 0;">⚔️ 選擇你的勇者</h2>
     <div class="avatar-container">
       <div class="avatar-card selected" id="card-boy" onclick="window.selectChar('boy')"><img class="selection-portrait" src="assets/art/hero-boy.webp" alt="男孩勇者：藍色冒險服與紫色披風" width="100" height="150">
         <span>男孩勇者</span>
@@ -52,7 +52,7 @@
       <input type="file" id="import-file-input" style="display:none;" accept=".json" onchange="window.importSaveFile(event)">
     </div>
     <div style="display: flex; flex-direction: column; gap: 10px; width: 85%;">
-      <button class="btn btn-green" onclick="window.startGame('easy')">普通 (個位數加減)</button>
+      <button class="btn btn-purple" onclick="Expedition.open()">🧭 冒險遠征 · 世界地圖</button><button class="btn btn-green" onclick="window.startGame('easy')">普通 (個位數加減)</button>
       <button class="btn btn-orange" onclick="window.startGame('medium')">中等 (11-20 加減)</button>
       <button id="btn-boss" class="btn btn-purple" style="display: none;" onclick="window.startGame('boss')">👹 魔王難度 (雙位數挑戰)</button>
     </div>
@@ -98,7 +98,7 @@
   <!-- 4. 關卡通關獎勵畫面 -->
   <div id="level-cleared-screen" class="overlay-screen" style="display: none;">
     <div class="hero-modal-box">
-      <h2 style="color: #2e7d32; margin: 0;">🎉 順利擊敗怪物！</h2>
+      <h2 id="clear-title" style="color: #2e7d32; margin: 0;">🎉 順利擊敗怪物！</h2>
       <div style="font-size: 38px; margin: 5px 0;">⭐ 🪙 ⭐</div>
       <p id="clear-stars" class="clear-stars"></p><p style="margin: 0; font-size: 16px; color: #444;">獲得獎勵金幣：<b id="level-reward-text" style="color: #f57f17;">+10</b> 🪙</p>
       
@@ -209,14 +209,13 @@
       <div class="bar-text"><span id="enemy-title-text">史萊姆</span> HP: <span id="slime-hp-text">100/100</span></div>
     </div>
     </div>
-    <span id="boss-special-status" class="sr-only" role="status"></span><div id="enemy-trait" aria-live="polite"></div><div id="effect-layer" class="effect-layer" aria-hidden="true"></div>
+    <span id="boss-special-status" class="sr-only" role="status"></span><div id="effect-layer" class="effect-layer" aria-hidden="true"></div>
   </div>
-  <p class="battle-hint">選出正確的水果答案，幫勇者出招！</p>
+  <button id="exp-return" hidden onclick="Expedition.open()">🧭 暫停並返回遠征地圖</button><p class="battle-hint">選出正確的水果答案，幫勇者出招！</p>
   <div id="question-box" aria-live="polite">? + ? = ?</div>
   <div id="fruits-area"></div>
   <div class="ultimate-controls"><button id="ultimate-button" class="btn ultimate-button" onclick="activateUltimate()" disabled><svg class="ultimate-sigil" viewBox="0 0 56 56" aria-hidden="true"><path d="M28 3 48 12 45 34 28 51 11 34 8 12Z" fill="#263d55" stroke="#efd28c" stroke-width="2"/><path d="m13 40 26-29 6-1-1 6-28 27Z" fill="#e3f8ef" stroke="#614c43" stroke-width="1.4"/><path d="m15 29 12 12-4 3-11-11Z" fill="#e4b96d" stroke="#72503c"/><path d="m12 39-5 6 4 4 6-6" fill="#98744e" stroke="#f7db93"/><path d="m28 17 9 11-9 12-9-12Z" fill="#65d8d5" stroke="#f6dfa3" stroke-width="2"/><path d="m28 20 0 15-6-7Z" fill="#d1fff1"/><path d="M14 12h5m18 0h5M26 7h4" stroke="#ffe7b3" stroke-width="1.5"/></svg><span class="ultimate-button-copy"><span class="ultimate-button-title">啟動必殺題</span><small id="ultimate-button-hint">三數連加 · 答對傷害 ×2</small></span></button></div>
-</div>
-
+<section id="expedition-screen" hidden aria-labelledby="expedition-title"><header><div><small>FRUIT KINGDOM · EXPEDITION</small><h2 id="expedition-title">冒險遠征</h2><p id="expedition-progress" role="status"></p></div><button class="btn btn-blue" data-action="close">回選單</button></header><div class="exp-scroll"><div class="exp-map"><img src="assets/art/expedition-world.webp" width="900" height="1350" alt="手繪水果王國地圖：南方草原、古木森林、碧海遺跡、夕照峽谷及北方星月龍堡"><div id="expedition-route"></div></div><div id="expedition-content" aria-live="polite"></div></div></section></div>
 <script src="js/weapons.js"></script>
 <script src="js/audio.js"></script>
 <script src="js/ultimate-vfx.js"></script>
@@ -226,6 +225,6 @@
 <script src="js/meteors.js"></script>
 <script src="js/boss-specials.js"></script>
 <script src="js/adventure.js"></script>
-<script src="js/game.js"></script>
+<script src="js/expedition.js"></script><script src="js/game.js"></script>
 </body>
 </html>
