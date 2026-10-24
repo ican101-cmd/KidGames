@@ -69,3 +69,6 @@ button:focus-visible,.avatar-card:focus-visible{outline:3px solid #287b92;outlin
 @media(prefers-reduced-motion:reduce){.opening-halo,.opening-glints{animation:none}}
 .shop-stat{font-size:12px;color:#46625b;line-height:1.5;overflow-wrap:anywhere}
 .shop-card-left{min-width:0}.shop-card-left>div:last-child{min-width:0}.shop-card>button{flex-shrink:0}
+#battle-stage.forest-mist .background-layer:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 15%,#e8f5df75 48%,transparent 78%);opacity:.65;animation:forestMistDrift 5s ease-in-out infinite alternate}
+@keyframes forestMistDrift{to{transform:translateX(12px);opacity:.35}}
+@media(prefers-reduced-motion:reduce){#battle-stage.forest-mist .background-layer:after{animation:none}}

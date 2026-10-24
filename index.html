@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="css/leaderboard.css">
 <link rel="stylesheet" href="css/intro.css">
 <link rel="stylesheet" href="css/chests.css">
+<link rel="stylesheet" href="css/interface.css"><link rel="stylesheet" href="css/expedition-victory.css">
 </head>
 <body>
 <div id="game-container">
@@ -23,7 +24,7 @@
 
   <!-- 1. 角色選擇畫面 -->
   <div id="character-select" class="overlay-screen" style="display: none;">
-    <h2 style="color: #2e7d32; margin-top: 0;">⚔️ 選擇你的勇者</h2>
+    <header class="functional-heading"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m5 19 13-15 3-1-1 4L7 21Zm0-8 8 8m-9 3 3-3"/></svg><div><small>HERO · 冒險啟程</small><h2>選擇你的勇者</h2></div></header>
     <div class="avatar-container">
       <div class="avatar-card selected" id="card-boy" onclick="window.selectChar('boy')"><img class="selection-portrait" src="assets/art/hero-boy.webp" alt="男孩勇者：藍色冒險服與紫色披風" width="100" height="150">
         <span>男孩勇者</span>
@@ -36,38 +37,44 @@
   </div>
 
   <!-- 2. 難度選擇畫面與主選單 -->
-  <div id="mode-select" class="overlay-screen" style="display: none;"><svg class="landscape" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#89d8f1"/><stop offset="1" stop-color="#e7f7da"/></linearGradient></defs><path fill="url(#sky)" d="M0 0H600V300H0Z"/><circle cx="475" cy="55" r="30" fill="#fff2b1"/><g fill="#fff" opacity=".8"><path d="M40 65Q40 48 60 49Q73 22 95 49Q121 44 126 65Z"/><path d="M315 40Q318 24 335 28Q350 6 367 26Q395 23 398 40Z"/></g><path d="M0 205L100 88 194 182 295 75 430 189 510 104 600 185V300H0Z" fill="#8bbbc1"/><path d="M255 120L295 75 345 125 310 114 293 126 278 112Z" fill="#edf8ed"/><path d="M0 220Q100 150 240 205T600 190V300H0Z" fill="#85bf87"/><g fill="#f8ecd0" stroke="#9cb2a0" stroke-width="2"><path d="M370 180V130H393V162H414V118H438V180Z"/><path d="M365 132L381 110 398 132ZM409 119L426 96 443 119Z" fill="#6ba2b5"/><path d="M397 180V164Q405 151 413 164V180Z" fill="#759994"/></g><path d="M0 252Q140 188 300 247T600 228V300H0Z" fill="#b5d987"/><path d="M310 300Q340 250 403 180Q375 244 378 300" fill="#f8e8aa"/><g fill="#fff8d3"><circle cx="80" cy="260" r="3"/><circle cx="100" cy="250" r="3"/><circle cx="510" cy="260" r="3"/></g></svg><img class="scene-art" src="assets/art/stage-1-meadow.webp" alt="" width="1280" height="853" decoding="async"><div class="menu-hero rpg-hero" aria-hidden="true"><img class="hero-art-boy" src="assets/art/hero-boy.webp" alt=""><img class="hero-art-girl" src="assets/art/hero-girl.webp" alt=""></div><div class="menu-kicker">FRUIT KINGDOM · 冒險之章</div>
-    <h1 style="color: #00796b; margin-top: 0; margin-bottom: 8px;">水果王國<br>大冒險</h1>
-    <div style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; justify-content: center;">
-      <button class="btn btn-green" style="font-size:12px;padding:6px 12px" onclick="Adventure.map()">🗺️ 冒險地圖</button>
-      <button class="btn btn-orange" style="font-size:12px; padding:6px 12px;" onclick="window.openShop()">🏪 裝備商店</button>
-      <button class="btn btn-blue" style="font-size:12px; padding:6px 12px;" onclick="window.openHeroInspector()">🔍 檢視角色</button>
-      <button class="btn btn-purple" style="font-size:12px; padding:6px 12px;" onclick="window.openRedeemModal()">🎁 獎勵碼</button>
+  <div id="mode-select" class="overlay-screen" style="display: none;"><svg class="landscape" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#89d8f1"/><stop offset="1" stop-color="#e7f7da"/></linearGradient></defs><path fill="url(#sky)" d="M0 0H600V300H0Z"/><circle cx="475" cy="55" r="30" fill="#fff2b1"/><g fill="#fff" opacity=".8"><path d="M40 65Q40 48 60 49Q73 22 95 49Q121 44 126 65Z"/><path d="M315 40Q318 24 335 28Q350 6 367 26Q395 23 398 40Z"/></g><path d="M0 205L100 88 194 182 295 75 430 189 510 104 600 185V300H0Z" fill="#8bbbc1"/><path d="M255 120L295 75 345 125 310 114 293 126 278 112Z" fill="#edf8ed"/><path d="M0 220Q100 150 240 205T600 190V300H0Z" fill="#85bf87"/><g fill="#f8ecd0" stroke="#9cb2a0" stroke-width="2"><path d="M370 180V130H393V162H414V118H438V180Z"/><path d="M365 132L381 110 398 132ZM409 119L426 96 443 119Z" fill="#6ba2b5"/><path d="M397 180V164Q405 151 413 164V180Z" fill="#759994"/></g><path d="M0 252Q140 188 300 247T600 228V300H0Z" fill="#b5d987"/><path d="M310 300Q340 250 403 180Q375 244 378 300" fill="#f8e8aa"/><g fill="#fff8d3"><circle cx="80" cy="260" r="3"/><circle cx="100" cy="250" r="3"/><circle cx="510" cy="260" r="3"/></g></svg><img class="scene-art" src="assets/art/stage-1-meadow.webp" alt="" width="1280" height="853" decoding="async"><header class="menu-brand" aria-label="水果王國大冒險">
+      <div class="menu-hero rpg-hero" aria-hidden="true"><img class="hero-art-boy" src="assets/art/hero-boy.webp" alt=""><img class="hero-art-girl" src="assets/art/hero-girl.webp" alt=""></div>
+      <div class="menu-logo"><span class="logo-eyebrow">FRUIT KINGDOM</span><svg class="logo-crest" viewBox="0 0 100 32" aria-hidden="true"><path d="M8 21 27 17 37 25 50 13 63 25 73 17 92 21" fill="none" stroke="#f2d792" stroke-width="2"/><path d="M50 12C31 5 35 28 50 28 65 28 69 5 50 12Z" fill="#f1b557" stroke="#76502e" stroke-width="2"/><path d="M50 12Q49 1 60 3Q60 11 50 12Z" fill="#70aa6e" stroke="#375e48" stroke-width="1.5"/></svg><h1 aria-label="水果王國大冒險"><svg class="sculpted-title" viewBox="-12 0 668 194" aria-hidden="true"><defs><linearGradient id="title-ocean" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#67e7e3"/><stop offset=".45" stop-color="#1687a0"/><stop offset="1" stop-color="#12435d"/></linearGradient></defs><path d="M28 164Q322 103 616 164Q322 131 28 164Z" fill="#f5d88e" stroke="#82603b" stroke-width="2"/><g class="title-lettering" transform="translate(0 10)" fill="#856242" stroke="#856242" stroke-width="10"><text x="52" y="143" font-size="92" transform="rotate(-12 52 143)">水</text><text x="142" y="132" font-size="80" transform="rotate(-8 142 132)">果</text><text x="232" y="125" font-size="68" transform="rotate(-4 232 125)">王</text><text x="322" y="121" font-size="62" transform="rotate(0 322 121)">國</text><text x="412" y="125" font-size="68" transform="rotate(4 412 125)">大</text><text x="502" y="132" font-size="80" transform="rotate(8 502 132)">冒</text><text x="592" y="143" font-size="92" transform="rotate(12 592 143)">險</text></g><g class="title-lettering" fill="url(#title-ocean)" stroke="#ffe9b7" stroke-width="7" paint-order="stroke fill"><text x="52" y="143" font-size="92" transform="rotate(-12 52 143)">水</text><text x="142" y="132" font-size="80" transform="rotate(-8 142 132)">果</text><text x="232" y="125" font-size="68" transform="rotate(-4 232 125)">王</text><text x="322" y="121" font-size="62" transform="rotate(0 322 121)">國</text><text x="412" y="125" font-size="68" transform="rotate(4 412 125)">大</text><text x="502" y="132" font-size="80" transform="rotate(8 502 132)">冒</text><text x="592" y="143" font-size="92" transform="rotate(12 592 143)">險</text></g><path d="m296 28 26-13 26 13-26 14Z" fill="#f5ce72" stroke="#805d35" stroke-width="2"/><path d="M322 15Q313-1 301 5q2 13 21 10m0 0q4-15 18-14-1 12-18 14" fill="#72a46c" stroke="#365f4c" stroke-width="2"/></svg></h1><span class="logo-ribbon">✦ 讓答案，化作勇氣 ✦</span></div>
+    </header>
+    <div class="mode-cards">
+      <section class="mode-card story-mode-card" aria-labelledby="story-card-title">
+        <span class="mode-card-emblem" aria-hidden="true">✦</span><div class="mode-card-copy"><small>STORY · 王國篇章</small><h2 id="story-card-title">故事模式</h2><p>穿越五大地域，挑戰守護魔王。</p></div>
+        <button id="story-mode-open" class="btn btn-green" onclick="Adventure.map()">展開故事 →</button>
+      </section>
+      <section class="mode-card expedition-mode-card" aria-labelledby="expedition-card-title">
+        <span class="mode-card-emblem" aria-hidden="true">⌖</span><div class="mode-card-copy"><small>EXPEDITION · 遠方旅程</small><h2 id="expedition-card-title">冒險遠征</h2><p>七站旅程，體力延續、沿途成長。</p></div>
+        <button id="btn-expedition" class="btn btn-green" onclick="ExpeditionGate.enter()">遠征之門 · 尚未解封</button>
+        <p id="expedition-unlock-note" class="mode-unlock-note">故事模式擊敗暮星巨龍後解鎖</p>
+        <button id="menu-leaderboard" class="btn mode-ranking-button" onclick="Leaderboard.open()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v9a5 5 0 0 1-10 0Zm0 3H3v4q0 4 5 4m9-8h4v4q0 4-5 4m-4 3v4m-5 0h10"/></svg> 遠征排行榜</button>
+      </section>
+    </div>
+    <div class="menu-utilities" aria-label="勇者準備與設定">
+      <button class="btn btn-blue" style="font-size:12px; padding:6px 12px;" onclick="window.openShop()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18L19 4H5Zm2 0v11h14V10M9 21v-7h6v7"/></svg> 裝備商店</button>
+      <button class="btn btn-blue" style="font-size:12px; padding:6px 12px;" onclick="window.openHeroInspector()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3a7 7 0 1 0 0 14 7 7 0 0 0 0-14m5 12 6 6"/></svg> 檢視角色</button>
+<details class="traveler-handbook"><summary>✦ 旅人手冊 · 存檔與設定</summary><div>      <button class="btn btn-purple" style="font-size:12px; padding:6px 12px;" onclick="window.openRedeemModal()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16v11H4Zm-1-4h18v4H3Zm9 0v15M12 6C4 7 5-2 12 6c7-8 8 1 0 0"/></svg> 獎勵碼</button>
       <button class="btn btn-blue" style="font-size:12px; padding:6px 12px;" onclick="window.exportSaveFile()">💾 匯出存檔</button>
       <button class="btn btn-gray" style="font-size:12px; padding:6px 12px;" onclick="document.getElementById('import-file-input').click()">📂 載入存檔</button>
-      <button class="btn btn-red" style="font-size:12px; padding:6px 12px;" onclick="window.resetAllSaveData()">🗑️ 清除存檔</button>
+      <button class="btn btn-red" style="font-size:12px; padding:6px 12px;" onclick="window.resetAllSaveData()">🗑️ 清除存檔</button></div></details>
       <input type="file" id="import-file-input" style="display:none;" accept=".json" onchange="window.importSaveFile(event)">
-    </div>
-    <div style="display: flex; flex-direction: column; gap: 10px; width: 85%;">
-      <button class="btn btn-green" onclick="window.startGame('easy')">普通 (個位數加減)</button>
-      <button class="btn btn-orange" onclick="window.startGame('medium')">中等 (11-20 加減)</button>
-      <button id="btn-boss" class="btn btn-purple" style="display: none;" onclick="window.startGame('boss')">👹 魔王難度 (雙位數挑戰)</button>
-      <button id="btn-expedition" class="btn btn-purple" onclick="Expedition.open()" disabled title="擊敗魔王難度最後一關的巨龍後解鎖">冒險遠征 [封印狀態]</button>
-      <button class="btn btn-blue" onclick="Leaderboard.open()">🏆 遠征排行榜</button>
     </div>
   </div>
 
   <div id="adventure-map" class="overlay-screen" style="display:none;z-index:36" role="dialog" aria-modal="true" aria-labelledby="map-title">
-    <h2 id="map-title">水果王國冒險地圖</h2><p class="map-description">通關點亮路線，收集每關三枚星章！</p>
-    <div class="map-tabs"><button data-map-mode="easy" class="btn btn-green">普通</button><button data-map-mode="medium" class="btn btn-orange">中等</button><button data-map-mode="boss" class="btn btn-purple">魔王</button></div>
-    <div id="map-nodes"></div><p class="map-description">★ 完成關卡　★ 正確率達 80%　★ 全題答對</p>
-    <button class="btn btn-blue" onclick="document.getElementById('adventure-map').style.display='none'">返回選單</button>
+    <header class="functional-heading"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5q4-2 8 0 4-2 8 0v14q-4-2-8 0-4-2-8 0Zm8 0v14"/></svg><div><small>STORY · 王國公會</small><h2 id="map-title">故事模式 · 王國篇章</h2></div></header><p class="map-description">先選冒險難度，再選擇章節；通關點亮下一站！</p>
+    <div class="map-tabs"><button data-map-mode="easy" class="btn btn-green">悠閒冒險</button><button data-map-mode="medium" class="btn btn-orange">勇者試煉</button><button data-map-mode="boss" class="btn btn-purple">傳說挑戰</button></div>
+    <div id="map-nodes"></div><p class="map-description">✦ 通關：擊敗敵人　◆ 智慧：全題答對<br>➤ 疾風：普通題至少 3 題、正確率 ≥80%<br>平均耗時比例 ≤50%／60%／65%（依難度）</p>
+    <button class="btn btn-gray" onclick="document.getElementById('adventure-map').style.display='none'">返回主選單</button>
   </div>
   <!-- 2.5 兌換獎勵碼 Modal -->
   <div id="redeem-modal-screen" class="overlay-screen" style="display: none; z-index: 50;">
     <div class="hero-modal-box">
-      <h2 style="color: #9c27b0; margin: 0;">🎁 輸入兌換獎勵碼</h2>
-      <input type="text" id="code-input" class="code-input-box" autocomplete="off">
+      <header class="functional-heading"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16v11H4Zm-1-4h18v4H3Zm9 0v15M12 6C4 7 5-2 12 6c7-8 8 1 0 0"/></svg><div><small>GUILD · 公會贈禮</small><h2>兌換獎勵碼</h2></div></header>
+      <label class="sr-only" for="code-input">獎勵碼</label><input placeholder="輸入公會獎勵碼" type="text" id="code-input" class="code-input-box" autocomplete="off">
       <div id="code-message" style="font-size: 14px; font-weight: bold; min-height: 20px;"></div>
       <div style="display: flex; gap: 10px; width: 100%; margin-top: 5px;">
         <button class="btn btn-gray" style="flex: 1; font-size: 14px;" onclick="window.closeRedeemModal()">取消</button>
@@ -78,49 +85,43 @@
 
   <!-- 3. 金幣裝備商店頁面 -->
   <div id="shop-screen" class="overlay-screen" style="display: none;">
-    <h2 style="margin-top:0; margin-bottom:5px;">🏪 勇者裝備總商店</h2>
-    <div class="coin-display" style="font-size: 18px; margin-bottom: 8px;">🪙 金幣: <span id="shop-coins">0</span></div>
+    <header class="functional-heading"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18L19 4H5Zm2 0v11h14V10M9 21v-7h6v7"/></svg><div><small>ARMORY · 勇者工坊</small><h2>勇者裝備總商店</h2></div></header>
+    <div class="coin-display" style="font-size: 18px; margin-bottom: 8px;"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20m-3 6h6m-3-2v12m3-2H9"/></svg> 金幣: <span id="shop-coins">0</span></div>
     
     <div class="shop-tabs">
-      <button id="tab-weapons" class="shop-tab-btn active" onclick="window.switchShopTab('weapons')">⚔️ 武器</button>
-      <button id="tab-helmet" class="shop-tab-btn" onclick="window.switchShopTab('helmet')">🪖 頭盔</button>
-      <button id="tab-chest" class="shop-tab-btn" onclick="window.switchShopTab('chest')">🛡️ 身體</button>
-      <button id="tab-gloves" class="shop-tab-btn" onclick="window.switchShopTab('gloves')">🥊 手腕</button>
-      <button id="tab-boots" class="shop-tab-btn" onclick="window.switchShopTab('boots')">👞 鞋子</button>
-      <button id="tab-bg" class="shop-tab-btn" onclick="window.switchShopTab('bg')">🎨 背景</button>
+      <button id="tab-weapons" class="shop-tab-btn active" onclick="window.switchShopTab('weapons')"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m5 19 13-15 3-1-1 4L7 21Zm0-8 8 8m-9 3 3-3"/></svg> 武器</button>
+      <button id="tab-helmet" class="shop-tab-btn" onclick="window.switchShopTab('helmet')"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17V12a8 8 0 0 1 16 0v5ZM3 17h18M12 4v8"/></svg> 頭盔</button>
+      <button id="tab-chest" class="shop-tab-btn" onclick="window.switchShopTab('chest')"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3-1 9-7 6-7-6-1-9Zm-3 9 2 2 4-5"/></svg> 身體</button>
+      <button id="tab-gloves" class="shop-tab-btn" onclick="window.switchShopTab('gloves')"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21 3 11q0-3 3-1V5q2-2 3 0V3q2-2 3 0v2q3-2 3 1v1q3-1 3 2v8l-4 4Z"/></svg> 手腕</button>
+      <button id="tab-boots" class="shop-tab-btn" onclick="window.switchShopTab('boots')"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h9v10l5 3v5H4v-5l3-3Z"/></svg> 鞋子</button>
+      <button id="tab-bg" class="shop-tab-btn" onclick="window.switchShopTab('bg')"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3Zm0 14 6-7 5 6 3-3 4 5M16 7h1"/></svg> 背景</button>
     </div>
 
     <div class="shop-items" id="shop-items-container"></div>
-    <button class="btn btn-blue" style="margin-top: 10px;" onclick="window.closeShop()">返回選單</button>
+    <button class="btn btn-gray" style="margin-top: 10px;" id="shop-return" onclick="window.closeShop()">返回主選單</button>
   </div>
 
   <!-- 4. 關卡通關獎勵畫面 -->
   <div id="level-cleared-screen" class="overlay-screen" style="display: none;">
     <div class="hero-modal-box">
-      <h2 id="clear-title" style="color: #2e7d32; margin: 0;">🎉 順利擊敗怪物！</h2>
-      <div style="font-size: 38px; margin: 5px 0;">⭐ 🪙 ⭐</div>
-      <p id="chapter-first-reward" class="chapter-first-reward" hidden></p><p id="clear-stars" class="clear-stars"></p><p style="margin: 0; font-size: 16px; color: #444;">獲得獎勵金幣：<b id="level-reward-text" style="color: #f57f17;">+10</b> 🪙</p>
+      <span class="clear-kicker">CHAPTER CHRONICLE · 冒險紀事</span><div class="clear-medallion" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3-1 9-7 6-7-6-1-9Zm-3 9 2 2 4-5"/></svg></div><h2 id="clear-title">順利擊敗怪物！</h2>
+      <p id="clear-stars" class="clear-stars"></p><p style="margin: 0; font-size: 16px; color: #444;">本關金幣獎勵：<b id="level-reward-text" style="color: #f57f17;">+10</b> <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20m-3 6h6m-3-2v12m3-2H9"/></svg></p>
       
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-top: 10px;">
-        <button class="btn btn-blue" style="font-size: 13px; padding: 10px 6px;" onclick="window.openHeroInspectorFromModal()">🔍 檢視角色</button>
-        <button class="btn btn-orange" style="font-size: 13px; padding: 10px 6px;" onclick="window.openShopFromModal()">🏪 進入商店</button>
-        <button class="btn btn-gray" style="font-size: 13px; padding: 10px 6px;" onclick="window.endAdventure()">🏠 結束冒險</button>
-        <button id="btn-next-level" class="btn btn-green" style="font-size: 13px; padding: 10px 6px;" onclick="window.proceedToNextLevel()">進入下一關 ➔</button>
-      </div>
+      <div class="clear-actions"><button id="btn-next-level" class="btn btn-green" style="font-size: 13px; padding: 10px 6px;" onclick="window.proceedToNextLevel()">進入下一關 ➔</button><div class="clear-secondary-actions"><button class="btn btn-blue" style="font-size: 13px; padding: 10px 6px;" onclick="window.openHeroInspectorFromModal()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3a7 7 0 1 0 0 14 7 7 0 0 0 0-14m5 12 6 6"/></svg> 檢視角色</button><button class="btn btn-blue" style="font-size: 13px; padding: 10px 6px;" onclick="window.openShopFromModal()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18L19 4H5Zm2 0v11h14V10M9 21v-7h6v7"/></svg> 進入商店</button><button class="btn btn-gray" style="font-size: 13px; padding: 10px 6px;" onclick="window.endAdventure()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m2 11 10-8 10 8M5 9v12h14V9m-10 12v-7h6v7"/></svg> 返回主選單</button></div></div>
     </div>
   </div>
 
   <!-- 4.5 Game Over 畫面 -->
   <div id="game-over-screen" class="overlay-screen" style="display: none; z-index: 35;">
     <div class="hero-modal-box" style="border-color: #f44336; text-align: center;">
-      <h1 style="color: #d32f2f; margin: 0; font-size: clamp(20px,6vw,28px);">💀 GAME OVER 💀</h1>
-      <div style="font-size: 30px; margin: 4px 0;">💔</div>
-      <p style="margin: 0; font-size: 15px; color: #555; font-weight: bold;">勇者體力不支倒下了！</p>
+      <h1 style="color: #d32f2f; margin: 0; font-size: clamp(20px,6vw,28px);">勇者暫時倒下了</h1>
+      <div style="font-size: 30px; margin: 4px 0;">✦</div>
+      <p style="margin: 0; font-size: 15px; color: #555; font-weight: bold;">休息一下，帶著新的線索再出發。</p>
       
       <div id="expedition-failure-report" hidden></div>
       <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 12px;">
-        <button class="btn btn-orange" style="font-size: 16px; padding: 10px;" onclick="window.retryCurrentLevel()">🔥 不放棄，再戰一回</button>
-        <button class="btn btn-gray" style="font-size: 14px; padding: 8px;" onclick="window.endAdventureFromGameOver()">🏠 返回主選單</button>
+        <button class="btn btn-green" style="font-size: 16px; padding: 10px;" id="retry-battle" onclick="window.retryCurrentLevel()">🔥 不放棄，再戰一回</button>
+        <button class="btn btn-gray" style="font-size: 14px; padding: 8px;" id="defeat-return" onclick="window.endAdventureFromGameOver()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m2 11 10-8 10 8M5 9v12h14V9m-10 12v-7h6v7"/></svg> 返回主選單</button>
       </div>
     </div>
   </div>
@@ -128,7 +129,7 @@
   <!-- 5. 檢視角色視窗 -->
   <div id="hero-inspect-screen" class="overlay-screen" style="display: none; z-index: 40;">
     <div class="hero-modal-box">
-      <h2 style="color: #00796b; margin: 0;">🛡️ 勇者裝備與狀態</h2>
+      <header class="functional-heading"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3-1 9-7 6-7-6-1-9Zm-3 9 2 2 4-5"/></svg><div><small>HERO · 勇者檔案</small><h2>勇者裝備與狀態</h2></div></header>
       
       <div style="width: 100px; height: 100px; background: #e0f2f1; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 3px solid #009688;">
         <svg class="rpg-hero" viewBox="0 0 100 150" style="width: 80px; height: 80px;"><image class="hero-art-boy" href="assets/art/hero-boy.webp" x="0" y="0" width="100" height="150" preserveAspectRatio="xMidYMid meet"/><image class="hero-art-girl" href="assets/art/hero-girl.webp" x="0" y="0" width="100" height="150" preserveAspectRatio="xMidYMid meet"/><g id="inspect-hero-armor-layer"></g>
@@ -136,25 +137,25 @@
       </div>
 
       <div style="font-size: 14px; font-weight: bold; color: #2e7d32;">
-        ❤️ 最大血量 (Max HP): <span id="inspect-max-hp">20</span> HP
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21 3 12C-3 3 7-1 12 6c5-7 15-3 9 6Z"/></svg> 最大血量 (Max HP): <span id="inspect-max-hp">20</span> HP
       </div>
 
       <div class="equip-grid">
-        <div class="equip-card">⚔️ 武器: <span id="inspect-weapon-name">木劍</span></div>
-        <div class="equip-card">🪖 頭盔: <span id="inspect-helmet-name">無</span></div>
-        <div class="equip-card">🛡️ 身體: <span id="inspect-chest-name">無</span></div>
-        <div class="equip-card">🥊 手腕: <span id="inspect-gloves-name">無</span></div>
-        <div class="equip-card">👞 鞋子: <span id="inspect-boots-name">無</span></div>
-        <div class="equip-card">🎨 背景: <span id="inspect-bg-name">豐富草地</span></div>
+        <div class="equip-card"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m5 19 13-15 3-1-1 4L7 21Zm0-8 8 8m-9 3 3-3"/></svg> 武器: <span id="inspect-weapon-name">木劍</span></div>
+        <div class="equip-card"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17V12a8 8 0 0 1 16 0v5ZM3 17h18M12 4v8"/></svg> 頭盔: <span id="inspect-helmet-name">無</span></div>
+        <div class="equip-card"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3-1 9-7 6-7-6-1-9Zm-3 9 2 2 4-5"/></svg> 身體: <span id="inspect-chest-name">無</span></div>
+        <div class="equip-card"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21 3 11q0-3 3-1V5q2-2 3 0V3q2-2 3 0v2q3-2 3 1v1q3-1 3 2v8l-4 4Z"/></svg> 手腕: <span id="inspect-gloves-name">無</span></div>
+        <div class="equip-card"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h9v10l5 3v5H4v-5l3-3Z"/></svg> 鞋子: <span id="inspect-boots-name">無</span></div>
+        <div class="equip-card"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3Zm0 14 6-7 5 6 3-3 4 5M16 7h1"/></svg> 背景: <span id="inspect-bg-name">豐富草地</span></div>
       </div>
 
-      <button class="btn btn-gray" style="margin-top: 5px; width: 100%; font-size: 14px;" onclick="window.closeHeroInspector()">關閉檢視</button>
+      <button class="btn btn-gray" style="margin-top: 5px; width: 100%; font-size: 14px;" onclick="window.closeHeroInspector()">返回</button>
     </div>
   </div>
 
   <!-- 6. 討伐魔王動畫舞台 -->
   <div id="boss-battle-stage">
-    <h1 style="color: #ffeb3b; font-size: 22px; text-shadow: 0 0 10px #f44336; margin-top: 10px;">⚔️ 勇者討伐大決戰 ⚔️</h1>
+    <h1 style="color: #ffeb3b; font-size: 22px; text-shadow: 0 0 10px #f44336; margin-top: 10px;"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m5 19 13-15 3-1-1 4L7 21Zm0-8 8 8m-9 3 3-3"/></svg> 勇者討伐大決戰 <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m5 19 13-15 3-1-1 4L7 21Zm0-8 8 8m-9 3 3-3"/></svg></h1>
     <div class="boss-char-container">
       <div id="boss-hero-char" class="boss-hero">
         <span id="boss-hero-icon">👦</span>
@@ -164,10 +165,10 @@
       </div>
     </div>
     <div id="boss-victory-card" style="display: none; background: #fff; color: #333; padding: 18px; border-radius: 15px; text-align: center; max-width: 85%;">
-      <p id="boss-first-reward" class="chapter-first-reward" hidden></p><p id="boss-clear-stars" class="clear-stars"></p><div style="font-size: 40px;">🏆👑</div>
-      <h2 style="color: #9c27b0; margin: 8px 0;">暮星巨龍已被討伐！</h2>
+      <p id="boss-journey-reward" class="chapter-first-reward" hidden></p><p id="boss-clear-stars" class="clear-stars"></p><svg class="victory-emblem" viewBox="0 0 100 80" aria-hidden="true"><path d="M25 14 50 5 75 14 70 48 50 67 30 48Z" fill="#285650" stroke="#d8b76c" stroke-width="4"/><path d="m50 17 6 13 14 2-10 10 3 15-13-7-13 7 3-15-10-10 14-2Z" fill="#f5d891"/></svg>
+      <h2 style="color: #285650; margin: 8px 0;">暮星巨龍已被討伐！</h2>
       <p style="font-size: 14px; color: #333;">拯救了水果王國！<br><b style="color:#f57f17;">獲得 <span id="boss-total-reward">300</span> 金幣獎勵！</b></p>
-      <button class="btn btn-purple" style="margin-top: 8px;" onclick="window.closeBossStage()">回主選單 🏠</button>
+      <button class="btn btn-gray" style="margin-top: 8px;" onclick="window.closeBossStage()">返回主選單</button>
     </div>
   </div>
 
@@ -177,7 +178,7 @@
       <span id="player-avatar-icon">👦</span>
       <span>關卡 <span id="current-level">1</span>/5</span>
     </div>
-    <div class="coin-display">🪙 <span id="gold-coins">0</span></div>
+    <div class="coin-display"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20m-3 6h6m-3-2v12m3-2H9"/></svg> <span id="gold-coins">0</span></div>
     <div>⏰ <span id="timer">15</span>s</div>
   </div>
 
@@ -218,17 +219,19 @@
   <div id="fruits-area"></div>
   <div class="ultimate-controls"><button id="ultimate-button" class="btn ultimate-button" onclick="activateUltimate()" disabled><svg class="ultimate-sigil" viewBox="0 0 56 56" aria-hidden="true"><path d="M28 3 48 12 45 34 28 51 11 34 8 12Z" fill="#263d55" stroke="#efd28c" stroke-width="2"/><path d="m13 40 26-29 6-1-1 6-28 27Z" fill="#e3f8ef" stroke="#614c43" stroke-width="1.4"/><path d="m15 29 12 12-4 3-11-11Z" fill="#e4b96d" stroke="#72503c"/><path d="m12 39-5 6 4 4 6-6" fill="#98744e" stroke="#f7db93"/><path d="m28 17 9 11-9 12-9-12Z" fill="#65d8d5" stroke="#f6dfa3" stroke-width="2"/><path d="m28 20 0 15-6-7Z" fill="#d1fff1"/><path d="M14 12h5m18 0h5M26 7h4" stroke="#ffe7b3" stroke-width="1.5"/></svg><span class="ultimate-button-copy"><span class="ultimate-button-title">啟動必殺題</span><small id="ultimate-button-hint">三數連加 · 答對傷害 ×2</small></span></button></div>
 <section id="leaderboard-screen" hidden aria-labelledby="leaderboard-title">
-<header><div><small>FRUIT KINGDOM · HALL OF HONOR</small><h2 id="leaderboard-title">勇者功勳榜</h2></div><button id="leaderboard-close" class="btn btn-blue">返回</button></header>
+<header><div><small>FRUIT KINGDOM · HALL OF HONOR</small><h2 id="leaderboard-title">勇者功勳榜</h2></div><button id="leaderboard-close" class="btn btn-gray">返回</button></header>
 <div class="board-story-banner"><img class="board-hall-landscape" src="assets/art/stage-5-castle.webp" alt="" width="1280" height="853"><div class="board-hall-copy"><span>王國公會 · 榮耀之廳</span><h3>讓勇氣，留下名字。</h3><p>遠征歸來的旅人啊，<br>你的冒險，將被記錄在這裡。</p><button id="board-register-link" class="board-register-link">登錄我的冒險 ↗</button></div><img id="board-banner-hero" src="assets/art/hero-boy.webp" alt="" width="427" height="640"><div class="board-hall-seal" aria-hidden="true">✦</div></div>
-<div class="board-paper"><div class="board-filters"><label>選擇冒險篇章<select id="leaderboard-difficulty" aria-label="難度"><option value="easy">初階 · 晨光之章</option><option value="medium">中階 · 試煉之章</option><option value="boss">進階 · 傳說之章</option></select></label><button class="btn btn-blue" id="leaderboard-refresh">重新整理排行榜</button></div>
+<div class="board-paper"><div class="board-filters"><label>選擇冒險篇章<select id="leaderboard-difficulty" aria-label="難度"><option value="easy">悠閒冒險</option><option value="medium">勇者試煉</option><option value="boss">傳說挑戰</option></select></label><button class="btn btn-blue" id="leaderboard-refresh">重新整理排行榜</button></div>
 <div class="board-roster-heading"><h3>遠征名冊</h3><span>每位勇者 · 最佳戰績</span></div><p id="leaderboard-status" role="status" aria-live="polite"></p><ol id="leaderboard-rows" aria-label="勇者排名"></ol>
 <div class="board-empty"><svg viewBox="0 0 140 90" aria-hidden="true"><path d="M12 18q28-15 58 0 30-15 58 0v57q-30-15-58 0-30-15-58 0Z" fill="#f5e3b1" stroke="#997a48" stroke-width="3"/><path d="M70 18v57M24 30h30m-30 11h30m-30 11h22m40-22h30m-30 11h30m-30 11h22" fill="none" stroke="#bda570" stroke-width="2"/><path d="m70 0 3 7 7 3-7 3-3 7-3-7-7-3 7-3Z" fill="#ddbb65"/></svg><h3>功勳冊，尚待書寫</h3><p>完成一次遠征，為這段傳說寫下第一個名字。</p></div>
 <div class="board-registration" id="board-registration"><span class="board-section-kicker">ADVENTURER REGISTRY</span><h3>向公會登錄你的冒險</h3><label class="board-consent"><input type="checkbox" id="leaderboard-optin"><span>為新遠征啟用網路紀錄。包含切換頁面與返回選單的時間；斷線會影響排行榜資格，離線遊戲照常。</span></label>
 <div id="leaderboard-submit" hidden><h3>你的遠征戰報</h3><p id="leaderboard-result"></p><label>遊戲暱稱<input id="leaderboard-nickname" type="text" maxlength="12" autocomplete="off" placeholder="例如：蘋果小勇者"></label><p id="leaderboard-note"></p><button id="leaderboard-submit-button" class="btn btn-orange">提交成績</button></div></div>
-<details class="board-rules"><summary>公會告示 · 排名規則與隱私</summary><p class="board-disclosure">社群榜 · 基礎檢核。通關時間越短排名越高，同時間比較正確率及剩餘 HP。依初階／中階／進階分榜，每人每個難度只取最佳成績；武器與終點 Boss 可能不同。</p><p class="board-disclosure">匿名身分只保存在此瀏覽器，無需真名、電話或電子郵件。請勿在暱稱填入個人資料。換裝置或清除網站資料會視為另一位玩家。只有主動提交的戰績會出現在榜上。</p></details>
+<details class="board-rules"><summary>公會告示 · 排名規則與隱私</summary><p class="board-disclosure">社群榜 · 基礎檢核。通關時間越短排名越高，同時間比較正確率及剩餘 HP。依悠閒冒險／勇者試煉／傳說挑戰分榜，每人每個難度只取最佳成績；武器與終點 Boss 可能不同。</p><p class="board-disclosure">匿名身分只保存在此瀏覽器，無需真名、電話或電子郵件。請勿在暱稱填入個人資料。換裝置或清除網站資料會視為另一位玩家。只有主動提交的戰績會出現在榜上。</p></details>
 <p class="board-footer-motto" aria-hidden="true">✦ 每一次思考，都是勇者向前的一步 ✦</p></div>
 </section>
-<section id="expedition-screen" hidden aria-labelledby="expedition-title"><header><div><small>FRUIT KINGDOM · EXPEDITION</small><h2 id="expedition-title">冒險遠征</h2><p id="expedition-progress" role="status"></p></div><button class="btn btn-blue" data-action="close">回選單</button></header><div class="exp-scroll"><div class="exp-map"><img src="assets/art/expedition-world.webp" width="900" height="1350" alt="手繪水果王國地圖：南方草原、古木森林、碧海遺跡、夕照峽谷及北方星月龍堡"><div id="expedition-route"></div></div><div id="expedition-content" aria-live="polite"></div></div></section></div>
+<section id="expedition-screen" hidden aria-labelledby="expedition-title"><header><div><small>FRUIT KINGDOM · EXPEDITION</small><h2 id="expedition-title">冒險遠征</h2><p id="expedition-progress" role="status"></p></div><button class="btn btn-gray" data-action="close">返回主選單</button></header><div class="exp-scroll"><div id="exp-route-map" role="region" aria-label="水果王國世界地圖"><div class="exp-map-caption">水果王國全境 · 七站遠征路線</div><div class="exp-map"><img src="assets/art/expedition-world.webp" width="900" height="1350" alt="手繪水果王國地圖：南方草原、古木森林、碧海遺跡、夕照峽谷及北方星月龍堡"><div id="expedition-route"></div></div></div><div id="expedition-content" aria-live="polite"></div></div><footer id="exp-actions"></footer></section></div>
+<dialog id="expedition-seal-dialog" aria-labelledby="seal-title" aria-describedby="seal-description"><div class="seal-dialog-paper"><span class="seal-dialog-sigil" aria-hidden="true">⌖</span><small>EXPEDITION · 封印之門</small><h2 id="seal-title">遠方的旅途，等待你開啟</h2><p id="seal-description">遠征之門被暮星巨龍的力量封印了。<br>完成故事模式「傳說挑戰」，擊敗巨龍即可開啟。</p><button class="btn btn-green" id="seal-go-story">前往故事模式 →</button><button class="btn btn-gray" id="seal-close">繼續準備</button></div></dialog>
+<script src="js/interface.js"></script>
 <script src="js/weapons.js"></script>
 <script src="js/audio.js"></script>
 <script src="js/ultimate-vfx.js"></script>
@@ -239,7 +242,7 @@
 <script src="js/meteors.js"></script>
 <script src="js/boss-specials.js"></script>
 <script src="js/monster-regeneration.js"></script><script src="js/adventure.js"></script>
-<script src="js/leaderboard-config.js"></script><script src="js/leaderboard.js"></script><script src="js/chests.js"></script><script src="js/expedition.js"></script><script src="js/game.js"></script>
+<script src="js/leaderboard-config.js"></script><script src="js/leaderboard.js"></script><script src="js/chests.js"></script><script src="js/expedition-victory.js"></script><script src="js/expedition.js"></script><script src="js/expedition-gate.js"></script><script src="js/game.js"></script>
 <script src="js/intro.js"></script>
 </body>
 </html>

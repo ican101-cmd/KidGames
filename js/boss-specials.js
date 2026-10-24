@@ -28,6 +28,6 @@ const BossSpecials=(()=>{
   if(kind==='easy')await ball(valid,impact,sound,token);
   else{const first=wave(0,valid,impact,sound,token);await wait(400);if(token===generation&&valid())await Promise.all([first,wave(1,valid,impact,sound,token)]);else await first;}
  }
- function start(kind,valid,impact,sound){stop();if(!profiles[kind])return;const token=generation,p=profiles[kind];async function tick(){if(!await wait(p.interval)||token!==generation)return;if(!valid()){stop();return;}void tick();if(!document.hidden)void skill(kind,valid,impact,sound,token);}timer=true;void tick();}
+ function start(kind,valid,impact,sound,{firstDelay=null}={}){stop();if(!profiles[kind])return;const token=generation,p=profiles[kind];async function tick(delay=p.interval){if(!await wait(delay)||token!==generation)return;if(!valid()){stop();return;}void tick();if(!document.hidden)void skill(kind,valid,impact,sound,token);}timer=true;void tick(firstDelay??p.interval);}
  return{start,stop,get running(){return timer!==null;}};
 })();

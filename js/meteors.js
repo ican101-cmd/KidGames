@@ -17,6 +17,6 @@ const BossMeteors=(()=>{
   if(token===generation&&valid())impact();
   await Promise.all(flights);
  }
- function start(valid,impact){stop();const token=generation;async function tick(){if(!await timeline.wait(3000)||token!==generation)return;if(!valid()){stop();return;}void tick();if(!document.hidden)void rain(valid,impact,token);}timer=true;void tick();}
+ function start(valid,impact,{firstDelay=3000}={}){stop();const token=generation;let warning=null;if(firstDelay<3000){warning=document.createElement('div');warning.className='boss-skill-warning';warning.textContent='龍焰覺醒！流星將至';document.getElementById('effect-layer').appendChild(warning);nodes.add(warning);document.getElementById('boss-special-status').textContent=warning.textContent;}async function tick(delay=3000){if(!await timeline.wait(delay)||token!==generation)return;if(!valid()){stop();return;}if(warning){warning.remove();nodes.delete(warning);warning=null;}void tick();if(!document.hidden)void rain(valid,impact,token);}timer=true;void tick(firstDelay);}
  return{start,stop,get running(){return timer!==null;}};
 })();
