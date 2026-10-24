@@ -18,6 +18,7 @@ const BattleEffects = (() => {
   ephemeral(el,[{transform:'translate(-50%,0) scale(.6)',opacity:0},{transform:'translate(-50%,-12px) scale(1.15)',opacity:1,offset:.2},{transform:`translate(-50%,${reduced()?-22:-50}px)`,opacity:0}],850);
  }
  function heal(target,amount){const p=point(target);p.y-=25;const el=node('damage-number enemy-heal-number',p,'#b4ffd1');el.textContent='+'+amount+' HP';ephemeral(el,[{transform:'translate(-50%,0) scale(.8)',opacity:0},{transform:'translate(-50%,-12px) scale(1.1)',opacity:1,offset:.2},{transform:'translate(-50%,-'+(reduced()?22:45)+'px)',opacity:0}],850);burst(target,'magicHit','#9ee4ae');}
+ function regeneration(target){const p=point(target),ring=node('bull-regeneration-ring',p,'#ffbf65');ring.innerHTML='<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="40" fill="none" stroke="#ffdc81" stroke-width="3"/>'+Array.from({length:8},(_,i)=>'<path transform="rotate('+i*45+' 60 60)" d="M52 22Q44 9 60 1q-2 12 8 21l-8 9Z" fill="#ffb446" stroke="#ffe6a0" stroke-width="1.5"/>').join('')+'</svg>';ephemeral(ring,[{transform:'translate(-50%,-50%) scale('+(reduced()?1:.65)+')',opacity:1},{transform:'translate(-50%,-50%) scale('+(reduced()?1:1.2)+')',opacity:0}],900);const titlePoint={x:Math.min(document.getElementById('battle-stage').clientWidth-62,Math.max(62,p.x)),y:p.y-52},title=node('bull-regeneration-title',titlePoint,'#ffe1a0');title.textContent='烈焰再生！';ephemeral(title,[{transform:'translate(-50%,0)',opacity:1},{transform:'translate(-50%,'+(reduced()?0:-10)+'px)',opacity:0}],1200);}
  function shake(size){if(!size||reduced())return;const x=size==='medium'?4:2;animate(document.getElementById('character-layer'),[0,-x,x,-x,0].map(n=>({transform:`translateX(${n}px)`})),{duration:220});}
  function hit(target,heavy=false){return animate(target,[{filter:'brightness(2)',transform:'translateX(0)'},{filter:'brightness(1.5)',transform:`translateX(${heavy?12:6}px) scale(.87,1.08)`},{filter:'brightness(1)',transform:'translateX(0)'}],{duration:320});}
  async function death(target){await wait(90);burst(target,'ultimateHit','#fff4b0');await animate(target,[{opacity:1,filter:'brightness(2)',transform:'scale(1)'},{opacity:1,transform:'scale(1.2,.5)',offset:.4},{opacity:0,transform:'scale(.3,.1) translateY(20px)'}],{duration:560,fill:'forwards'});}
@@ -35,7 +36,7 @@ const BattleEffects = (() => {
   hit(hero);burst(hero,'heavyHit',color);damage(hero,10);shake('small');
   safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));
  }
- return{wait,animate,point,burst,damage,heal,shake,hit,death,reset,trail,projectile,reduced,reflect};
+ return{wait,animate,point,burst,damage,heal,regeneration,shake,hit,death,reset,trail,projectile,reduced,reflect};
 })();
 const WeaponAnimationSystem={
  async attack(weapon,applyDamage,{empowered=false,reflection=false,valid=()=>true}={}){
