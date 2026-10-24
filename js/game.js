@@ -74,12 +74,13 @@
   let pendingReward = 0;
   let isAnswering = false;
   let battleEpoch=0,battleActive=false,ultimateQuestion=false;
-  let ultimateCharge=0,scorpionOpening=false,questionSettled=false;
+  let ultimateCharge=0,scorpionOpening=false,scorpionArmor=false,scorpionAwakened=false,questionSettled=false;
+  function setScorpionArmor(active){scorpionArmor=active;document.getElementById('slime-container').classList.toggle('scorpion-armored',active);}
   function setScorpionOpening(open){scorpionOpening=open;document.getElementById('slime-container').classList.toggle('scorpion-opening',open);}
   function setUltimateCharge(n){ultimateCharge=n;if(Expedition.active)Expedition.setUltimateCharge(n);}
-  function finishQuestion(correct=false){if(questionSettled)return false;questionSettled=true;if(!ultimateQuestion&&ultimateCharge<2){const interrupted=!correct&&ultimateCharge>0;setUltimateCharge(correct?ultimateCharge+1:0);if(interrupted)GameUI.toast('蓄力中斷，重新集中精神！');}setScorpionOpening(false);return true;}
+  function finishQuestion(correct=false){if(questionSettled)return false;questionSettled=true;setScorpionArmor(false);if(!ultimateQuestion&&ultimateCharge<2){const interrupted=!correct&&ultimateCharge>0;setUltimateCharge(correct?ultimateCharge+1:0);if(interrupted)GameUI.toast('蓄力中斷，重新集中精神！');}setScorpionOpening(false);return true;}
   function battleLater(callback,delay){const epoch=battleEpoch;setTimeout(()=>{if(epoch===battleEpoch&&battleActive)callback();},delay);}
-  function stopBattle(){document.getElementById('battle-stage').classList.remove('forest-mist');setScorpionOpening(false);BossSkillTiming.reset();MonsterRegeneration.stop();document.getElementById("exp-return").hidden=true;ultimateQuestion=false;document.getElementById('ultimate-button').disabled=true;battleActive=false;battleEpoch++;BossMeteors.stop();BossSpecials.stop();if(timerInterval)clearInterval(timerInterval);}
+  function stopBattle(){setScorpionArmor(false);document.getElementById('battle-stage').classList.remove('forest-mist');setScorpionOpening(false);BossSkillTiming.reset();MonsterRegeneration.stop();document.getElementById("exp-return").hidden=true;ultimateQuestion=false;document.getElementById('ultimate-button').disabled=true;battleActive=false;battleEpoch++;BossMeteors.stop();BossSpecials.stop();if(timerInterval)clearInterval(timerInterval);}
   function defeatHero(){
     if(!battleActive)return;document.getElementById("retry-battle").textContent=Expedition.active?"再戰本波 · 保留進場體力":"不放棄，再戰一回";
     document.getElementById("defeat-return").textContent=Expedition.active?"返回遠征地圖":"返回主選單";
@@ -223,7 +224,7 @@
 
   function startLevel() {
     stopBattle();battleActive=true;
-    ultimateCharge=Expedition.active?Math.max(0,Math.min(2,Math.floor(Number(Expedition.run.ultimateCharge)||0))):0;scorpionOpening=false;
+    ultimateCharge=Expedition.active?Math.max(0,Math.min(2,Math.floor(Number(Expedition.run.ultimateCharge)||0))):0;scorpionOpening=false;scorpionAwakened=false;setScorpionArmor(false);
     BattleEffects.reset();
     Adventure.begin();
     isAnswering = false;
@@ -299,7 +300,7 @@
       eligible:battleActive&&Expedition.active&&Expedition.run?.routeVersion>=3&&Expedition.run.step===5&&Expedition.waveNumber()===3,
       valid:()=>battleActive&&epoch===battleEpoch&&slimeHp>0&&playerHp>0,
       weaponDamage:(weapons[player.weapon]||weapons.wood_sword).dmg,
-      restore:amount=>{const restored=Math.min(amount,slimeMaxHp-slimeHp);if(restored<=0)return;slimeHp+=restored;updateBars();BattleEffects.heal(document.getElementById('slime-container'),restored);}
+      restore:(amount,{awakening=false}={})=>{const restored=Math.min(amount,slimeMaxHp-slimeHp);if(restored<=0)return;slimeHp+=restored;updateBars();BattleEffects.heal(document.getElementById('slime-container'),restored);if(awakening){BattleEffects.regeneration(document.getElementById('slime-container'));document.querySelector('.battle-hint').textContent='烈焰再生！半血立即回血，之後每 5 秒持續回復';}}
     });
   }
 
@@ -344,7 +345,7 @@
     document.getElementById('question-box').classList.toggle('ultimate-question',ultimate);
     const forestMist=Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===3&&Expedition.waveNumber()===3;
     document.getElementById('battle-stage').classList.toggle('forest-mist',forestMist);
-    document.querySelector('.battle-hint').textContent=forestMist?'林間迷霧！第三波每題縮短 2 秒，穩住再出招。':Expedition.active&&Expedition.run.step===6?(scorpionOpening?'鎧甲破綻！這一題答對即可命中':'鎧甲反彈：剩 5 秒內答對會反彈 10 HP'):Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===5?'烈焰牛頭 · 第 '+Expedition.waveNumber()+' 波'+(Expedition.waveNumber()===3?'：半血後每 5 秒回血 '+MonsterRegeneration.amount((weapons[player.weapon]||weapons.wood_sword).dmg):'：趁勢前進！'):'選出正確的水果答案，幫勇者出招！';
+    document.querySelector('.battle-hint').textContent=forestMist?'林間迷霧！第三波每題縮短 2 秒，穩住再出招。':Expedition.active&&Expedition.run.step===6?(scorpionArmor?'反彈護甲啟動！本題答對會反彈 10 HP，下一題露出破綻':scorpionOpening?'鎧甲破綻！這一題答對即可命中':'鎧甲反彈：剩 5 秒內答對會反彈 10 HP'):Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===5?'烈焰牛頭 · 第 '+Expedition.waveNumber()+' 波'+(Expedition.waveNumber()===3?'：半血立即回血，之後每 5 秒回復 '+MonsterRegeneration.amount((weapons[player.weapon]||weapons.wood_sword).dmg):'：趁勢前進！'):'選出正確的水果答案，幫勇者出招！';
     if (timerInterval) clearInterval(timerInterval);
 
     let num1, num2, isAdd = Math.random() > 0.5;
@@ -399,6 +400,7 @@
   async function handleMonsterAttack(reason='wrong') {
     if(!battleActive||playerHp<=0||slimeHp<=0)return;
     const epoch=battleEpoch;
+    const armoredQuestion=scorpionArmor;
     if(!finishQuestion())return;
     showCorrectAnswer();
     isAnswering = true;
@@ -411,6 +413,7 @@
     await WeaponAnimationSystem.enemyAttack(() => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;const damage=Expedition.damage(!Expedition.active&&mode==='easy'?10:20);Expedition.recordDamage('normal',Math.min(playerHp,damage));playerHp = Math.max(0,playerHp-damage); updateBars(); safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));return damage; },Adventure.enemyProfile(level,Expedition.bossMode(mode)==='boss'&&level===5));
 
     if(epoch!==battleEpoch||!battleActive)return;
+    if(armoredQuestion&&playerHp>0)setScorpionOpening(true);
     if(playerHp<=0)defeatHero();else battleLater(()=>generateQuestion(),700);
   }
 
@@ -757,7 +760,7 @@
     if (isAnswering||!battleActive||playerHp<=0||slimeHp<=0) return;
     const epoch=battleEpoch;
     const empowered=ultimateQuestion;
-    const reflection=Expedition.active&&Expedition.run?.step===6&&!scorpionOpening&&timeLeft>0&&timeLeft<=5;
+    const reflection=Expedition.active&&Expedition.run?.step===6&&!scorpionOpening&&timeLeft>0&&(scorpionArmor||timeLeft<=5);
     const attackValid=()=>epoch===battleEpoch&&battleActive&&playerHp>0;
     document.getElementById('ultimate-button').disabled=true;
 
@@ -775,7 +778,7 @@
       await WeaponAnimationSystem.attack(wObj, () => {
         if(!attackValid())return false;
         if(reflection){setScorpionOpening(true);Expedition.recordDamage('reflection',Math.min(playerHp,10));playerHp=Math.max(0,playerHp-10);updateBars();if(playerHp<=0)defeatHero();return;}
-        slimeHp -= wObj.dmg;if(empowered&&Expedition.has("focus"))playerHp=Math.min(playerMaxHp,playerHp+3);if(slimeHp<=0){BossMeteors.stop();BossSpecials.stop();} updateBars(); Adventure.phase(slimeHp,slimeMaxHp,Expedition.bossMode(mode)==='boss'&&level===5);
+        slimeHp -= wObj.dmg;if(Expedition.active&&Expedition.run.step===6&&!scorpionAwakened&&slimeHp>0&&slimeHp<=slimeMaxHp/2){scorpionAwakened=true;setScorpionArmor(true);document.querySelector('.battle-hint').textContent='鎧蠍半血覺醒！下一題啟動反彈護甲';}if(empowered&&Expedition.has("focus"))playerHp=Math.min(playerMaxHp,playerHp+3);if(slimeHp<=0){BossMeteors.stop();BossSpecials.stop();} updateBars(); Adventure.phase(slimeHp,slimeMaxHp,Expedition.bossMode(mode)==='boss'&&level===5);
       },{empowered,reflection,valid:attackValid});
 
       if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;
