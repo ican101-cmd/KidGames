@@ -1,0 +1,204 @@
+/* Shared royal parchment surfaces and compact, touch-friendly navigation. */
+:root{--royal:#254f4b;--gold:#d6b574;--paper:#fff4d8}
+#shop-screen,#character-select{background:linear-gradient(145deg,#fbf3d8,#dcead9);color:var(--royal)}
+.hero-modal-box,#boss-victory-card{background:linear-gradient(135deg,#fff9e9,#f1dfb4)!important;border:3px solid var(--gold)!important;box-shadow:0 12px 35px #183d4655,inset 0 0 0 3px #fff5d4;color:var(--royal)}
+.hero-modal-box h1,.hero-modal-box h2,#shop-screen h2{color:var(--royal)!important;text-shadow:none}
+.btn{touch-action:manipulation;transition:transform .12s,box-shadow .12s;min-height:44px}
+.btn:active{transform:translateY(2px) scale(.98)}
+button:focus-visible,summary:focus-visible,.avatar-card:focus-visible{outline:3px solid #269aab;outline-offset:3px}
+.traveler-handbook{flex-basis:100%;text-align:center;font-size:13px;color:var(--royal)}
+.traveler-handbook summary,#exp-route-map summary{cursor:pointer;padding:12px;border:1px solid var(--gold);border-radius:10px;background:var(--paper);font-weight:bold;min-height:44px;box-sizing:border-box}
+.traveler-handbook>div{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:7px}
+.traveler-handbook button:last-child{background:#ead9c7;color:#704c3b;box-shadow:none}
+#mode-select{overflow-y:auto;justify-content:safe center;padding-block:16px;box-sizing:border-box}
+#mode-select>div[style*="flex-wrap"]{flex-shrink:0}
+.shop-tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;flex-shrink:0;width:94%}
+.shop-tab-btn{min-height:44px!important;font-size:13px!important;padding:8px!important;border-radius:9px!important}
+.shop-tab-btn.active{background:var(--royal)!important;color:#fff4d8!important;box-shadow:inset 0 -3px 0 var(--gold)}
+#shop-screen{padding:14px;box-sizing:border-box;gap:4px}
+#shop-screen h2{margin:5px 0;font-size:23px}
+#shop-items-container{min-height:0;flex:1;overscroll-behavior:contain}
+#shop-return{flex-shrink:0;width:94%}
+#game-over-screen .hero-modal-box{display:flex;flex-direction:column;max-height:90%;overflow:hidden;box-sizing:border-box}
+#expedition-failure-report{overflow-y:auto;min-height:0;overscroll-behavior:contain}
+#game-over-screen .hero-modal-box>div:last-child{flex-shrink:0;padding-top:8px;border-top:1px solid var(--gold)}
+#expedition-screen{display:flex;flex-direction:column}
+#expedition-screen[hidden]{display:none}
+#expedition-screen header{flex-shrink:0}
+#expedition-progress{font-weight:bold;line-height:1.5;margin:4px 0}
+.exp-scroll{flex:1;min-height:0;overscroll-behavior:contain}
+#exp-route-map{margin:10px}
+#exp-route-map summary{color:var(--royal)}
+#exp-actions{flex-shrink:0;padding:10px 14px max(10px,env(safe-area-inset-bottom));display:grid;gap:6px;background:linear-gradient(#fff6df,#ead7ac);border-top:2px solid var(--gold);box-shadow:0 -5px 16px #12352d22}
+#exp-actions[hidden]{display:none}
+#exp-actions .btn{width:100%;margin:0;font-size:14px;padding:9px}
+.exp-abandon{min-height:44px}
+#equipment-toast{position:absolute;z-index:100;bottom:75px;left:8%;right:8%;padding:12px;text-align:center;border:2px solid var(--gold);border-radius:12px;background:var(--royal);color:#fff5d8;pointer-events:none;box-shadow:0 5px 20px #1235}
+.victory-emblem{width:76px;height:61px;display:block;margin:auto}
+#boss-hero-char{position:relative}
+#boss-weapon-icon{position:absolute;left:62%;top:42%;width:44px!important;height:64px!important;transform:rotate(-24deg);transform-origin:bottom center}
+#boss-weapon-icon svg{width:100%;height:100%}
+#boss-victory-card{max-height:62%;overflow:auto;padding:12px!important}
+#boss-victory-card h2{font-size:22px}
+.avatar-card{transition:transform .15s,box-shadow .15s}
+.avatar-card:active{transform:scale(.97)}
+@media(max-width:430px){#mode-select h1{font-size:30px;margin:10px 0}#mode-select .btn{font-size:14px;padding:9px 8px}#mode-select .traveler-handbook .btn{font-size:12px}#game-over-screen .hero-modal-box{width:94%;padding:14px}.exp-report{padding:10px}#boss-victory-card h2{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.btn,.avatar-card{transition:none}.btn:active,.avatar-card:active{transform:none}}
+/* Disabled ultimate is deliberately neutral, distinct from the glowing ready state. */
+#ultimate-button:disabled{background:linear-gradient(#858d92,#60696f)!important;border-color:#a9afb2!important;color:#f2f3f3!important;box-shadow:inset 0 1px 0 #c0c5c8!important;filter:none!important;opacity:1!important;cursor:not-allowed;animation:none!important;transform:none!important}
+#ultimate-button:disabled::before,#ultimate-button:disabled::after{display:none!important}
+#ultimate-button:disabled .ultimate-sigil{filter:grayscale(1);opacity:.65}
+#ultimate-button:disabled .ultimate-button-title,#ultimate-button:disabled small{color:#f2f3f3!important;text-shadow:none!important}
+/* Mode cards separate the chapter journey from the expedition journey. */
+#mode-select{justify-content:flex-start;padding:18px 18px 14px;gap:10px}
+#mode-select .menu-kicker{margin-top:110px;font-size:10px;flex-shrink:0}
+#mode-select h1{font-size:32px!important;margin-bottom:2px!important;flex-shrink:0}
+#mode-select .mode-cards{display:grid;gap:12px;width:100%;background:none;border:0;padding:0;box-shadow:none;flex-shrink:0}
+.mode-card{position:relative;display:grid;grid-template-columns:38px 1fr;gap:5px 10px;text-align:left;padding:14px;border:2px solid #d6b574;border-radius:16px;background:linear-gradient(125deg,#fff8e7,#e3efdc);box-shadow:0 4px 0 #816b4330,inset 0 0 0 2px #fff7dd;color:#254f4b}
+.mode-card-copy small{font-size:9px;letter-spacing:1px;font-weight:bold}
+.mode-card h2{font-size:22px;margin:2px 0 4px}
+.mode-card p{font-size:12px;line-height:1.5;margin:0}
+.mode-card-emblem{display:grid;place-items:center;align-self:start;font-size:30px;color:#ad8139;border:1px solid #c8ac6c;border-radius:12px;width:36px;height:48px;background:#fff4d7}
+.mode-card .btn{grid-column:1/-1;width:100%;margin:4px 0 0!important}
+.expedition-mode-card{background:linear-gradient(125deg,#294b59,#193440);color:#fff4d7}
+.expedition-mode-card small{color:#ead09a}
+.mode-card .mode-unlock-note{grid-column:1/-1;text-align:center;font-size:11px;color:#f0d9a5}
+#menu-leaderboard{background:transparent;color:#ffe7ad;border:1px solid #d1b373;box-shadow:none;min-height:44px}
+#btn-expedition:disabled{background:linear-gradient(#8e9399,#6c7379);color:#fff;opacity:1;box-shadow:none;border-color:#b1b3b5;cursor:not-allowed}
+#mode-select .menu-utilities{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;width:100%;padding:0;background:none;border:0;box-shadow:none;flex-shrink:0}
+#mode-select .menu-utilities>.btn{flex:1;font-size:12px}
+#mode-select .traveler-handbook{width:100%;flex-basis:100%}
+@media(max-height:740px){#mode-select{gap:7px;padding:12px}#mode-select .menu-kicker{margin-top:48px}#mode-select h1{font-size:27px!important}.mode-card{padding:10px;gap:3px 8px}.mode-card h2{font-size:20px}.mode-card .btn{padding:8px!important}#mode-select .mode-cards{gap:9px}}
+/* Energy is part of the button surface; text stays above the blue charge. */
+#ultimate-button{position:relative;isolation:isolate;overflow:hidden}
+#ultimate-button::after,#ultimate-button:disabled::after{content:"";display:block!important;position:absolute;inset:0 auto 0 0;width:var(--ultimate-energy,0%);background:linear-gradient(100deg,#097fd0,#25bdff 65%,#86edff);box-shadow:inset 0 2px 0 #b1f6ff,0 0 12px #42caff;z-index:-1;pointer-events:none;transition:width .25s ease;opacity:.9;transform:none;animation:none}
+#ultimate-button[data-charged="true"]{border-color:#ffe3a0!important;box-shadow:0 0 12px #28baff88,inset 0 0 0 1px #ffde92!important}
+#ultimate-button .ultimate-button-title,#ultimate-button small{color:#fff!important;text-shadow:0 1px 3px #092d55!important}
+@media(prefers-reduced-motion:reduce){#ultimate-button::after{transition:none}}
+.chapter-badges{display:flex!important;flex-wrap:wrap;gap:4px;margin-top:5px}
+.chapter-badge{display:inline-flex;align-items:center;justify-content:space-between;box-sizing:border-box;width:82px;flex:0 0 82px;font-size:11px;line-height:1.5;padding:3px 6px;border:1px solid #c7b998;border-radius:7px;white-space:nowrap;font-weight:bold;letter-spacing:0}
+.chapter-badge.earned{color:#27534b;background:#f9e5a7;border-color:#b98d42}
+.chapter-badge.pending{color:#6b6d6c;background:#ecece5}
+.chapter-score-note{display:block;font-size:12px;line-height:1.6;margin-top:8px;letter-spacing:0;color:#4e564d}
+#clear-stars,#boss-clear-stars{white-space:normal}
+#clear-stars .chapter-badges,#boss-clear-stars .chapter-badges{justify-content:center}
+#level-cleared-screen .hero-modal-box{max-height:92%;overflow:auto;box-sizing:border-box}
+#adventure-map .map-description{font-size:12px;line-height:1.6}
+@media(max-width:430px){.map-node{padding:8px;gap:9px}.map-node img{width:78px}.chapter-badge{font-size:10px;padding:2px 4px;width:64px;flex-basis:64px}}
+/* Let badge rows grow naturally rather than compressing chapter cards. */
+#map-nodes{grid-auto-rows:max-content;align-content:start}
+.map-node>span{min-width:0}
+.map-node .chapter-badges{display:flex;flex-direction:row;gap:4px}
+/* A sealed stone doorway, with chains at either side of its golden lock. */
+#btn-expedition{position:relative;overflow:hidden;isolation:isolate;min-height:60px!important;display:flex;align-items:center;justify-content:center;gap:9px}
+#btn-expedition.gate-sealed{background:linear-gradient(135deg,#3c586a,#233847 55%,#465b69)!important;border:2px solid #c5ac75;color:#fff1c8;box-shadow:inset 0 2px 0 #84949a66,0 3px 0 #0e2634}
+.gate-label{position:relative;z-index:2;text-shadow:0 2px 2px #102c3f;font-size:14px}
+.gate-lock{width:35px;height:42px;flex-shrink:0;position:relative;z-index:2}
+.gate-keyhole{animation:sealGlow 3.8s ease-in-out infinite;transform-origin:center}
+.gate-chain{position:absolute;top:7px;opacity:.75;width:24%;height:20px;pointer-events:none}
+.gate-chain svg{width:100%;height:100%}
+.gate-chain-left{left:-5px;transform:rotate(12deg)}
+.gate-chain-right{right:-5px;transform:rotate(-12deg)}
+.gate-open:not(.gate-unlocking) .gate-chain,.gate-open:not(.gate-unlocking) .gate-lock{display:none}
+.gate-unlocking .gate-chain-left{animation:chainReleaseLeft .6s both}
+.gate-unlocking .gate-chain-right{animation:chainReleaseRight .6s both}
+.gate-unlocking .gate-lock{animation:lockRelease .6s both}
+.gate-unlocking .gate-shackle{transform:translateY(-5px);transition:transform .2s}
+#expedition-seal-dialog{max-width:min(88vw,420px);padding:0;border:2px solid #d6b574;border-radius:18px;background:#fff3d5;color:#254f4b;box-shadow:0 15px 65px #102c4b88}
+#expedition-seal-dialog::backdrop{background:#142f43b8}
+.seal-dialog-paper{padding:24px;text-align:center;background:radial-gradient(at top,#fffdf2,#f2dfb4)}
+.seal-dialog-paper h2{font-size:22px;line-height:1.5}
+.seal-dialog-paper p{font-size:14px;line-height:1.9}
+.seal-dialog-paper small{letter-spacing:1px;font-size:10px}
+.seal-dialog-paper .btn{display:block;width:100%;margin-top:10px}
+.seal-dialog-sigil{display:block;font-size:42px;color:#b58b38}
+@keyframes sealGlow{0%,100%{opacity:.6}50%{opacity:1;filter:drop-shadow(0 0 5px #58dfff)}}
+@keyframes chainReleaseLeft{to{transform:translate(-35px,15px) rotate(-20deg);opacity:0}}
+@keyframes chainReleaseRight{to{transform:translate(35px,15px) rotate(20deg);opacity:0}}
+@keyframes lockRelease{30%{transform:scale(1.1);filter:drop-shadow(0 0 9px #77edff)}to{transform:translateY(12px) scale(.7);opacity:0}}
+@media(prefers-reduced-motion:reduce){.gate-keyhole,.gate-unlocking .gate-chain,.gate-unlocking .gate-lock{animation:none}.gate-unlocking .gate-shackle{transition:none}}
+/* Compact gate keeps the homepage landscape prominent. */
+#btn-expedition{min-height:44px!important;height:44px;padding:5px 10px!important;gap:7px}
+.gate-lock{width:25px;height:32px}
+.gate-chain{top:5px;height:15px;width:21%}
+.gate-label{font-size:13px}
+.expedition-mode-card{row-gap:3px}
+.expedition-mode-card .mode-unlock-note{font-size:10px;line-height:1.4}
+#mode-select .menu-kicker{margin-top:126px}
+@media(max-height:740px){#mode-select .menu-kicker{margin-top:76px}.expedition-mode-card{padding-block:9px}}
+/* Original fruit crest and dimensional JRPG lettering, with a dedicated hero area. */
+#mode-select .menu-brand{position:relative;flex-shrink:0;width:100%;height:206px;display:block;background:none;border:0;padding:0;box-shadow:none;margin:0}
+#mode-select .menu-brand .menu-hero{left:1%;top:2px;width:132px;height:200px;z-index:0;filter:drop-shadow(0 4px 3px #293e4660)}
+#mode-select .menu-logo{position:absolute;right:0;top:20px;width:73%;text-align:center;isolation:isolate}
+.logo-eyebrow{display:block;font-size:10px;font-weight:800;letter-spacing:3px;color:#fff2bc;text-shadow:0 1px 3px #173f49,1px 0 #173f49,-1px 0 #173f49}
+.logo-crest{display:block;width:100px;height:32px;margin:0 auto -4px;filter:drop-shadow(0 2px 1px #27424988)}
+#mode-select .menu-logo h1{margin:0!important;font-family:"Noto Serif TC","PMingLiU","Microsoft JhengHei",serif;font-weight:900;font-size:43px!important;line-height:1.15;letter-spacing:3px;transform:rotate(-3deg);color:#fff0ac;-webkit-text-stroke:1px #795531;paint-order:stroke fill;text-shadow:0 2px #fff4c5,0 4px #a26f38,1px 5px #294e53,-1px 5px #294e53,0 7px 0 #234b51,0 9px 5px #19383e66}
+.logo-kingdom,.logo-adventure{display:block}
+#mode-select .menu-logo .logo-adventure{font-size:1.15em;letter-spacing:7px;color:#fff6c8;margin-top:3px}
+.logo-ribbon{display:inline-block;margin-top:14px;padding:3px 14px;border-block:1px solid #e7c681;background:linear-gradient(90deg,transparent,#244b50e8 15%,#244b50e8 85%,transparent);color:#fff1b5;font-size:10px;letter-spacing:2px}
+@media(max-width:430px){#mode-select .menu-brand{height:182px}#mode-select .menu-brand .menu-hero{width:112px;height:172px;left:-4px;top:5px}#mode-select .menu-logo{top:9px;width:73%}#mode-select .menu-logo h1{font-size:32px!important}.logo-eyebrow{font-size:8px;letter-spacing:2px}.logo-crest{height:26px}.logo-ribbon{font-size:9px;letter-spacing:1px;margin-top:12px}}
+@media(max-height:740px){#mode-select .menu-brand{height:158px}#mode-select .menu-brand .menu-hero{height:151px;width:101px;top:1px}#mode-select .menu-logo{top:0}#mode-select .menu-logo h1{font-size:29px!important}.logo-crest{height:24px}.logo-ribbon{margin-top:10px}}
+/* Functional page system: shared headings, parchment fields, semantic actions. */
+.ui-icon{display:inline-block;width:18px;height:18px;vertical-align:-3px;flex-shrink:0;margin-right:3px}
+.functional-heading{display:flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0;align-self:stretch;padding:8px 6px 12px;border-bottom:1px solid #cbb583;color:#254f4b}
+.functional-heading>.ui-icon{width:36px;height:36px;border:1px solid #c5a666;background:#fff2cf;border-radius:10px;padding:6px;box-sizing:content-box;color:#8c682c;margin:0}
+.functional-heading small{display:block;font-size:9px;letter-spacing:1.3px;color:#826b40;margin-bottom:3px}
+.functional-heading h2,#shop-screen .functional-heading h2,#adventure-map .functional-heading h2{font-size:21px;line-height:1.3;margin:0}
+#adventure-map>.functional-heading{max-width:450px;width:100%;box-sizing:border-box}
+#shop-screen .functional-heading{padding-block:2px 9px}
+#shop-screen .shop-card{background:linear-gradient(120deg,#fffbef,#f6e9cd);border-color:#c9af73;box-shadow:0 2px 0 #c3ac7940}
+#hero-inspect-screen .equip-card{background:#fff4d9;border:1px solid #d0b881;color:#34564e;padding:8px;box-shadow:inset 0 1px #fffdf6}
+#hero-inspect-screen .hero-modal-box>div[style*="border-radius: 50%"]{background:radial-gradient(#fff9e6,#ead4a1)!important;border-color:#c4a366!important}
+.code-input-box{box-sizing:border-box;max-width:100%;background:#fffdf5!important;border:2px solid #b99c68!important;border-radius:10px!important;color:#254f4b;outline-offset:3px}
+.code-input-box:focus{outline:2px solid #258aa2;box-shadow:0 0 0 4px #54c2d51c}
+.btn-blue{background:linear-gradient(#487c7e,#2c5e61)!important;border-color:#7faaa0!important;color:#fff5dc}
+.btn-green{background:linear-gradient(#519b7e,#2e745e)!important;border-color:#a8c2a0!important;color:#fff8df}
+.btn-orange{background:linear-gradient(#d9ae62,#b77d34)!important;border-color:#e9c88d!important;color:#fff9e9}
+.btn-gray{background:linear-gradient(#e5dfcf,#cbc3b0)!important;border-color:#b9ad92!important;color:#40544f!important;text-shadow:none!important;box-shadow:0 3px 0 #a89c7f55}
+#shop-screen .shop-tab-btn{background:#fff7e4;color:#496259;border:1px solid #c7ac76}
+#level-cleared-screen .hero-modal-box{gap:9px;padding:18px;max-width:480px}
+.clear-kicker{font-size:9px;color:#826b40;letter-spacing:1.2px}
+.clear-medallion{display:grid;place-items:center;width:56px;height:56px;border:2px solid #c29e58;border-radius:50%;background:radial-gradient(#ffefb6,#e6c277);box-shadow:inset 0 0 0 3px #fff5ce,0 3px 0 #927c4930}
+.clear-medallion .ui-icon{width:32px;height:32px;margin:0;color:#315c50}
+#clear-title{font-size:23px;line-height:1.4;margin:0;text-align:center}
+#clear-stars{margin:2px 0;padding:10px 8px;border:1px solid #d3bc89;border-radius:12px;background:#fff9e9;width:100%;box-sizing:border-box}
+#level-cleared-screen .chapter-score-note{font-size:12px;line-height:1.7}
+#level-cleared-screen .hero-modal-box>p:has(#level-reward-text){background:#f0d99f;border-block:1px solid #c7a563;padding:10px;box-sizing:border-box;width:100%;text-align:center;font-size:14px!important}
+.clear-actions{width:100%;display:flex;flex-direction:column;gap:8px}
+.clear-actions>#btn-next-level{width:100%;font-size:15px!important;min-height:46px}
+.clear-secondary-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.clear-secondary-actions button:last-child{grid-column:1/-1}
+#level-cleared-screen .clear-secondary-actions .btn{font-size:12px!important}
+@media(max-width:430px){.functional-heading h2,#shop-screen .functional-heading h2,#adventure-map .functional-heading h2{font-size:19px}.functional-heading>.ui-icon{width:27px;height:27px;padding:5px}#level-cleared-screen .hero-modal-box{padding:13px;gap:7px}#clear-title{font-size:20px}.clear-medallion{width:44px;height:44px}}
+/* Original one-line title: tall outward-leaning ends and a compact center. */
+#mode-select .menu-logo{top:31px;width:76%}
+#mode-select .menu-logo h1{font-size:initial!important;transform:none;line-height:0;letter-spacing:0;-webkit-text-stroke:0;text-shadow:none;color:inherit}
+.sculpted-title{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 3px 2px #22414e66)}
+.title-lettering{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;font-weight:900;text-anchor:middle;stroke-linejoin:round;letter-spacing:0}
+#mode-select .menu-logo .logo-crest{display:none}
+#mode-select .menu-logo .logo-ribbon{margin-top:6px}
+@media(max-width:430px){#mode-select .menu-logo{top:33px;width:76%}}
+@media(max-height:740px){#mode-select .menu-logo{top:25px}}
+/* World-first expedition entrance: show the entire route before the briefing. */
+#exp-route-map{margin:0;background:linear-gradient(#294b5466,#203f4b77),url('../assets/art/expedition-world.webp') center/cover;border-bottom:2px solid #bc995e}
+#exp-route-map summary{border:0;border-radius:0;background:#244450;color:#ffedba;font-size:11px;letter-spacing:1px;min-height:34px;padding:8px 14px}
+#exp-route-map .exp-map{width:min(100%,calc((100dvh - 265px)*.66667));margin:0 auto;box-shadow:0 0 24px #132e4577;border-inline:1px solid #f4e0a5}
+#exp-actions label:has(#exp-difficulty){display:flex;align-items:center;justify-content:space-between;gap:10px;color:#36594f;font-size:13px;font-weight:bold}
+#exp-actions #exp-difficulty{flex:1;max-width:230px;padding:8px;margin:0;border:1px solid #b99c68;border-radius:8px;background:#fff9e9;color:#254f4b;min-height:40px;font-family:inherit}
+@media(min-height:800px){#exp-route-map .exp-map{width:min(100%,calc((100dvh - 250px)*.66667))}}
+/* Larger, steady battle HUD numerals without changing stage height. */
+#game-container>.header{font-size:clamp(18px,3.6vw,23px);font-weight:800;line-height:1.2;font-variant-numeric:tabular-nums;gap:8px}
+#game-container>.header>div{white-space:nowrap}
+#game-container>.header #timer{font-size:1.2em;font-weight:900;color:#294b50}
+#game-container>.header .ui-icon{width:22px;height:22px}
+@media(max-width:390px){#game-container>.header{padding-inline:9px;font-size:18px;gap:5px}#game-container>.header .coin-display{gap:3px}}
+.exp-guide-heading{margin:16px 0 7px;font-size:15px;color:#31574e}
+.exp-guide-list{margin:0 0 14px;padding-left:22px;font-size:14px;line-height:1.8}
+.exp-guide-list li{padding-left:2px;margin:5px 0}
+.exp-guide-list li::marker{color:#a08042}
+.exp-guide-list strong{color:#31574e}
+.exp-map-caption{padding:8px 14px;font-size:11px;letter-spacing:1px;background:#244450;color:#ffedba}
+.exp-action-heading{margin:0 0 2px;font-size:12px;font-weight:bold;text-align:center;color:#31574e}
+#expedition-screen[data-phase="reward"] #exp-route-map .exp-map{width:min(100%,calc((100dvh - 350px)*.66667))}
+.exp-node.done b:after{content:'✓';position:absolute;right:-5px;top:-9px;border-radius:50%;background:#fff0a9;color:#3c6c4f;font-size:13px;padding:1px 4px;border:1px solid #a78947}
+.exp-node.done[aria-current] b:after{right:0;top:0;z-index:3}

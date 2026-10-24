@@ -19,9 +19,9 @@
   };
 
   const backgrounds = {
-    green: { name: '豐富草地', colorClass: 'bg-grass', price: 0, multiplier: 1 },
-    pink: { name: '夢幻粉', colorClass: 'bg-pink', price: 450, multiplier: 1.4 },
-    blue: { name: '深海藍', colorClass: 'bg-blue', price: 900, multiplier: 1.6 }
+    green: { name: '豐富草地', colorClass: 'bg-grass', price: 0 },
+    pink: { name: '夢幻粉', colorClass: 'bg-pink', price: 450 },
+    blue: { name: '深海藍', colorClass: 'bg-blue', price: 900 }
   };
 
   const slimeColors = ['#4caf50', '#2196f3', '#f44336', '#ffeb3b', '#9c27b0'];
@@ -74,14 +74,16 @@
   let pendingReward = 0;
   let isAnswering = false;
   let battleEpoch=0,battleActive=false,ultimateQuestion=false;
-  let ultimateRecovery=0,scorpionOpening=false,questionSettled=false;
+  let ultimateCharge=0,scorpionOpening=false,questionSettled=false;
   function setScorpionOpening(open){scorpionOpening=open;document.getElementById('slime-container').classList.toggle('scorpion-opening',open);}
-  function setUltimateRecovery(n){ultimateRecovery=n;if(Expedition.active)Expedition.setUltimateRecovery(n);}
-  function finishQuestion(){if(questionSettled)return false;questionSettled=true;if(!ultimateQuestion&&ultimateRecovery>0)setUltimateRecovery(ultimateRecovery-1);setScorpionOpening(false);return true;}
+  function setUltimateCharge(n){ultimateCharge=n;if(Expedition.active)Expedition.setUltimateCharge(n);}
+  function finishQuestion(correct=false){if(questionSettled)return false;questionSettled=true;if(!ultimateQuestion&&ultimateCharge<2){const interrupted=!correct&&ultimateCharge>0;setUltimateCharge(correct?ultimateCharge+1:0);if(interrupted)GameUI.toast('蓄力中斷，重新集中精神！');}setScorpionOpening(false);return true;}
   function battleLater(callback,delay){const epoch=battleEpoch;setTimeout(()=>{if(epoch===battleEpoch&&battleActive)callback();},delay);}
-  function stopBattle(){setScorpionOpening(false);BossSkillTiming.reset();MonsterRegeneration.stop();document.getElementById("exp-return").hidden=true;ultimateQuestion=false;document.getElementById('ultimate-button').disabled=true;battleActive=false;battleEpoch++;BossMeteors.stop();BossSpecials.stop();if(timerInterval)clearInterval(timerInterval);}
+  function stopBattle(){document.getElementById('battle-stage').classList.remove('forest-mist');setScorpionOpening(false);BossSkillTiming.reset();MonsterRegeneration.stop();document.getElementById("exp-return").hidden=true;ultimateQuestion=false;document.getElementById('ultimate-button').disabled=true;battleActive=false;battleEpoch++;BossMeteors.stop();BossSpecials.stop();if(timerInterval)clearInterval(timerInterval);}
   function defeatHero(){
-    if(!battleActive)return;Expedition.report(false);document.getElementById('expedition-failure-report').innerHTML=Expedition.active?Expedition.reportMarkup():'';document.getElementById('expedition-failure-report').hidden=!Expedition.active;stopBattle();isAnswering=true;
+    if(!battleActive)return;document.getElementById("retry-battle").textContent=Expedition.active?"再戰本波 · 保留進場體力":"不放棄，再戰一回";
+    document.getElementById("defeat-return").textContent=Expedition.active?"返回遠征地圖":"返回主選單";
+    Expedition.report(false);document.getElementById('expedition-failure-report').innerHTML=Expedition.active?Expedition.reportMarkup():'';document.getElementById('expedition-failure-report').hidden=!Expedition.active;stopBattle();isAnswering=true;
     document.querySelectorAll('.fruit-btn').forEach(b=>b.classList.add('disabled'));
     safePlayAudio(()=>WeaponAudio.hero(audioCtx,'death'));
     const epoch=battleEpoch;setTimeout(()=>{if(epoch===battleEpoch)document.getElementById('game-over-screen').style.display='flex';},500);
@@ -92,7 +94,7 @@
       const damage=Expedition.damage(6);Expedition.recordDamage('special',Math.min(playerHp,damage));playerHp=Math.max(0,playerHp-damage);updateBars();
       const hero=document.getElementById('player-visual-box');BattleEffects.burst(hero,'smallHit','#ffc77a');BattleEffects.damage(hero,damage);safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));
       if(playerHp<=0)defeatHero();
-    });
+    },{firstDelay:Expedition.active?1000:3000});
   }
 
   function startChapterBossSpecial(){
@@ -101,7 +103,7 @@
       amount=Expedition.damage(amount);Expedition.recordDamage('special',Math.min(playerHp,amount));playerHp=Math.max(0,playerHp-amount);updateBars();
       const hero=document.getElementById('player-visual-box');BattleEffects.burst(hero,kind==='easy'?'smallHit':'magicHit',color);BattleEffects.damage(hero,amount);safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));
       if(playerHp<=0)defeatHero();
-    },cue=>safePlayAudio(()=>WeaponAudio.bossSkill(audioCtx,kind,cue)));
+    },cue=>safePlayAudio(()=>WeaponAudio.bossSkill(audioCtx,kind,cue)),{firstDelay:Expedition.active?1000:undefined});
   }
   function calculateMaxHp() {
     let extraHp = (armorTiers[player.helmet]?.hp || 0) +
@@ -175,9 +177,11 @@
 
     const expeditionButton=document.getElementById('btn-expedition');
     const expeditionUnlocked=(player.adventure?.boss?.[4]||0)>0;
-    expeditionButton.disabled=!expeditionUnlocked;
-    expeditionButton.textContent=expeditionUnlocked?'🧭 冒險遠征 · 世界地圖':'冒險遠征 [封印狀態]';
-    expeditionButton.title=expeditionUnlocked?'開始冒險遠征':'擊敗魔王難度最後一關的巨龍後解鎖';
+    expeditionButton.disabled=false;
+    ExpeditionGate.update(expeditionUnlocked);
+    const expeditionNote=document.getElementById('expedition-unlock-note');
+    expeditionNote.textContent=expeditionUnlocked?(Expedition.run?'旅途進度已保存 · '+Expedition.stationName():'帶上裝備，開啟下一段旅程'):'故事模式擊敗暮星巨龍後解鎖';
+    expeditionButton.title=expeditionUnlocked?'開始冒險遠征':'擊敗傳說挑戰最後一關的巨龍後解鎖';
     WorldArt.apply(level, mode, player.bg);
     Adventure.scene(level,Expedition.bossMode(mode)==='boss'&&level===5);
     playerMaxHp = calculateMaxHp();
@@ -219,7 +223,7 @@
 
   function startLevel() {
     stopBattle();battleActive=true;
-    ultimateRecovery=Expedition.active?Math.max(0,Math.min(2,Math.floor(Number(Expedition.run.ultimateRecovery)||0))):0;scorpionOpening=false;
+    ultimateCharge=Expedition.active?Math.max(0,Math.min(2,Math.floor(Number(Expedition.run.ultimateCharge)||0))):0;scorpionOpening=false;
     BattleEffects.reset();
     Adventure.begin();
     isAnswering = false;
@@ -294,6 +298,7 @@
     MonsterRegeneration.observe(slimeHp,slimeMaxHp,{
       eligible:battleActive&&Expedition.active&&Expedition.run?.routeVersion>=3&&Expedition.run.step===5&&Expedition.waveNumber()===3,
       valid:()=>battleActive&&epoch===battleEpoch&&slimeHp>0&&playerHp>0,
+      weaponDamage:(weapons[player.weapon]||weapons.wood_sword).dmg,
       restore:amount=>{const restored=Math.min(amount,slimeMaxHp-slimeHp);if(restored<=0)return;slimeHp+=restored;updateBars();BattleEffects.heal(document.getElementById('slime-container'),restored);}
     });
   }
@@ -322,17 +327,24 @@
   }
 
   window.activateUltimate=function(){
-    if(!battleActive||isAnswering||ultimateQuestion||ultimateRecovery>0||playerHp<=0||slimeHp<=0||timeLeft<=0)return;
-    setUltimateRecovery(2);safePlayAudio();generateQuestion({ultimate:true,seconds:timeLeft});
+    if(!battleActive||isAnswering||ultimateQuestion||ultimateCharge<2||playerHp<=0||slimeHp<=0||timeLeft<=0)return;
+    setUltimateCharge(0);safePlayAudio();generateQuestion({ultimate:true,seconds:timeLeft});
   };
   function showCorrectAnswer(){const el=document.getElementById('answer-feedback');el.textContent='正確答案：'+document.getElementById('question-box').innerText.replace('?',String(currentAnswer));el.hidden=false;}
   function generateQuestion({ultimate=false,seconds=null}={}) {
     if(!battleActive||playerHp<=0||slimeHp<=0)return;
     isAnswering = false;ultimateQuestion=ultimate;questionSettled=false;document.getElementById('answer-feedback').hidden=true;
-    document.getElementById('ultimate-button').disabled=ultimate||ultimateRecovery>0;
-    document.getElementById('ultimate-button-hint').textContent=ultimate?'選出答案，釋放必殺一擊！':ultimateRecovery>0?'再完成 '+ultimateRecovery+' 道普通題':'三數連加 · 答對傷害 ×2';
+    const ultimateButton=document.getElementById('ultimate-button');
+    ultimateButton.disabled=ultimate||ultimateCharge<2;
+    ultimateButton.style.setProperty('--ultimate-energy',(ultimateCharge*50)+'%');
+    ultimateButton.dataset.charged=String(!ultimate&&ultimateCharge===2);
+    ultimateButton.setAttribute('aria-label',ultimate?'必殺題啟動中':ultimateCharge===2?'啟動必殺題，能量已滿':'必殺蓄力 '+ultimateCharge+'／2，連續答對兩題普通題即可使用');
+    document.querySelector('.ultimate-button-title').textContent=ultimate?'必殺題啟動中':ultimateCharge<2?'必殺蓄力 · '+ultimateCharge+'／2':'啟動必殺題';
+    document.getElementById('ultimate-button-hint').textContent=ultimate?'選出答案，釋放必殺一擊！':ultimateCharge<2?'連續答對兩題普通題 · 答錯或超時歸零':'能量已滿 · 答對必殺題傷害 ×2';
     document.getElementById('question-box').classList.toggle('ultimate-question',ultimate);
-    document.querySelector('.battle-hint').textContent=Expedition.active&&Expedition.run.step===6?(scorpionOpening?'鎧甲破綻！這一題答對即可命中':'鎧甲反彈：剩 5 秒內答對會反彈 10 HP'):Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===5?'烈焰牛頭 · 第 '+Expedition.waveNumber()+' 波'+(Expedition.waveNumber()===3?'：半血後每 5 秒回血 10':'：趁勢前進！'):'選出正確的水果答案，幫勇者出招！';
+    const forestMist=Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===3&&Expedition.waveNumber()===3;
+    document.getElementById('battle-stage').classList.toggle('forest-mist',forestMist);
+    document.querySelector('.battle-hint').textContent=forestMist?'林間迷霧！第三波每題縮短 2 秒，穩住再出招。':Expedition.active&&Expedition.run.step===6?(scorpionOpening?'鎧甲破綻！這一題答對即可命中':'鎧甲反彈：剩 5 秒內答對會反彈 10 HP'):Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===5?'烈焰牛頭 · 第 '+Expedition.waveNumber()+' 波'+(Expedition.waveNumber()===3?'：半血後每 5 秒回血 '+MonsterRegeneration.amount((weapons[player.weapon]||weapons.wood_sword).dmg):'：趁勢前進！'):'選出正確的水果答案，幫勇者出招！';
     if (timerInterval) clearInterval(timerInterval);
 
     let num1, num2, isAdd = Math.random() > 0.5;
@@ -348,9 +360,12 @@
     }
 
     if(ultimate){
-      const third=mode==='easy'?Math.floor(Math.random()*9)+1:mode==='medium'?Math.floor(Math.random()*10)+11:Math.floor(Math.random()*50)+20;
+      const third=Math.floor(Math.random()*9)+1;
+      // A single-digit term is guaranteed; rotate its position for variety.
+      const terms=[num1,num2,third];
+      for(let i=terms.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[terms[i],terms[j]]=[terms[j],terms[i]];}
       currentAnswer=num1+num2+third;
-      document.getElementById('question-box').innerText=num1+' + '+num2+' + '+third+' = ?';
+      document.getElementById('question-box').innerText=terms.join(' + ')+' = ?';
     }else{
       currentAnswer = isAdd ? (num1 + num2) : (num1 - num2);
       document.getElementById('question-box').innerText = num1+' '+(isAdd?'+':'−')+' '+num2+' = ?';
@@ -367,9 +382,10 @@
       area.appendChild(btn);
     });
 
-    timeLeft = seconds===null?Adventure.answerSeconds(Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===5?11:Math.max(5,15-(level-1)*2),Expedition.bossMode(mode)==='boss'&&level===5):seconds;
+    timeLeft = seconds===null?Adventure.answerSeconds(Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===5?11:Math.max(5,15-(level-1)*2-(forestMist?2:0)),Expedition.bossMode(mode)==='boss'&&level===5):seconds;
     if(seconds===null&&Expedition.has("sandglass"))timeLeft++;
     document.getElementById('timer').innerText = timeLeft;
+    Adventure.question(timeLeft,ultimate);
     timerInterval = setInterval(() => {
       timeLeft--;
       document.getElementById('timer').innerText = timeLeft;
@@ -390,9 +406,9 @@
 
     document.querySelectorAll('.fruit-btn').forEach(b => b.classList.add('disabled'));
     document.getElementById('ultimate-button').disabled=true;
-    Adventure.answer(false);Expedition.recordAnswer(false,reason==='timeout');
+    Adventure.answer(false,{timeout:reason==='timeout'});Expedition.recordAnswer(false,reason==='timeout');
     if(Adventure.bossFor(mode,level))safePlayAudio(()=>WeaponAudio.bossAttack(audioCtx,Expedition.bossMode(mode)));
-    await WeaponAnimationSystem.enemyAttack(() => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;const damage=Expedition.damage(20);Expedition.recordDamage('normal',Math.min(playerHp,damage));playerHp = Math.max(0,playerHp-damage); updateBars(); safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));return damage; },Adventure.enemyProfile(level,Expedition.bossMode(mode)==='boss'&&level===5));
+    await WeaponAnimationSystem.enemyAttack(() => { if(epoch!==battleEpoch||!battleActive||playerHp<=0)return false;const damage=Expedition.damage(!Expedition.active&&mode==='easy'?10:20);Expedition.recordDamage('normal',Math.min(playerHp,damage));playerHp = Math.max(0,playerHp-damage); updateBars(); safePlayAudio(()=>WeaponAudio.hero(audioCtx,'hit'));return damage; },Adventure.enemyProfile(level,Expedition.bossMode(mode)==='boss'&&level===5));
 
     if(epoch!==battleEpoch||!battleActive)return;
     if(playerHp<=0)defeatHero();else battleLater(()=>generateQuestion(),700);
@@ -464,6 +480,7 @@
   window.openShop = function() {
     safePlayAudio();
     openedFromModal = false;
+    document.getElementById("shop-return").textContent="返回主選單";
     renderShopItems();
     const modeSelect = document.getElementById('mode-select');
     const shopScreen = document.getElementById('shop-screen');
@@ -474,6 +491,7 @@
   window.openShopFromModal = function() {
     safePlayAudio();
     openedFromModal = true;
+    document.getElementById("shop-return").textContent="返回通關畫面";
     renderShopItems();
     const levelCleared = document.getElementById('level-cleared-screen');
     const shopScreen = document.getElementById('shop-screen');
@@ -520,7 +538,7 @@
             <div class="shop-icon-preview">${w.isSvg ? w.icon : w.icon}</div>
             <div>
               <div style="font-weight:bold; font-size:14px;">${w.name}</div>
-              <div style="font-size:12px; color:#666;">⚔️ 普通攻擊：${w.dmg} HP</div><div class="shop-stat">✨ 必殺技：${w.dmg*2} HP</div>
+              <div style="font-size:12px; color:#666;">${GameUI.icon('sword')} 普通攻擊：${w.dmg} HP</div><div class="shop-stat">${GameUI.icon('spark')} 必殺技：${w.dmg*2} HP</div>
             </div>
           </div>
           <button class="btn ${isEquipped ? 'btn-green' : 'btn-orange'}" style="font-size:12px; padding:6px 12px;" onclick="window.buyWeapon('${k}')">
@@ -543,7 +561,7 @@
             <div class="shop-icon-preview armor-shop-preview">${tierKey==='none'?'—':`<img src="assets/art/armor/${currentShopTab}-${tierKey}.webp" alt="${arm.name}" width="48" height="48">`}</div>
             <div>
               <div style="font-weight:bold; font-size:14px;">${arm.name} 裝備</div>
-              <div style="font-size:12px; color:#666;">❤️ 血量加成: +${arm.hp} HP</div><div class="shop-stat">目前 HP ${currentHp} → 裝備後 ${previewHp}</div>
+              <div style="font-size:12px; color:#666;">${GameUI.icon('heart')} 血量加成: +${arm.hp} HP</div><div class="shop-stat">目前 HP ${currentHp} → 裝備後 ${previewHp}</div>
             </div>
           </div>
           <button class="btn ${isEquipped ? 'btn-green' : 'btn-orange'}" style="font-size:12px; padding:6px 12px;" onclick="window.buyArmor('${currentShopTab}', '${tierKey}')">
@@ -560,10 +578,10 @@
         card.className = 'shop-card';
         card.innerHTML = `
           <div class="shop-card-left">
-            <div class="shop-icon-preview">🎨</div>
+            <div class="shop-icon-preview">${GameUI.icon('landscape')}</div>
             <div>
               <div style="font-weight:bold; font-size:14px;">${bg.name}</div>
-              <div style="font-size:12px; color:#666;">敵人 HP 不變 · 故事金幣 ×${bg.multiplier}</div>
+              <div style="font-size:12px; color:#666;">純外觀背景 · 不影響 HP 與金幣</div>
             </div>
           </div>
           <button class="btn ${isEquipped ? 'btn-green' : 'btn-orange'}" style="font-size:12px; padding:6px 12px;" onclick="window.buyBg('${bgKey}')">
@@ -583,13 +601,13 @@
     if (isOwned) {
       player.weapon = k;
       saveGame();
-      renderShopItems();
+      renderShopItems(); GameUI.toast("裝備已就緒，準備出發！");
     } else if (player.coins >= w.price) {
       player.coins -= w.price;
       player.weapon = k;
       if (!player.unlockedWeapons.includes(k)) player.unlockedWeapons.push(k);
       saveGame();
-      renderShopItems();
+      renderShopItems(); GameUI.toast("裝備已就緒，準備出發！");
     } else {
       alert('🪙 金幣不足喔！');
     }
@@ -605,13 +623,13 @@
     if (isOwned) {
       player[slot] = tierKey;
       saveGame();
-      renderShopItems();
+      renderShopItems(); GameUI.toast("裝備已就緒，準備出發！");
     } else if (player.coins >= arm.price) {
       player.coins -= arm.price;
       player[slot] = tierKey;
       if (!player[listKey].includes(tierKey)) player[listKey].push(tierKey);
       saveGame();
-      renderShopItems();
+      renderShopItems(); GameUI.toast("裝備已就緒，準備出發！");
     } else {
       alert('🪙 金幣不足喔！');
     }
@@ -626,13 +644,13 @@
     if (isOwned) {
       player.bg = bgKey;
       saveGame();
-      renderShopItems();
+      renderShopItems(); GameUI.toast("裝備已就緒，準備出發！");
     } else if (player.coins >= bg.price) {
       player.coins -= bg.price;
       player.bg = bgKey;
       if (!player.unlockedBgs.includes(bgKey)) player.unlockedBgs.push(bgKey);
       saveGame();
-      renderShopItems();
+      renderShopItems(); GameUI.toast("裝備已就緒，準備出發！");
     } else {
       alert('🪙 金幣不足喔！');
     }
@@ -701,6 +719,7 @@
 
   window.resetAllSaveData = function() {
     if (confirm("⚠️ 確定要清除所有存檔資料嗎？")) {
+      Adventure.endJourney();
       Object.keys(localStorage).filter(k => k.startsWith('fruit_')).forEach(k => localStorage.removeItem(k));
       Expedition.reset();
       player = {
@@ -728,7 +747,7 @@
   window.startGame = function(m) {
     safePlayAudio();
     
-    mode = m; level = 1;
+    mode = m; level = 1;Adventure.startJourney(m);
     const modeSelect = document.getElementById('mode-select');
     if (modeSelect) modeSelect.style.display = 'none';
     startLevel();
@@ -743,7 +762,7 @@
     document.getElementById('ultimate-button').disabled=true;
 
     if (val === currentAnswer) {
-      if(!finishQuestion())return;
+      if(!finishQuestion(true))return;
       isAnswering = true;
       if (timerInterval) clearInterval(timerInterval);
 
@@ -766,23 +785,21 @@
         if(Expedition.active){Expedition.win(playerHp);return;}
         let baseReward = 0;
         if (mode === 'boss') {
-          baseReward = (level === 5) ? 300 : 0;
+          baseReward = (level === 5) ? 100 : 25;
         } else if (mode === 'medium') {
-          baseReward = 20;
+          baseReward = (level === 5) ? 60 : 20;
         } else {
-          baseReward = 10;
+          baseReward = (level === 5) ? 30 : 10;
         }
 
-        const mult = backgrounds[player.bg]?.multiplier || 1;
-        pendingReward = Math.round(baseReward * mult);
+        const storyReward=Adventure.storyReward(mode,level,baseReward);
+        pendingReward = storyReward.coins;
+        const journeyText=document.getElementById('boss-journey-reward');journeyText.hidden=mode!=='boss'||level!==5;journeyText.textContent=storyReward.journeyBonus?'完整旅程：巨龍獎勵 80 ＋ 旅程加成 '+storyReward.journeyBonus+' 金幣':'巨龍重戰獎勵：固定 80 金幣';
 
-        const firstReward=Adventure.chapterReward(player,mode,level);
-        pendingReward+=firstReward;
-        for(const id of ['chapter-first-reward','boss-first-reward']){const el=document.getElementById(id);el.hidden=!firstReward;el.textContent='章節首次通關獎勵 +'+firstReward+' 金幣！';}
         document.getElementById('boss-total-reward').textContent=pendingReward;
         Adventure.finish(player,mode,level);
         player.coins += pendingReward;
-        if (mode === 'medium') player.bossUnlocked = true;
+        if (mode === 'medium' && level === 5) player.bossUnlocked = true;
         saveGame();
 
         battleLater(() => {
@@ -794,7 +811,7 @@
             const nextBtn = document.getElementById('btn-next-level');
             const levelCleared = document.getElementById('level-cleared-screen');
             if (rewardText) rewardText.innerText = `+${pendingReward}`;
-            if (nextBtn) nextBtn.innerText = (level >= 5) ? '回主選單 🏠' : '進入下一關 ➔';
+            if (nextBtn) nextBtn.innerText = (level >= 5) ? '返回主選單' : '進入下一關 →';
             if (levelCleared) levelCleared.style.display = 'flex';
           }
         }, 500);
@@ -814,10 +831,10 @@
   window.startMapLevel=function(selectedMode,selectedLevel){
     const progress=Adventure.normalize(player.adventure);
     if(!['easy','medium','boss'].includes(selectedMode)||!Number.isInteger(selectedLevel)||selectedLevel<1||selectedLevel>5||(selectedMode==='boss'&&!player.bossUnlocked)||(selectedLevel>1&&!progress[selectedMode][selectedLevel-2]))return;
-    safePlayAudio();mode=selectedMode;level=selectedLevel;document.getElementById('mode-select').style.display='none';document.getElementById('adventure-map').style.display='none';startLevel();
+    safePlayAudio();Adventure.startJourney(selectedMode,selectedLevel);mode=selectedMode;level=selectedLevel;document.getElementById('mode-select').style.display='none';document.getElementById('adventure-map').style.display='none';startLevel();
   };
   window.retryCurrentLevel = function() {
-    if(Expedition.active){document.getElementById("game-over-screen").style.display="none";Expedition.open();return;}
+    if(Expedition.active){document.getElementById("game-over-screen").style.display="none";Expedition.retry();return;}
     
     safePlayAudio();
     const gameOverScreen = document.getElementById('game-over-screen');
@@ -826,6 +843,7 @@
   };
 
   window.endAdventureFromGameOver = function() {
+    Adventure.endJourney();
     if(Expedition.active){document.getElementById("game-over-screen").style.display="none";Expedition.open();return;}
     stopBattle();
     safePlayAudio();
@@ -849,6 +867,7 @@
   };
 
   window.endAdventure = function() {
+    Adventure.endJourney();
     if(Expedition.active){document.getElementById("game-over-screen").style.display="none";Expedition.open();return;}
     stopBattle();
     safePlayAudio();
@@ -860,6 +879,7 @@
   };
 
   window.closeBossStage = function() {
+    Adventure.endJourney();
     stopBattle();
     const bossStage = document.getElementById('boss-battle-stage');
     const modeSelect = document.getElementById('mode-select');
