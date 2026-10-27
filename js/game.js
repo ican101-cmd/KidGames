@@ -67,13 +67,15 @@
 
   try { player.adventure=Adventure.normalize(JSON.parse(localStorage.getItem('fruit_adventure_v1'))); } catch(e) { player.adventure=Adventure.normalize(); }
 
+  MathTopics.init(player);Expedition.switchTopic();
+
   let mode = 'easy', level = 1, currentAnswer = 0, timerInterval = null, timeLeft = 15;
   let playerMaxHp = 20, playerHp = 20, slimeMaxHp = 100, slimeHp = 100;
   let currentShopTab = 'weapons';
   let openedFromModal = false;
   let pendingReward = 0;
   let isAnswering = false;
-  let battleEpoch=0,battleActive=false,ultimateQuestion=false;
+  let battleEpoch=0,battleActive=false,ultimateQuestion=false,currentMathQuestion=null;
   let ultimateCharge=0,scorpionOpening=false,scorpionArmor=false,scorpionAwakened=false,questionSettled=false;
   function setScorpionArmor(active){scorpionArmor=active;document.getElementById('slime-container').classList.toggle('scorpion-armored',active);}
   function setScorpionOpening(open){scorpionOpening=open;document.getElementById('slime-container').classList.toggle('scorpion-opening',open);}
@@ -117,7 +119,7 @@
   function saveGame() {
     try {
       player.adventure=Adventure.normalize(player.adventure);
-      localStorage.setItem('fruit_adventure_v1',JSON.stringify(player.adventure));
+      MathTopics.persist(player);
       localStorage.setItem('fruit_coins', player.coins);
       localStorage.setItem('fruit_weapon', player.weapon);
       localStorage.setItem('fruit_unlocked_weapons', JSON.stringify(player.unlockedWeapons));
@@ -131,12 +133,16 @@
       localStorage.setItem('fruit_unlocked_boots', JSON.stringify(player.unlockedBoots));
       localStorage.setItem('fruit_bg', player.bg);
       localStorage.setItem('fruit_unlocked_bgs', JSON.stringify(player.unlockedBgs));
-      localStorage.setItem('fruit_boss', player.bossUnlocked);
+      if(MathTopics.current==='arithmetic')localStorage.setItem('fruit_boss', player.bossUnlocked);
     } catch(e) {}
     updateUI();
   }
 
   function updateUI() {
+    document.querySelectorAll('button[data-math-topic]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mathTopic===MathTopics.current)));
+    document.getElementById('menu-topic-label').textContent=MathTopics.name();
+    document.body.dataset.mathTopic=MathTopics.current;
+    document.getElementById('card-boy').classList.toggle('selected',player.gender==='boy');document.getElementById('card-girl').classList.toggle('selected',player.gender==='girl');
     document.getElementById('gold-coins').innerText = player.coins;
     document.getElementById('shop-coins').innerText = player.coins;
     
@@ -331,7 +337,7 @@
     if(!battleActive||isAnswering||ultimateQuestion||ultimateCharge<2||playerHp<=0||slimeHp<=0||timeLeft<=0)return;
     setUltimateCharge(0);safePlayAudio();generateQuestion({ultimate:true,seconds:timeLeft});
   };
-  function showCorrectAnswer(){const el=document.getElementById('answer-feedback');el.textContent='正確答案：'+document.getElementById('question-box').innerText.replace('?',String(currentAnswer));el.hidden=false;}
+  function showCorrectAnswer(){const el=document.getElementById('answer-feedback');el.textContent=currentMathQuestion?'正確答案：'+currentAnswer+'。'+currentMathQuestion.explanation:'正確答案：'+document.getElementById('question-box').innerText.replace('?',String(currentAnswer));el.hidden=false;}
   function generateQuestion({ultimate=false,seconds=null}={}) {
     if(!battleActive||playerHp<=0||slimeHp<=0)return;
     isAnswering = false;ultimateQuestion=ultimate;questionSettled=false;document.getElementById('answer-feedback').hidden=true;
@@ -348,6 +354,10 @@
     document.querySelector('.battle-hint').textContent=forestMist?'林間迷霧！第三波每題縮短 2 秒，穩住再出招。':Expedition.active&&Expedition.run.step===6?(scorpionArmor?'反彈護甲啟動！本題答對會反彈 10 HP，下一題露出破綻':scorpionOpening?'鎧甲破綻！這一題答對即可命中':'鎧甲反彈：剩 5 秒內答對會反彈 10 HP'):Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===5?'烈焰牛頭 · 第 '+Expedition.waveNumber()+' 波'+(Expedition.waveNumber()===3?'：半血立即回血，之後每 5 秒回復 '+MonsterRegeneration.amount((weapons[player.weapon]||weapons.wood_sword).dmg):'：趁勢前進！'):'選出正確的水果答案，幫勇者出招！';
     if (timerInterval) clearInterval(timerInterval);
 
+    timeLeft = seconds===null?Adventure.answerSeconds(Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===5?11:Math.max(5,15-(level-1)*2-(forestMist?2:0)),Expedition.bossMode(mode)==='boss'&&level===5):seconds;
+    if(seconds===null)timeLeft=MathTopics.seconds(timeLeft,mode);
+    if(seconds===null&&Expedition.has("sandglass"))timeLeft++;
+    currentMathQuestion=null;
     let num1, num2, isAdd = Math.random() > 0.5;
     if (mode === 'easy') {
       num1 = Math.floor(Math.random()*9)+1; num2 = Math.floor(Math.random()*9)+1;
@@ -373,18 +383,23 @@
     }
     let options = generateOptions(currentAnswer);
     if(ultimate)options=[currentAnswer,options.find(value=>value!==currentAnswer)].sort(()=>Math.random()-.5);
+    if(MathTopics.current==='factors'){currentMathQuestion=MathQuestions.make(mode,level,ultimate);currentAnswer=currentMathQuestion.answer;options=currentMathQuestion.options;document.getElementById('question-box').innerText=currentMathQuestion.prompt;}
+    if(MathTopics.current==='fractions'){currentMathQuestion=FractionQuestions.make(mode,level,ultimate,{short:timeLeft<=7});currentAnswer=currentMathQuestion.answer;options=currentMathQuestion.options;FractionQuestions.render(document.getElementById('question-box'),currentMathQuestion.prompt);}
+    if(MathTopics.current==='decimals'){currentMathQuestion=DecimalQuestions.make(mode,level,ultimate,{short:timeLeft<=7});currentAnswer=currentMathQuestion.answer;options=currentMathQuestion.options;document.getElementById('question-box').innerText=currentMathQuestion.prompt;}
+    document.getElementById('question-box').classList.toggle('word-question',MathTopics.current!=='arithmetic');
+    const topicLabel=document.getElementById('battle-topic');topicLabel.hidden=MathTopics.current==='arithmetic';topicLabel.textContent=MathTopics.lesson(mode)+(ultimate?' · 必殺挑戰':'');
+    if(MathTopics.current!=='arithmetic'&&!ultimate&&ultimateCharge===2)document.getElementById('ultimate-button-hint').textContent='能量已滿 · 主題必殺答對傷害 ×2';
     const area = document.getElementById('fruits-area');
     area.innerHTML = '';
     options.forEach(val => {
       const btn = document.createElement('div');
       btn.className = 'fruit-btn';
-      btn.innerHTML = `<span>🍎</span><span>${val}</span>`;
+      const fruitIcon=document.createElement('span');fruitIcon.textContent='🍎';const answerLabel=document.createElement('span');answerLabel.className='answer-value';if(MathTopics.current==='fractions')FractionQuestions.render(answerLabel,val);else answerLabel.textContent=val;btn.append(fruitIcon,answerLabel);btn.classList.toggle('decimal-answer',MathTopics.current==='decimals');btn.classList.toggle('expression-answer',currentMathQuestion?.type==='choose-equation');btn.classList.toggle('text-answer',typeof val==='string'&&!/^\d+(\.\d+)?$/.test(val));
+      btn.setAttribute('role','button');btn.tabIndex=0;btn.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();btn.click();}};
       btn.onclick = () => window.checkAnswer(val, btn);
       area.appendChild(btn);
     });
 
-    timeLeft = seconds===null?Adventure.answerSeconds(Expedition.active&&Expedition.run.routeVersion>=3&&Expedition.run.step===5?11:Math.max(5,15-(level-1)*2-(forestMist?2:0)),Expedition.bossMode(mode)==='boss'&&level===5):seconds;
-    if(seconds===null&&Expedition.has("sandglass"))timeLeft++;
     document.getElementById('timer').innerText = timeLeft;
     Adventure.question(timeLeft,ultimate);
     timerInterval = setInterval(() => {
@@ -417,6 +432,8 @@
     if(playerHp<=0)defeatHero();else battleLater(()=>generateQuestion(),700);
   }
 
+  window.selectMathTopic=function(topic){if(battleActive||Expedition.active)return;Adventure.endJourney();if(MathTopics.select(topic,player)){Expedition.switchTopic();saveGame();}};
+  window.openTopicSelection=function(){if(battleActive||Expedition.active)return;document.getElementById('mode-select').style.display='none';document.getElementById('character-select').style.display='flex';};
   window.selectChar = function(g) {
     player.gender = g;
     const cardBoy = document.getElementById('card-boy');
@@ -691,7 +708,7 @@
   };
 
   window.exportSaveFile = function() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({...player,expedition:Expedition.export()}));
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({...player,mathTopics:MathTopics.exportState(player),expeditions:Expedition.exportTopics(),expedition:Expedition.export()}));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
     downloadAnchor.setAttribute("download", `fruit_game_save_${new Date().toISOString().slice(0,10)}.json`);
@@ -706,8 +723,9 @@
       try {
         const importedData = JSON.parse(e.target.result);
         if (importedData && typeof importedData.coins === 'number') {
-          if(importedData.expedition){Expedition.load(importedData.expedition);localStorage.setItem("fruit_expedition_v1",JSON.stringify(Expedition.export()));}
-          player = Object.assign({}, player, importedData);delete player.expedition;
+          player = Object.assign({},player,importedData);
+          MathTopics.importState(importedData,player);Expedition.importTopics(importedData);
+          delete player.expedition;delete player.expeditions;delete player.mathTopics;
           saveGame();
           alert('🎉 存檔載入成功！');
         } else {
@@ -742,7 +760,7 @@
         unlockedBgs: ['green'],
         bossUnlocked: false
       };
-      saveGame();
+      MathTopics.reset(player);Expedition.switchTopic();saveGame();
       alert("🗑️ 存檔已重置！");
     }
   };
