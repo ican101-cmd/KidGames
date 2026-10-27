@@ -72,9 +72,13 @@ end $$;
 create or replace function public.kg_read_board(p_difficulty text,p_route text)
 returns table(nickname text,weapon text,duration_ms bigint,accuracy numeric,hp integer,achieved_at timestamptz)
 language sql security definer set search_path='' as $$
- select s.nickname,s.weapon,s.duration_ms,s.accuracy,s.hp,s.achieved_at
- from public.kg_scores s where s.difficulty=p_difficulty and s.route=p_route
- order by s.duration_ms asc,s.accuracy desc,s.hp desc,s.achieved_at asc,s.owner_id asc limit 50
+ select best.nickname,best.weapon,best.duration_ms,best.accuracy,best.hp,best.achieved_at
+ from (
+   select distinct on (s.owner_id) s.owner_id,s.nickname,s.weapon,s.duration_ms,s.accuracy,s.hp,s.achieved_at
+   from public.kg_scores s where s.difficulty=p_difficulty
+   order by s.owner_id,s.duration_ms asc,s.accuracy desc,s.hp desc,s.achieved_at asc,s.route asc
+ ) best
+ order by best.duration_ms asc,best.accuracy desc,best.hp desc,best.achieved_at asc,best.owner_id asc limit 50
 $$;
 revoke all on function public.kg_start_run(text,text),public.kg_finish_run(uuid,text,integer,integer,integer),public.kg_submit_score(uuid,text),public.kg_read_board(text,text) from public,anon;
 grant execute on function public.kg_start_run(text,text),public.kg_finish_run(uuid,text,integer,integer,integer),public.kg_submit_score(uuid,text),public.kg_read_board(text,text) to authenticated;

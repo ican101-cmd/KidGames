@@ -213,3 +213,39 @@ button:focus-visible,summary:focus-visible,.avatar-card:focus-visible{outline:3p
 .bull-regeneration-ring{width:138px;height:138px}
 .bull-regeneration-ring svg{display:block;width:100%;height:100%}
 .bull-regeneration-title{font-size:17px;font-weight:900;white-space:nowrap;text-shadow:0 2px 2px #6d341f,-1px -1px #6d341f}
+.topic-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px;border:1px solid #c5aa71;border-radius:12px;width:min(100%,460px);box-sizing:border-box;margin:0;background:#fff5db}
+.topic-picker legend{font-size:13px;font-weight:bold;color:#31594e;padding:0 6px}
+.topic-picker button{font-family:inherit;border:2px solid #cebc94;background:#faf4e4;color:#496057;border-radius:10px;padding:10px 8px;min-height:68px;cursor:pointer}
+.topic-picker button[aria-pressed="true"]{background:linear-gradient(#3e786c,#2c5b53);border-color:#d3ad61;color:#fff2c9;box-shadow:inset 0 0 0 1px #9ac4b0}
+.topic-picker strong{display:block;font-size:16px}.topic-picker small{display:block;font-size:10px;line-height:1.5;margin-top:4px}
+#character-select{gap:10px;overflow:auto;justify-content:safe center}
+#character-select .functional-heading{padding-block:4px 10px}
+#battle-topic{font-size:11px;line-height:1.3;color:#65765c;text-align:center;margin:4px 0 0;font-weight:bold}
+#battle-topic[hidden]{display:none}
+#question-box.word-question{font-size:clamp(19px,4vw,25px);line-height:1.45;padding:9px 12px;overflow-wrap:anywhere;min-height:50px;box-sizing:border-box}
+body[data-math-topic="factors"] #answer-feedback{font-size:12px;line-height:1.5;max-height:64px;overflow:auto;margin:4px 12px}
+#menu-topic-label{font-weight:bold}
+@media(max-width:430px){.topic-picker{padding:7px;gap:6px}.topic-picker button{padding:7px 5px}.topic-picker strong{font-size:14px}.topic-picker small{font-size:9px}.board-filters{flex-wrap:wrap}}
+@media(max-height:700px){#character-select .selection-portrait{height:120px}#character-select .avatar-container{margin-block:0}.topic-picker button{min-height:62px}#question-box.word-question{font-size:18px;padding:7px 10px}}
+.board-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}
+.board-filters>.btn{grid-column:1/-1;max-width:none;width:100%}
+@media(min-width:600px){.board-filters{grid-template-columns:1fr 1fr 150px}.board-filters>.btn{grid-column:auto}}
+.topic-picker [data-math-topic="decimals"]{grid-column:1/-1}
+.fruit-btn.decimal-answer .answer-value{font-size:clamp(16px,3.7vw,22px);font-variant-numeric:tabular-nums;letter-spacing:0}
+.fruit-btn.text-answer .answer-value{font-size:clamp(12px,3.2vw,17px);line-height:1.3;word-break:break-all;white-space:normal;max-width:94%;text-align:center}
+body[data-math-topic="decimals"] #answer-feedback{font-size:12px;line-height:1.5;max-height:64px;overflow:auto;margin:4px 12px}
+@media(min-width:600px){.topic-picker{grid-template-columns:repeat(3,minmax(0,1fr))}.topic-picker [data-math-topic="decimals"]{grid-column:auto}.topic-picker strong{font-size:14px}}
+@media(max-height:700px){#character-select .topic-picker{padding-block:5px}#character-select .topic-picker button{min-height:53px;padding-block:5px}#character-select .selection-portrait{height:110px}}
+#fruits-area:has(.expression-answer){gap:8px;padding-inline:8px;box-sizing:border-box}
+.fruit-btn.expression-answer{flex:1;width:0;min-width:0;max-width:180px;border-radius:18px}
+.fruit-btn.expression-answer .answer-value{white-space:nowrap;word-break:normal;max-width:none;font-size:clamp(12px,3vw,17px)}
+/* Four balanced topic choices; real fraction bars rather than slash-only notation. */
+.topic-picker [data-math-topic="decimals"]{grid-column:auto}
+@media(min-width:600px){.topic-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.fraction{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;line-height:1.05;margin:0 .16em;font-variant-numeric:tabular-nums;font-size:.85em;white-space:nowrap}
+.fraction>span:first-child{border-bottom:2px solid currentColor;padding:0 .16em .08em}
+.fraction>span:last-child{padding-top:.08em}
+body[data-math-topic="fractions"] #question-box{font-size:clamp(18px,4.5vw,28px);line-height:1.65}
+body[data-math-topic="fractions"] .fruit-btn .answer-value{font-size:clamp(15px,3.8vw,23px);word-break:normal}
+body[data-math-topic="fractions"] #answer-feedback{font-size:12px;line-height:1.5;max-height:64px;overflow:auto;margin:4px 12px}
+@media(max-height:700px){#character-select .topic-picker button{min-height:48px}#character-select .selection-portrait{height:95px}}

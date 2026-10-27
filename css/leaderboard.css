@@ -15,3 +15,15 @@
 @media(prefers-reduced-motion:no-preference){.board-story-banner{animation:honor-appear .4s ease-out}@keyframes honor-appear{from{opacity:.6}to{opacity:1}}}
 
 .board-register-link{display:inline-flex;align-items:center;min-height:44px;margin-top:6px;padding:3px 0;color:#f5dda0;border:0;background:transparent;font-size:12px;text-decoration:underline;text-underline-offset:4px;cursor:pointer}#board-registration{scroll-margin-top:96px}
+/* Three difficulty scrolls are always present; each loads and expands independently. */
+#leaderboard-screen .board-filters{grid-template-columns:minmax(0,1fr) auto}
+#leaderboard-screen .board-filters>.btn{grid-column:auto;max-width:none}
+.board-grid{display:grid;grid-template-columns:1fr;gap:16px}
+.difficulty-board{min-width:0;border:1px solid #bea36c;border-radius:15px;overflow:hidden;background:linear-gradient(120deg,#fffdf0,#f0e4c2);box-shadow:0 4px 0 #bca87935;--board-tone:#3c816b}
+.difficulty-board[data-difficulty=medium]{--board-tone:#ae7b32}.difficulty-board[data-difficulty=boss]{--board-tone:#7d6499}
+#leaderboard-screen .difficulty-board>header{position:static;display:block;padding:15px 17px;background:var(--board-tone);border-bottom:3px solid #d5b66f;box-shadow:none}
+.difficulty-board h3{margin:6px 0 0;font-size:22px;color:#fff5d3}.board-mode-rows{list-style:none;padding:0 10px;margin:0}.board-local-status{font-size:11px;line-height:1.7;padding:0 14px;color:#73745b}
+.difficulty-board .board-score{grid-template-columns:32px minmax(0,1fr);gap:7px;padding:12px 8px}.difficulty-board .board-rank-seal{width:32px;height:43px}.difficulty-board .board-weapon-emblem{display:none}.difficulty-board .board-score strong{font-size:15px}.difficulty-board .board-score-time{font-size:21px}.difficulty-board .board-score-time>span{display:block}.difficulty-board .board-score[hidden]{display:none}
+#leaderboard-screen .board-show-more{display:block;width:100%;min-height:44px;border:0;background:transparent;color:var(--board-tone);font:inherit;font-size:12px;cursor:pointer;margin:0 0 8px}
+.difficulty-board[data-state=error] .board-local-status{color:#a44932}
+@media(min-width:740px){.board-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
