@@ -383,7 +383,7 @@
     }
     let options = generateOptions(currentAnswer);
     if(ultimate)options=[currentAnswer,options.find(value=>value!==currentAnswer)].sort(()=>Math.random()-.5);
-    if(MathTopics.current==='factors'){currentMathQuestion=QuestionRotation.choose(MathTopics.current,mode,()=>MathQuestions.make(mode,level,ultimate));currentAnswer=currentMathQuestion.answer;options=currentMathQuestion.options;document.getElementById('question-box').innerText=currentMathQuestion.prompt;}
+    if(MathTopics.current==='factors'){currentMathQuestion=QuestionRotation.choose(MathTopics.current,mode,()=>MathQuestions.make(mode,level,ultimate,{short:timeLeft<=7}));currentAnswer=currentMathQuestion.answer;options=currentMathQuestion.options;document.getElementById('question-box').innerText=currentMathQuestion.prompt;}
     if(MathTopics.current==='fractions'){currentMathQuestion=QuestionRotation.choose(MathTopics.current,mode,()=>FractionQuestions.make(mode,level,ultimate,{short:timeLeft<=7}));currentAnswer=currentMathQuestion.answer;options=currentMathQuestion.options;FractionQuestions.render(document.getElementById('question-box'),currentMathQuestion.prompt);}
     if(MathTopics.current==='decimals'){currentMathQuestion=QuestionRotation.choose(MathTopics.current,mode,()=>DecimalQuestions.make(mode,level,ultimate,{short:timeLeft<=7}));currentAnswer=currentMathQuestion.answer;options=currentMathQuestion.options;document.getElementById('question-box').innerText=currentMathQuestion.prompt;}
     document.getElementById('question-box').classList.toggle('word-question',MathTopics.current!=='arithmetic');
