@@ -20,6 +20,8 @@ const MathTopics=(()=>{
  function reset(player){current='arithmetic';profiles=Object.fromEntries(ids.map(t=>[t,normalized()]));apply(player);persist(player);}
  function name(topic=current){return(definitions[topic]||definitions.arithmetic).name;}
  function lesson(mode,topic=current){return(definitions[topic]||definitions.arithmetic).lessons[mode];}
+ const storyHpByMode={easy:[200,225,250,275,400],medium:[250,275,300,325,500],boss:[300,325,350,375,600]};
+ function storyHp(mode,level,fallback){return current==='arithmetic'?fallback:(storyHpByMode[mode]?.[level-1]??fallback);}
  function seconds(base,mode){return current==='arithmetic'?base:Math.floor(base*({easy:1.2,medium:1.4,boss:1.5}[mode]||1));}
- return{ids,init,persist,select,exportState,importState,reset,key,name,lesson,seconds,get current(){return current;}};
+ return{ids,init,persist,select,exportState,importState,reset,key,name,lesson,storyHp,seconds,get current(){return current;}};
 })();

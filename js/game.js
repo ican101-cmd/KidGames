@@ -245,13 +245,13 @@
 
     if (level === 5) {
       const chapterBoss=Adventure.bossFor(mode,level);
-      slimeMaxHp = Expedition.active?chapterBoss.expeditionHp:chapterBoss.hp;
+      slimeMaxHp = Expedition.active?chapterBoss.expeditionHp:MathTopics.storyHp(mode,level,chapterBoss.hp);
       if (slimeElem) slimeElem.style.display = 'none';
       if (bossElem) bossElem.style.display = 'block';
       if (enemyTitle) enemyTitle.innerText = chapterBoss.name;
     } else {
       const ordinaryHp=Expedition.active&&Expedition.run?.step===6?200:Expedition.active&&Expedition.run?.routeVersion>=3&&Expedition.run.step===5?[100,110,120][Expedition.waveNumber()-1]:100;
-      slimeMaxHp = ordinaryHp;
+      slimeMaxHp = Expedition.active?ordinaryHp:MathTopics.storyHp(mode,level,ordinaryHp);
       if (bossElem) bossElem.style.display = 'none';
       if (slimeElem) slimeElem.style.display = 'block';
 
@@ -880,6 +880,8 @@
     const modeSelect = document.getElementById('mode-select');
     if (levelCleared) levelCleared.style.display = 'none';
     if (level >= 5) {
+      stopBattle();
+      Adventure.endJourney();
       if (modeSelect) modeSelect.style.display = 'flex';
     } else {
       level++;
