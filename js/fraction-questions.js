@@ -18,13 +18,18 @@ const FractionQuestions=(()=>{
    else{answer=f(a,b);prompt=`${f(a*k,b*k)} 約成最簡分數是哪個？`;explanation=`分子、分母同除以 ${k}，得到 ${answer}，不能再約分。`;}
    n=kind==='equivalent'?a*k:a;d=kind==='equivalent'?b*k:b;wrong=[f(n+1,d),f(n,d+1),f(n+2,d)];meta={a,b,k};
   }else if(kind==='concept'){
-   prompt='分子、分母同乘 3，分數的大小會如何？';answer='不變';wrong=['變大','變小'];explanation='擴分只改變分數的表示方式，大小不變。';meta={};
+   k=r(2,5);const variant=r(0,3);b=r(2,8);a=r(1,b-1);
+   if(variant===0){prompt='分子、分母同乘 '+k+'，分數的大小會如何？';answer='不變';wrong=['變大','變小'];}
+   else if(variant===1){prompt='分子、分母同除以公因數 '+k+'，分數的大小會如何？';answer='不變';wrong=['變大','變小'];}
+   else if(variant===2){prompt=f(a,b)+' 擴分成 '+f(a*k,b*k)+'，大小如何改變？';answer='不變';wrong=['變大','變小'];}
+   else{prompt=f(a*k,b*k)+' 約分成 '+f(a,b)+'，大小如何改變？';answer='不變';wrong=['變大','變小'];}
+   explanation='分子、分母同乘或同除以相同的非零數，分數大小不變。';meta={a,b,k,variant};
   }else if(kind==='common'){
-   [b,d]=pick(stage<=2?[[2,4],[3,6],[4,8],[3,4]]:[[4,6],[6,9],[4,9],[3,8]]);answer=lcm(b,d);prompt=`1/${b} 與 1/${d} 的最小共同分母是多少？`;wrong=[answer+b,answer+d,answer*2];explanation=`${b} 和 ${d} 的最小公倍數是 ${answer}。`;meta={b,d};
+   [b,d]=pick(stage<=2?[[2,4],[3,6],[4,8],[3,4],[2,6],[2,8],[3,9],[4,12],[5,10]]:[[4,6],[6,9],[4,9],[3,8],[6,8],[5,6],[4,10],[6,12],[8,12]]);a=r(1,b-1);n=r(1,d-1);answer=lcm(b,d);prompt=`${f(a,b)} 與 ${f(n,d)} 的最小共同分母是多少？`;wrong=[answer+b,answer+d,answer*2];explanation=`${b} 和 ${d} 的最小公倍數是 ${answer}。`;meta={a,b,n,d};
   }else if(kind==='convert'){
-   [a,b,d]=pick([[6,8,12],[4,6,9],[6,9,12],[8,12,18],[10,15,12]]);answer=a*d/b;prompt=`${f(a,b)}＝□/${d}，□是多少？`;wrong=[answer+1,answer+2,answer+3];const g=gcd(a,b);explanation=`先約成 ${f(a/g,b/g)}，再擴分成 ${f(answer,d)}。`;meta={a,b,d};
+   const base=pick([3,4,5,6]);n=r(1,base-1);const common=gcd(n,base);n/=common;b=base/common;k=r(2,3);d=b*(k+1);a=n*k;b*=k;answer=a*d/b;prompt=`${f(a,b)}＝□/${d}，□是多少？`;wrong=[answer+1,answer+2,answer+3];const g=gcd(a,b);explanation=`先約成 ${f(a/g,b/g)}，再擴分成 ${f(answer,d)}。`;meta={a,b,d};
   }else if(kind==='error'){
-   prompt='哪一個擴分算式是錯的？';answer='2/3＝2/6';wrong=['2/3＝4/6','2/3＝6/9'];explanation='分母乘 2，分子也必須乘 2，不能只改分母。';meta={};
+   b=r(3,10);a=r(1,b-1);k=r(2,4);prompt='哪個不是 '+f(a,b)+' 的正確擴分？';answer=f(a,b)+'＝'+f(a,b*k);wrong=[f(a,b)+'＝'+f(a*k,b*k),f(a,b)+'＝'+f(a*(k+1),b*(k+1))];explanation='分母乘 '+k+'，分子也必須乘 '+k+'，不能只改分母。';meta={a,b,k};
   }else{
    [b,d]=pick(mode==='medium'?[[2,4],[3,6],[4,8],[4,6]]:[[4,6],[6,9],[8,12],[5,10],[3,8]]);a=r(1,b-1);n=r(1,d-1);const delta=a*d-n*b;answer=delta>0?'＞':delta<0?'＜':'＝';meta={a,b,n,d};
    if(kind==='story'){prompt=`同樣大的果汁瓶，甲喝 ${f(a,b)} 瓶，乙喝 ${f(n,d)} 瓶，誰喝得較多？`;answer=delta>0?'甲':delta<0?'乙':'一樣多';wrong=['甲','乙','一樣多'].filter(v=>v!==answer);}
