@@ -249,3 +249,5 @@ body[data-math-topic="fractions"] #question-box{font-size:clamp(18px,4.5vw,28px)
 body[data-math-topic="fractions"] .fruit-btn .answer-value{font-size:clamp(15px,3.8vw,23px);word-break:normal}
 body[data-math-topic="fractions"] #answer-feedback{font-size:12px;line-height:1.5;max-height:64px;overflow:auto;margin:4px 12px}
 @media(max-height:700px){#character-select .topic-picker button{min-height:48px}#character-select .selection-portrait{height:95px}}
+/* Subject finishers can contain short conditions; keep arithmetic's compact equation layout. */
+#question-box.word-question.ultimate-question{white-space:normal;overflow-wrap:anywhere}
