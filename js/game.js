@@ -245,6 +245,7 @@
     const bossElem = document.getElementById('boss-svg-elem');
     const enemyTitle = document.getElementById('enemy-title-text');
     const slimeBodyPath = document.getElementById('slime-body-path');
+    Adventure.scene(level,Expedition.bossMode(mode)==='boss'&&level===5);
 
     if (level === 5) {
       const chapterBoss=Adventure.bossFor(mode,level);
