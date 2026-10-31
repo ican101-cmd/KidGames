@@ -48,24 +48,25 @@
 
   // 讀取存檔
   try {
-    const localCoins = localStorage.getItem('fruit_coins');
+    player.gender=PlayerStorage.getItem('fruit_gender')==='girl'?'girl':'boy';
+    const localCoins = PlayerStorage.getItem('fruit_coins');
     if (localCoins !== null) player.coins = parseInt(localCoins, 10) || 0;
-    if (localStorage.getItem('fruit_weapon')) player.weapon = localStorage.getItem('fruit_weapon');
-    if (localStorage.getItem('fruit_unlocked_weapons')) player.unlockedWeapons = JSON.parse(localStorage.getItem('fruit_unlocked_weapons'));
-    if (localStorage.getItem('fruit_helmet')) player.helmet = localStorage.getItem('fruit_helmet');
-    if (localStorage.getItem('fruit_unlocked_helmets')) player.unlockedHelmets = JSON.parse(localStorage.getItem('fruit_unlocked_helmets'));
-    if (localStorage.getItem('fruit_chest')) player.chest = localStorage.getItem('fruit_chest');
-    if (localStorage.getItem('fruit_unlocked_chests')) player.unlockedChests = JSON.parse(localStorage.getItem('fruit_unlocked_chests'));
-    if (localStorage.getItem('fruit_gloves')) player.gloves = localStorage.getItem('fruit_gloves');
-    if (localStorage.getItem('fruit_unlocked_gloves')) player.unlockedGloves = JSON.parse(localStorage.getItem('fruit_unlocked_gloves'));
-    if (localStorage.getItem('fruit_boots')) player.boots = localStorage.getItem('fruit_boots');
-    if (localStorage.getItem('fruit_unlocked_boots')) player.unlockedBoots = JSON.parse(localStorage.getItem('fruit_unlocked_boots'));
-    if (localStorage.getItem('fruit_bg')) player.bg = localStorage.getItem('fruit_bg');
-    if (localStorage.getItem('fruit_unlocked_bgs')) player.unlockedBgs = JSON.parse(localStorage.getItem('fruit_unlocked_bgs'));
-    player.bossUnlocked = localStorage.getItem('fruit_boss') === 'true';
+    if (PlayerStorage.getItem('fruit_weapon')) player.weapon = PlayerStorage.getItem('fruit_weapon');
+    if (PlayerStorage.getItem('fruit_unlocked_weapons')) player.unlockedWeapons = JSON.parse(PlayerStorage.getItem('fruit_unlocked_weapons'));
+    if (PlayerStorage.getItem('fruit_helmet')) player.helmet = PlayerStorage.getItem('fruit_helmet');
+    if (PlayerStorage.getItem('fruit_unlocked_helmets')) player.unlockedHelmets = JSON.parse(PlayerStorage.getItem('fruit_unlocked_helmets'));
+    if (PlayerStorage.getItem('fruit_chest')) player.chest = PlayerStorage.getItem('fruit_chest');
+    if (PlayerStorage.getItem('fruit_unlocked_chests')) player.unlockedChests = JSON.parse(PlayerStorage.getItem('fruit_unlocked_chests'));
+    if (PlayerStorage.getItem('fruit_gloves')) player.gloves = PlayerStorage.getItem('fruit_gloves');
+    if (PlayerStorage.getItem('fruit_unlocked_gloves')) player.unlockedGloves = JSON.parse(PlayerStorage.getItem('fruit_unlocked_gloves'));
+    if (PlayerStorage.getItem('fruit_boots')) player.boots = PlayerStorage.getItem('fruit_boots');
+    if (PlayerStorage.getItem('fruit_unlocked_boots')) player.unlockedBoots = JSON.parse(PlayerStorage.getItem('fruit_unlocked_boots'));
+    if (PlayerStorage.getItem('fruit_bg')) player.bg = PlayerStorage.getItem('fruit_bg');
+    if (PlayerStorage.getItem('fruit_unlocked_bgs')) player.unlockedBgs = JSON.parse(PlayerStorage.getItem('fruit_unlocked_bgs'));
+    player.bossUnlocked = PlayerStorage.getItem('fruit_boss') === 'true';
   } catch (e) {}
 
-  try { player.adventure=Adventure.normalize(JSON.parse(localStorage.getItem('fruit_adventure_v1'))); } catch(e) { player.adventure=Adventure.normalize(); }
+  try { player.adventure=Adventure.normalize(JSON.parse(PlayerStorage.getItem('fruit_adventure_v1'))); } catch(e) { player.adventure=Adventure.normalize(); }
 
   MathTopics.init(player);Expedition.switchTopic();
 
@@ -120,25 +121,27 @@
     try {
       player.adventure=Adventure.normalize(player.adventure);
       MathTopics.persist(player);
-      localStorage.setItem('fruit_coins', player.coins);
-      localStorage.setItem('fruit_weapon', player.weapon);
-      localStorage.setItem('fruit_unlocked_weapons', JSON.stringify(player.unlockedWeapons));
-      localStorage.setItem('fruit_helmet', player.helmet);
-      localStorage.setItem('fruit_unlocked_helmets', JSON.stringify(player.unlockedHelmets));
-      localStorage.setItem('fruit_chest', player.chest);
-      localStorage.setItem('fruit_unlocked_chests', JSON.stringify(player.unlockedChests));
-      localStorage.setItem('fruit_gloves', player.gloves);
-      localStorage.setItem('fruit_unlocked_gloves', JSON.stringify(player.unlockedGloves));
-      localStorage.setItem('fruit_boots', player.boots);
-      localStorage.setItem('fruit_unlocked_boots', JSON.stringify(player.unlockedBoots));
-      localStorage.setItem('fruit_bg', player.bg);
-      localStorage.setItem('fruit_unlocked_bgs', JSON.stringify(player.unlockedBgs));
-      if(MathTopics.current==='arithmetic')localStorage.setItem('fruit_boss', player.bossUnlocked);
+      PlayerStorage.setItem('fruit_gender',player.gender);
+      PlayerStorage.setItem('fruit_coins', player.coins);
+      PlayerStorage.setItem('fruit_weapon', player.weapon);
+      PlayerStorage.setItem('fruit_unlocked_weapons', JSON.stringify(player.unlockedWeapons));
+      PlayerStorage.setItem('fruit_helmet', player.helmet);
+      PlayerStorage.setItem('fruit_unlocked_helmets', JSON.stringify(player.unlockedHelmets));
+      PlayerStorage.setItem('fruit_chest', player.chest);
+      PlayerStorage.setItem('fruit_unlocked_chests', JSON.stringify(player.unlockedChests));
+      PlayerStorage.setItem('fruit_gloves', player.gloves);
+      PlayerStorage.setItem('fruit_unlocked_gloves', JSON.stringify(player.unlockedGloves));
+      PlayerStorage.setItem('fruit_boots', player.boots);
+      PlayerStorage.setItem('fruit_unlocked_boots', JSON.stringify(player.unlockedBoots));
+      PlayerStorage.setItem('fruit_bg', player.bg);
+      PlayerStorage.setItem('fruit_unlocked_bgs', JSON.stringify(player.unlockedBgs));
+      if(MathTopics.current==='arithmetic')PlayerStorage.setItem('fruit_boss', player.bossUnlocked);
     } catch(e) {}
     updateUI();
   }
 
   function updateUI() {
+    window.PlayerProfileUI?.paint();
     document.querySelectorAll('button[data-math-topic]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mathTopic===MathTopics.current)));
     document.getElementById('menu-topic-label').textContent=MathTopics.name();
     document.body.dataset.mathTopic=MathTopics.current;
@@ -708,7 +711,7 @@
   };
 
   window.exportSaveFile = function() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({...player,mathTopics:MathTopics.exportState(player),expeditions:Expedition.exportTopics(),expedition:Expedition.export()}));
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({...player,profile:PlayerProfiles.current,mathTopics:MathTopics.exportState(player),expeditions:Expedition.exportTopics(),expedition:Expedition.export()}));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
     downloadAnchor.setAttribute("download", `fruit_game_save_${new Date().toISOString().slice(0,10)}.json`);
@@ -723,7 +726,10 @@
       try {
         const importedData = JSON.parse(e.target.result);
         if (importedData && typeof importedData.coins === 'number') {
+          if(importedData.profile&&PlayerProfiles.validName(importedData.profile.nickname)&&PlayerProfiles.avatars.includes(importedData.profile.avatar))PlayerProfiles.update(PlayerProfiles.id,importedData.profile);
           player = Object.assign({},player,importedData);
+          delete player.profile;
+          for(const data of [importedData.expedition,...Object.values(importedData.expeditions||{})])if(data?.run)delete data.run.online;
           MathTopics.importState(importedData,player);Expedition.importTopics(importedData);
           delete player.expedition;delete player.expeditions;delete player.mathTopics;
           saveGame();
@@ -739,9 +745,9 @@
   };
 
   window.resetAllSaveData = function() {
-    if (confirm("⚠️ 確定要清除所有存檔資料嗎？")) {
+    if (confirm("⚠️ 確定要清除目前冒險者的遊戲進度嗎？另一位玩家不受影響。")) {
       Adventure.endJourney();
-      Object.keys(localStorage).filter(k => k.startsWith('fruit_')).forEach(k => localStorage.removeItem(k));
+      PlayerStorage.keys().filter(k => k.startsWith('fruit_')).forEach(k => PlayerStorage.removeItem(k));
       Expedition.reset();
       player = {
         gender: 'boy',
